@@ -1,5 +1,5 @@
-import news_puller.fetch
-import news_puller.save
+from news_puller.fetch import get_news
+from news_puller.save import save
 from . import __version__
 from time import time
 from logging import getLogger, ERROR
@@ -31,9 +31,8 @@ def health_check():
 
 @app.route('/fetch/news', methods=['GET'])
 def use_embeddings():
-    news = news_puller.fetch.get_news()
-    for new in news:
-        news_puller.save(jsonify(new))
+    news = get_news()
+    save(news)
 
     return jsonify(news)
 

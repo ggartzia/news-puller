@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-import json
 import os
 import pymongo
 
@@ -13,10 +12,7 @@ client = pymongo.MongoClient(DATABASE_URL)  # establish connection with database
 mongo_db = client.db  # assign database to mongo_db
 mongo_db.launches.drop()  # clear the collection
 
-with open('static/data/launches.json') as file:  # opening the json file
-    file_data = json.load(file)
 
-if isinstance(file_data, list):
-    mongo_db.launches.insert_many(file_data)  # if data is a list
-else:
-    mongo_db.launches.insert_one(file_data)  # if data is a document object
+def save(news):
+
+    mongo_db.launches.insert_many(news)
