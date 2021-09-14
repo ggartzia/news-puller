@@ -1,70 +1,22 @@
-from elasticsearch import Elasticsearch
+from dotenv import load_dotenv
+import json
+import os
+import pymongo
 
+load_dotenv()  # use dotenv to hide sensitive credential as environment variables
 
-def iterate_docs(host, port, index, _source=True, body=None):
-    client = Elasticsearch(
-        [
-            {
-                'host': host,
-                'port': port
-            }
-        ],
-        retry_on_timeout=True
-    )
+DATABASE_URL = f'mongodb+srv://{os.environ.get("mongo-user")}:{os.environ.get("mongo-password")}'\
+               f'@{os.environ.get("mongo-cluster")}/{os.environ.get("mongo-db")}?'\
+               'retryWrites=true&w=majority'  # get connection url from environment
 
-    data = client.search(
-        index=index,
-        scroll='2m',
-        _source=_source,
-        body=body
-    )
+client = pymongo.MongoClient(DATABASE_URL)  # establish connection with database
+mongo_db = client.db  # assign database to mongo_db
+mongo_db.launches.drop()  # clear the collection
 
-    sid = data['_scroll_id']
-    scroll_size = len(data['hits']['hits'])
-    for hit in data['hits']['hits']:
-        yield hit
+with open('static/data/launches.json') as file:  # opening the json file
+    file_data = json.load(file)
 
-    while scroll_size > 0:
-        data = client.scroll(scroll_id=sid, scroll='2m')
-        for hit in data['hits']['hits']:
-            yield hit
-        sid = data['_scroll_id']
-        scroll_size = len(data['hits']['hits'])
-
-
-def get_doc(host, port, index, doc_id, _source=True):
-    client = Elasticsearch(
-        [
-            {
-                'host': host,
-                'port': port
-            }
-        ]
-    )
-
-    return client.get_source(
-        index=index,
-        id=doc_id,
-        _source=_source
-    )
-
-
-def get_docs(host, port, index, ids, _source=True):
-    client = Elasticsearch(
-        [
-            {
-                'host': host,
-                'port': port
-            }
-        ]
-    )
-
-    response = client.mget(
-        index=index,
-        body={'ids': ids},
-        _source=_source
-    )
-
-    docs = response['docs']
-
-    return [doc['_source'] for doc in docs]
+if isinstance(file_data, list):
+    mongo_db.launches.insert_many(file_data)  # if data is a list
+else:
+    mongo_db.launches.insert_one(file_data)  # if data is a document object
