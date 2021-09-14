@@ -33,7 +33,7 @@ def health_check():
 def use_embeddings():
     news = news_puller.fetch.get_news()
     for new in news:
-        save(jsonify(new))
+        news_puller.save(jsonify(new))
 
     return jsonify(news)
 
