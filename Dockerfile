@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install gcc g++ -y && apt-get clean
 WORKDIR /app
 
 RUN pip install pip==20.0.2
-RUN pip install -r requirements-dev.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
