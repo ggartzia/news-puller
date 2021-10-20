@@ -1,13 +1,13 @@
 from news_puller.fetch import get_news
 from . import __version__
 from time import time
-from logging import getLogger, ERROR
-from flask import Flask, jsonify
+from logging import getLogger, DEBUG
+from flask import Flask, jsonify, redirect
 from flask_gzip import Gzip
 
 start_time = int(time())
 log = getLogger('werkzeug')
-log.setLevel(ERROR)
+log.setLevel(DEBUG)
 
 app = Flask(__name__)
 Gzip(app)
@@ -26,6 +26,11 @@ def health_check():
         'startTime': start_time
     }
     return jsonify(response)
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return redirect('fetch/news')
 
 
 @app.route('/fetch/news', methods=['GET'])
