@@ -1,31 +1,23 @@
 paper_list = [
     {
-      'paper': 'EL PAÍS', 
-      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada'
-    },
-    {
-      'paper': 'EL PAÍS', 
-      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/internacional/portada'
-    },
-    {
       'paper': 'El Mundo', 
       'feed': 'https://e00-elmundo.uecdn.es/elmundo/rss/espana.xml'
     },
     {
-      'paper': 'El Mundo', 
-      'feed': 'https://e00-elmundo.uecdn.es/elmundo/rss/internacional.xml'
+      'paper': 'Huffington Post',
+      'feed': 'https://www.huffingtonpost.es/feeds/index.xml'
     },
     {
-      'paper': 'El Español', 
-      'feed': 'https://cronicaglobal.elespanol.com/es/rss/general-001.xml'
+      'paper': 'La Vanguardia',
+      'feed': 'https://www.lavanguardia.com/rss/home.xml'
     },
     {
       'paper': 'El Confidencial', 
       'feed': 'https://rss.elconfidencial.com/espana/'
     },
     {
-      'paper': 'El Confidencial', 
-      'feed': 'https://rss.elconfidencial.com/mundo/'
+      'paper': 'Público',
+      'feed': 'https://www.publico.es/rss/'
     },
     {
       'paper': 'OKDiario', 
@@ -35,12 +27,16 @@ paper_list = [
       'paper': 'El Diario',
       'feed': 'https://www.esdiario.com/rss/articulos.xml'
     },
-    #{
-    #  'paper': 'ABC', 
-    #  'feed': 'https://www.abc.es/rss/feeds/abc_EspanaEspana.xml'
-    #},
-    #{
-    #  'paper': 'ABC', 
-    #  'feed': 'https://www.abc.es/rss/feeds/abc_Internacional.xml'
-    #}
+    {
+      'paper': 'El Periodico',
+      'feed': 'https://www.elperiodico.com/es/rss/rss_portada.xml'
+    },
+    {
+      'paper': 'Marca',
+      'feed': 'https://e00-marca.uecdn.es/rss/portada.xml'
+    },
+    {
+      'paper': 'AS',
+      'feed': 'https://as.com/rss/tags/ultimas_noticias.xml'
+    }
 ]

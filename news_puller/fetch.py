@@ -10,9 +10,10 @@ feed_fields = ['title', 'link', 'published', 'tags', 'media_thumbnail', 'media_c
 
 
 def filter_feed(paper, news):
-    log.debug(news)
     for idx, item in enumerate(news):
-        news[idx] = {k: v for k, v in item.items() if k in feed_fields}.update({'paper', paper})
+        new = {k: v for k, v in item.items() if k in feed_fields}
+        new['paper'] = paper
+        news[idx] = new
 
     return news
 
@@ -25,7 +26,7 @@ def get_news():
 
         try:
             paper_news = feedparser.parse(plist['feed'])
-            log.debug(paper_news)
+
             if paper_news.status == 200:
                 news = news + filter_feed(plist['paper'], paper_news['entries'])
 
