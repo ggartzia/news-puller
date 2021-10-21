@@ -1,4 +1,5 @@
 from news_puller.fetch import get_news
+from news_puller.save import save
 from . import __version__
 from time import time
 from logging import getLogger, DEBUG
@@ -36,6 +37,7 @@ def index():
 @app.route('/fetch/news', methods=['GET'])
 def use_embeddings():
     news = get_news()
+    save(news)
 
     return jsonify(news)
 
