@@ -16,6 +16,19 @@ pipenv install --dev
 
 ## Development
 
+docker build -t news-puller .
+
+docker run -p 5000:5000 -d news-puller
+
+http://localhost:5000/
+
+List running containers:
+docker ps
+
+Watch logs:
+docker logs -f <CONTAINER_ID>
+
+
 ### Run tests
 
 pipenv run test

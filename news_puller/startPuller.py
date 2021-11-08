@@ -1,18 +1,18 @@
-from news_puller.fetch import get_news
-from news_puller.save import save
 from . import __version__
 from time import time
-from logging import getLogger, DEBUG
-from flask import Flask, jsonify, redirect
+from flask import Flask, jsonify, redirect, render_template
 from flask_gzip import Gzip
+from news_puller.fetch import get_news
+from news_puller.db import Database
+from news_puller.shares import get_sharings
+from news_puller.fake_news import fact_check
 
 start_time = int(time())
-log = getLogger('werkzeug')
-log.setLevel(DEBUG)
 
 app = Flask(__name__)
 Gzip(app)
 
+Database.initialize()
 
 @app.route('/_health/pool', methods=['GET'])
 def health_pool():
@@ -29,16 +29,40 @@ def health_check():
     return jsonify(response)
 
 
+@app.route('/admin', methods=['GET'])
+def admin():
+    return render_template('admin.html')
+
+
 @app.route('/', methods=['GET'])
 def index():
-    return redirect('fetch/news')
+    return render_template('dashboard.html')
 
 
 @app.route('/fetch/news', methods=['GET'])
-def use_embeddings():
+def fetch_news():
     news = get_news()
-    save(news)
 
     return jsonify(news)
 
+
+@app.route('/fetch/fake_news', methods=['GET'])
+def fetch_fakes():
+    fakes = fact_check()
+
+    return jsonify(fakes)
+
+
+@app.route('/fetch/shares', methods=['GET'])
+def fetch_shares():
+    sharings = get_sharings()
+
+    return jsonify(sharings)
+
+
+@app.route('/get/news', methods=['GET'])
+def get_last_news():
+    news = Database.select_last_news(24)
+
+    return jsonify(news)
 
