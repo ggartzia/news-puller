@@ -20,8 +20,7 @@ class Database(object):
 
     def save(collection, items):
         log.debug('Save ' + str(len(items)) + ' ' + collection + ' in MONGO')
-        Database.DATABASE[collection].drop()
-        Database.DATABASE[collection].insert_many(items)
+        Database.DATABASE[collection].insert_many(items, ordered = False)
 
 
     def select_last_news(hour):
@@ -31,3 +30,18 @@ class Database(object):
         news = mongo_db.find({"published": {'$gte': str(last_hour_date_time)}})
 
         return list(news)
+
+
+    def latest_tweet_id(url):
+        since_id = 0
+
+        try:
+            mongo_db = Database.DATABASE['tweets']
+            tweet = mongo_db.find_one({'new': url})
+            if tweet:
+                since_id = tweet['_id']
+
+        except:
+            log.error('The collection does not exist')
+
+        return since_id
