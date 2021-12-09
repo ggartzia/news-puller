@@ -1,11 +1,19 @@
-FROM python:3.6-buster
+#Create a ubuntu base image with python 3 installed.
+FROM python:3.9
 
-WORKDIR /app
+#Set the working directory
+WORKDIR /
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt
-
+#copy all the files
 COPY . .
 
-CMD ["python", "__main__.py"]
+#Install the dependencies
+RUN apt-get -y update
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip3 install -r requirements.txt
+
+#Expose the required port
+EXPOSE 5000
+
+#Run the command
+CMD gunicorn __main__:app
