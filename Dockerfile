@@ -16,4 +16,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 5000
 
 #Run the command
-CMD gunicorn __main__:app
+CMD gunicorn wsgi:app
