@@ -1,1 +1,1 @@
-worker: python3 -m news-puller
+worker: python3 -m news_puller
