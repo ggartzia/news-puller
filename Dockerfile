@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 RUN pip3 install -r requirements.txt
 
 #Expose the required port
-EXPOSE 5000
+EXPOSE 8080
 
 #Run the command
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
