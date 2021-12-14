@@ -1,19 +1,12 @@
-#Create a ubuntu base image with python 3 installed.
 FROM python:3.9
 
-#Set the working directory
-WORKDIR /
+RUN apt update && apt upgrade -y
+RUN apt install python3-pip -y
 
-#copy all the files
-COPY . .
+COPY . /app
+WORKDIR /app
 
-#Install the dependencies
-RUN apt-get -y update
-RUN apt-get update && apt-get install -y python3 python3-pip
-RUN pip3 install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -U -r requirements.txt
 
-#Expose the required port
-EXPOSE 8080
-
-#Run the command
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD python3 -m news-puller
