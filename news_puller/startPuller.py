@@ -1,4 +1,3 @@
-from . import __version__
 from time import time
 from flask import Flask, jsonify, redirect, render_template
 from flask_gzip import Gzip
