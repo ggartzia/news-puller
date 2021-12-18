@@ -27,7 +27,7 @@ def select_image(new):
 def filter_feed(paper, news):
     filtered_news = []
 
-    log.debug('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
+    print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
 
     for item in news:
         try:
@@ -52,7 +52,7 @@ def get_news():
     total = []
 
     for plist in cfg.PAPER_LIST:
-        log.debug('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
+        print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
         try:
             paper_news = feedparser.parse(plist['feed'])
@@ -63,7 +63,7 @@ def get_news():
                 total += news
 
             else:
-                log.warning('Some connection error', paper_news.status)
+                log.error('Some connection error', paper_news.status)
 
         except:
             log.error('Failed to load USE model, USE API won\'t be available')

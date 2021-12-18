@@ -13,9 +13,9 @@ class Database(object):
     DATABASE = None
 
     def initialize():
-        logger.debug('Connect with ' + Database.URI)
+        print('Connect with ' + Database.URI)
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
-        logger.debug('Connection done')
+        print('Connection done')
         Database.DATABASE = client['news']
 
 
@@ -33,7 +33,7 @@ class Database(object):
 
     def save_news(news):
         try:
-            logger.debug('Save ' + str(len(news)) + ' news in MONGO')
+            print('Save ' + str(len(news)) + ' news in MONGO')
             # Get the total number of documents in the collection
             num_docs = Database.DATABASE.news.count()
 
@@ -46,7 +46,7 @@ class Database(object):
 
     def save_tweets(tweets):
         try:
-            logger.debug('Save ' + str(len(tweets)) + ' tweets in MONGO')
+            print('Save ' + str(len(tweets)) + ' tweets in MONGO')
             Database.DATABASE['tweets'].insert_many(tweets, ordered = False)
         except:
             logger.error('There where some duplicated elements')
@@ -54,7 +54,7 @@ class Database(object):
 
     def select_last_news(hour):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
-        logger.debug('Return last ' + str(hour) + ' hours news in MONGO')
+        print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({"published": {'$gte': str(last_hour_date_time)}})

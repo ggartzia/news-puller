@@ -12,7 +12,7 @@ def news_update():
     response = get_news()
 
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone="Europe/Berlin")
 scheduler.add_job(news_update, 'interval', hours=1)
 #scheduler.add_job(twitter_update, 'interval', minutes=5)
 #scheduler.add_job(fact_check, 'interval', hours=5)
