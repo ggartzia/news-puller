@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.db import Database
-from news_puller.shares import get_sharings
+
 
 start_time = int(time())
 
@@ -40,16 +40,8 @@ def fetch_news():
     return jsonify(news)
 
 
-@app.route('/fetch/shares', methods=['GET'])
-def fetch_shares():
-    sharings = get_sharings()
-
-    return jsonify(sharings)
-
-
 @app.route('/get/news', methods=['GET'])
 def get_last_news():
     news = Database.select_last_news(24)
 
     return jsonify(news)
-
