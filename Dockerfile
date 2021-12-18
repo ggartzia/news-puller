@@ -11,4 +11,4 @@ RUN pip3 install -U -r requirements.txt
 
 EXPOSE 5000
 
-CMD python3 -m news_puller
+CMD gunicorn main:app
