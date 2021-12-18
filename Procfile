@@ -1,1 +1,1 @@
-worker: python3 -m news_puller
+web: python3 -m news_puller
