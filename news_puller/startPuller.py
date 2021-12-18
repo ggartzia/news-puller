@@ -1,5 +1,5 @@
 from time import time
-from flask import Flask, jsonify, redirect, render_template
+from flask import Flask, jsonify
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.db import Database
@@ -28,14 +28,10 @@ def health_check():
     return jsonify(response)
 
 
-@app.route('/admin', methods=['GET'])
-def admin():
-    return render_template('admin.html')
-
-
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('dashboard.html')
+    news = Database.select_last_news(24)
+    return jsonify(news)
 
 
 @app.route('/fetch/news', methods=['GET'])
