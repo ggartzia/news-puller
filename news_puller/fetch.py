@@ -24,7 +24,7 @@ def select_image(new):
 
 
 
-def filter_feed(paper, news):
+def filter_feed(paper, topic, news):
     filtered_news = []
 
     print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
@@ -34,6 +34,7 @@ def filter_feed(paper, news):
             new = {'_id': item['link'],
                    'title': item['title'],
                    'paper': paper,
+                   'topic': topic,
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                    'image': select_image(item)}
 
@@ -58,7 +59,7 @@ def get_news():
             paper_news = feedparser.parse(plist['feed'])
 
             if paper_news.status == 200:
-                news = filter_feed(plist['paper'], paper_news['entries'])
+                news = filter_feed(plist['paper'], plist['topic'], paper_news['entries'])
                 Database.save_news(news)
                 total += news
 

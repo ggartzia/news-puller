@@ -39,7 +39,7 @@ class Database(object):
 
             for new in news:
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
-                Database.DATABASE['news'].update_one( {'_id' : new['_id']}, {'$set' : new}, upsert=True)
+                Database.DATABASE['news'].insertOne(new)
         except:
             logger.error('There was an error while trying to save news')
 
