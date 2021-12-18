@@ -25,7 +25,7 @@ PAPER_LIST = [
     },
     {
       'paper': 'El Mundo',
-      'feed': 'https://e00-elmundo.uecdn.es/elmundodeporte/rss/portada.xml'
+      'feed': 'https://e00-elmundo.uecdn.es/elmundodeporte/rss/portada.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1254054079950659584/a7peR-0L_400x400.jpg',
       'topic': 'Deportes'
     },
