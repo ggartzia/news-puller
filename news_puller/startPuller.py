@@ -4,7 +4,6 @@ from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.db import Database
 from news_puller.shares import get_sharings
-from news_puller.fake_news import fact_check
 
 start_time = int(time())
 
@@ -39,13 +38,6 @@ def fetch_news():
     news = get_news()
 
     return jsonify(news)
-
-
-@app.route('/fetch/fake_news', methods=['GET'])
-def fetch_fakes():
-    fakes = fact_check()
-
-    return jsonify(fakes)
 
 
 @app.route('/fetch/shares', methods=['GET'])
