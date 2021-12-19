@@ -38,12 +38,13 @@ class Database(object):
         try:
             print('Save ' + str(len(news)) + ' news in MONGO')
             # Get the total number of documents in the collection
-            num_docs = Database.DATABASE.news.count()
+            mongo_db = Database.DATABASE['news']
+            num_docs = mongo_db.find().count()
 
             for new in news:
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
                 print('This are the idf topics ' + str(new['idf']))
-                Database.DATABASE['news'].insertOne(new)
+                mongo_db.insertOne(new)
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
