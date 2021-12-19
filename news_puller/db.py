@@ -46,7 +46,8 @@ class Database(object):
             for new in news:
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
                 mongo_db.insert_one(new)
-        except:
+        except Exception as e:
+            logger.error(e)
             logger.error('There was an error while trying to save news')
 
 
