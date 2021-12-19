@@ -1,7 +1,6 @@
 import news_puller.config as cfg
 from datetime import datetime, timedelta
 from math import log
-from ftfy import fix_encoding
 from logging import getLogger, DEBUG
 import pymongo
 
@@ -22,7 +21,10 @@ class Database(object):
 
     def calculate_idf(num_docs, title):
         idfs = {}
-        for term in fix_encoding(title).split():
+        title = title.lower()
+        title = title.sub("[^a-zA-Z]", " ", title)
+        print('This is the title we check ' + title)
+        for term in title.split():
             # Use the number of docs that contain the term to calculate the IDF
             term_docs = Database.DATABASE['news'].count({'title' : {'$regex' : term}})
             idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
@@ -42,7 +44,8 @@ class Database(object):
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
                 print('This are the idf topics ' + str(new['idf']))
                 Database.DATABASE['news'].insertOne(new)
-        except:
+        except Exception as e:
+            logger.error(e)
             logger.error('There was an error while trying to save news')
 
 
