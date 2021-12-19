@@ -39,7 +39,7 @@ class Database(object):
             print('Save ' + str(len(news)) + ' news in MONGO')
             # Get the total number of documents in the collection
             mongo_db = Database.DATABASE['news']
-            num_docs = mongo_db.find().count()
+            num_docs = mongo_db.count_documents({})
 
             for new in news:
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
