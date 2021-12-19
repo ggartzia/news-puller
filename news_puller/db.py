@@ -22,7 +22,7 @@ class Database(object):
 
     def calculate_idf(num_docs, title):
         idfs = {}
-        
+
         title = title.lower()
         title = re.sub("[^A-Za-zÑñÁáÉéÍíÓóÚú]", " ", title)
 
@@ -45,10 +45,8 @@ class Database(object):
 
             for new in news:
                 new['idf'] = Database.calculate_idf(num_docs, new['title'])
-                print('This are the idf topics ' + str(new['idf']))
-                mongo_db.insertOne(new)
-        except Exception as e:
-            logger.error(e)
+                mongo_db.insert_one(new)
+        except:
             logger.error('There was an error while trying to save news')
 
 
