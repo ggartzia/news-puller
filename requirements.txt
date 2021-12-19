@@ -19,3 +19,4 @@ numpy
 DateTime
 tweepy
 APScheduler
+ftfy
