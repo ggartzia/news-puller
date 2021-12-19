@@ -1,3 +1,4 @@
+import re
 import news_puller.config as cfg
 from datetime import datetime, timedelta
 from math import log
@@ -22,7 +23,7 @@ class Database(object):
     def calculate_idf(num_docs, title):
         idfs = {}
         title = title.lower()
-        title = title.sub("[^a-zA-Z]", " ", title)
+        title = re.sub("[^a-zA-Z]", " ", title)
         print('This is the title we check ' + title)
         for term in title.split():
             # Use the number of docs that contain the term to calculate the IDF
