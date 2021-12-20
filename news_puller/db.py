@@ -64,7 +64,7 @@ class Database(object):
         print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({"published": {'$gte': str(last_hour_date_time)}})
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}})
 
         return list(news)
 
@@ -82,3 +82,21 @@ class Database(object):
             logger.error('The collection does not exist')
 
         return since_id
+
+
+    def num_news(media):
+        print('Return last new from ' + media + ' in MONGO')
+        
+        mongo_db = Database.DATABASE['news']
+        num = mongo_db.count_documents({'paper' : media})
+
+        return num
+
+
+    def last_new(media):
+        print('Return last new from ' + media + ' in MONGO')
+        
+        mongo_db = Database.DATABASE['news']
+        new = mongo_db.find({'paper' : media}).sort({'published': -1}).limit(1)
+
+        return new['published']

@@ -49,10 +49,11 @@ def filter_feed(paper, topic, news):
     return filtered_news
 
 
-def get_news():
+def get_news(topic):
     total = []
+    media = filter(lambda m: m['topic'] == topic, cfg.PAPER_LIST)
 
-    for plist in cfg.PAPER_LIST:
+    for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
         try:

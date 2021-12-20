@@ -2,6 +2,7 @@ from time import time
 from flask import Flask, jsonify
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
+from news_puller.media import get_media
 from news_puller.db import Database
 import news_puller.scheduler
 
@@ -34,15 +35,22 @@ def index():
     return jsonify(news)
 
 
-@app.route('/fetch/news', methods=['GET'])
-def fetch_news():
-    news = get_news()
+@app.route('/fetch/<topic>', methods=['GET'])
+def fetch_news(topic):
+    news = get_news(topic)
 
     return jsonify(news)
 
 
-@app.route('/get/news', methods=['GET'])
-def get_last_news():
-    news = Database.select_last_news(24)
+@app.route('/get/news/<int:since>', methods=['GET'])
+def get_last_news(since):
+    news = Database.select_last_news(since)
 
     return jsonify(news)
+
+
+@app.route('/get/media/<topic>', methods=['GET'])
+def fetch_media(topic):
+    media = get_media(topic)
+
+    return jsonify(media)
