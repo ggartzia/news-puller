@@ -23,25 +23,24 @@ def select_image(new):
         return new['media_content'][0]['url']
 
 
-
-def filter_feed(paper, topic, news):
+def filter_feed(num_docs, theme, paper, news):
     filtered_news = []
 
     print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
-
+    
     for item in news:
         try:
-            new = {'_id': item['link'],
-                   'title': item['title'],
-                   'paper': paper,
-                   'topic': topic,
-                   'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                   'image': select_image(item)}
+            if bool(item) :
+                title = item['title']
+                new = {'_id': item['link'],
+                       'title': title,
+                       'paper': paper,
+                       'theme': theme,
+                       'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
+                       'topics' : Database.calculate_idf(num_docs, title)
+                       'image': select_image(item)}
 
-            if 'tags' in item:
-                new['tags'] = filter_tags(item['tags'])
-
-            filtered_news.append(new)
+                filtered_news.append(new)
 
         except:
             log.error('Something happened with new: ' + str(item))
@@ -49,10 +48,13 @@ def filter_feed(paper, topic, news):
     return filtered_news
 
 
-def get_news(topic):
+def get_news(theme):
     total = []
-    media = filter(lambda m: m['topic'] == topic, cfg.PAPER_LIST)
-
+    media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
+    
+    print('Calcular el numero de noticias para el tema seleccionado')
+    num_docs = Database.num_news(null, theme)
+    
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
@@ -60,7 +62,7 @@ def get_news(topic):
             paper_news = feedparser.parse(plist['feed'])
 
             if paper_news.status == 200:
-                news = filter_feed(plist['paper'], plist['topic'], paper_news['entries'])
+                news = filter_feed(num_docs, theme, plist['paper'], paper_news['entries'])
                 Database.save_news(news)
                 total += news
 
