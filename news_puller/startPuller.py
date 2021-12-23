@@ -35,9 +35,9 @@ def index():
     return jsonify(news)
 
 
-@app.route('/fetch/<topic>', methods=['GET'])
-def fetch_news(topic):
-    news = get_news(topic)
+@app.route('/fetch/<theme>', methods=['GET'])
+def fetch_news(theme):
+    news = get_news(theme)
 
     return jsonify(news)
 
@@ -49,8 +49,8 @@ def get_last_news(since):
     return jsonify(news)
 
 
-@app.route('/get/media/<topic>', methods=['GET'])
-def fetch_media(topic):
-    media = get_media(topic)
+@app.route('/get/media/<theme>', methods=['GET'])
+def fetch_media(theme):
+    media = get_media(theme)
 
     return jsonify(media)
