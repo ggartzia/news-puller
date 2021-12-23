@@ -82,7 +82,7 @@ class Database(object):
 
 
     def num_news(media, theme):
-        print('Return the number of documets from ' + media + ' from theme ' + theme + ' in MONGO')
+        print('Return the number of documets in MONGO')
 
         filter = {}
         if media : 
