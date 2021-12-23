@@ -1,121 +1,141 @@
 HOST_URL = 'https://news-puller.herokuapp.com/'
 PAPER_LIST = [
     {
-      'paper': 'EL PAÍS',
+      'paper': 'elpais',
+      'name': 'EL PAÍS',
       'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada',
       'logo': 'https://pbs.twimg.com/profile_images/1236548818402971648/F-pcFaq6_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'EL PAÍS',
+      'paper': 'elpais',
+      'name': 'EL PAÍS',
       'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/deportes/portada',
       'logo': 'https://pbs.twimg.com/profile_images/1236548818402971648/F-pcFaq6_400x400.jpg',
       'topic': 'deportes'
     },
     {
-      'paper': 'EL PAÍS',
+      'paper': 'elpais',
+      'name': 'EL PAÍS',
       'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/sociedad/portada',
       'logo': 'https://pbs.twimg.com/profile_images/1236548818402971648/F-pcFaq6_400x400.jpg',
       'topic': 'corazon'
     },
     {
-      'paper': 'El Mundo',
+      'paper': 'elmundo',
+      'name': 'El Mundo',
       'feed': 'https://e00-elmundo.uecdn.es/elmundo/rss/espana.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1254054079950659584/a7peR-0L_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'El Mundo',
+      'paper': 'elmundo',
+      'name': 'El Mundo',
       'feed': 'https://e00-elmundo.uecdn.es/elmundodeporte/rss/portada.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1254054079950659584/a7peR-0L_400x400.jpg',
       'topic': 'deportes'
     },
     {
-      'paper': 'Huffington Post',
+      'paper': 'huffington',
+      'name': 'Huffington Post',
       'feed': 'https://www.huffingtonpost.es/feeds/index.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1295829554225795072/_Ph3zAnF_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'La Vanguardia',
+      'paper': 'vanguardia',
+      'name': 'La Vanguardia',
       'feed': 'https://www.lavanguardia.com/rss/home.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1409437292712898561/lYYtrBEn_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'La Vanguardia',
+      'paper': 'vanguardia',
+      'name': 'La Vanguardia',
       'feed': 'https://www.lavanguardia.com/rss/deportes.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1409437292712898561/lYYtrBEn_400x400.jpg',
       'topic': 'deportes'
     },
     {
-      'paper': 'La Vanguardia',
+      'paper': 'vanguardia',
+      'name': 'La Vanguardia',
       'feed': 'https://www.lavanguardia.com/rss/gente.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1409437292712898561/lYYtrBEn_400x400.jpg',
       'topic': 'corazon'
     },
     {
-      'paper': 'El Confidencial',
+      'paper': 'confidencial',
+      'name': 'El Confidencial',
       'feed': 'https://rss.elconfidencial.com/espana/',
       'logo': 'https://pbs.twimg.com/profile_images/831498645476356097/TVsVGq4W_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'El Confidencial',
+      'paper': 'confidencial',
+      'name': 'El Confidencial',
       'feed': 'https://rss.elconfidencial.com/deportes/',
       'logo': 'https://pbs.twimg.com/profile_images/831498645476356097/TVsVGq4W_400x400.jpg',
       'topic': 'deportes'
     },
     {
       'paper': 'Vanitatis',
+      'name': 'Vanitatis',
       'feed': 'https://rss.vanitatis.elconfidencial.com/noticias/',
       'logo': 'https://pbs.twimg.com/profile_images/1411972580152578048/AvHNQZfW_400x400.jpg',
       'topic': 'corazon'
     },
     {
-      'paper': 'Público',
+      'paper': 'publico',
+      'name': 'Público',
       'feed': 'https://www.publico.es/rss/',
       'logo': 'https://pbs.twimg.com/profile_images/1411931729695330305/TXpBeYs1_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'OKDiario',
+      'paper': 'okdiario',
+      'name': 'OKDiario',
       'feed': 'https://okdiario.com/feed',
       'logo': 'https://pbs.twimg.com/profile_images/1391783594817884165/3rQzbgTN_400x400.png',
       'topic': 'noticias'
     },
     {
-      'paper': 'El Diario',
+      'paper': 'esdiario',
+      'name': 'ES Diario',
       'feed': 'https://www.esdiario.com/rss/articulos.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1412694670023565313/estqWllW_400x400.jpg',
       'topic': 'noticias'
     },
     {
-      'paper': 'Marca',
+      'paper': 'marca',
+      'name': 'Marca',
       'feed': 'https://e00-marca.uecdn.es/rss/portada.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1178491389/marca_400x400.jpg',
       'topic': 'deporte'
     },
     {
-      'paper': 'AS',
+      'paper': 'as',
+      'name': 'AS',
       'feed': 'https://as.com/rss/tags/ultimas_noticias.xml',
       'logo': 'https://pbs.twimg.com/profile_images/536216729106804736/vfCirmhZ_400x400.jpeg',
       'topic': 'deporte'
     },
     {
-      'paper': 'Revista ¡HOLA!',
+      'paper': 'hola',
+      'name': 'Revista ¡HOLA!',
       'feed': 'https://www.hola.com/famosos/rss.xml',
       'logo': 'https://pbs.twimg.com/profile_images/1269026725205336064/bakFYAkB_400x400.jpg',
       'topic': 'corazon'
     },
     {
-      'paper': 'Lecturas',
+      'paper': 'lecturas',
+      'name': 'Lecturas',
       'feed': 'https://www.lecturas.com/feeds/rss',
       'logo': 'https://pbs.twimg.com/profile_images/1369069917794877445/IySb2vNN_400x400.jpg',
       'topic': 'corazon'
     },
     {
-      'paper': 'Diez minutos',
+      'paper': 'diezminutos',
+      'name': 'Diez minutos',
       'feed': 'https://www.diezminutos.es/rss/all.xml/',
       'logo': 'https://pbs.twimg.com/profile_images/1400097316808298498/RqDSDAKu_400x400.jpg',
       'topic': 'corazon'
