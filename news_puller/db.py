@@ -39,13 +39,10 @@ class Database(object):
     def save_news(news):
         try:
             print('Save ' + str(len(news)) + ' news in MONGO')
-            # Get the total number of documents in the collection
+            
             mongo_db = Database.DATABASE['news']
-            num_docs = mongo_db.count_documents({})
-
-            for new in news:
-                new['topics'] = Database.calculate_idf(num_docs, new['title'])
-                mongo_db.insert_one(new)
+            mongo_db.insert_many(news, ordered = False)
+            
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
@@ -86,9 +83,18 @@ class Database(object):
 
     def num_news(media, theme):
         print('Return the number of documets from ' + media + ' from theme ' + theme + ' in MONGO')
+
+        filter = {}
+        if media : 
+            filter['paper'] = media
+            
+        if theme : 
+            filter['theme'] = theme
+        
+        print('Filter by ' + str(filter))
         
         mongo_db = Database.DATABASE['news']
-        num = mongo_db.count_documents({'paper' : media, 'theme' : theme})
+        num = mongo_db.count_documents(filter)
 
         print('The number is: ' + str(num))
         
