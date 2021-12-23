@@ -15,5 +15,7 @@ def get_media(theme):
 
         plist['numeroNoticias'] = Database.num_news(plist['paper'], theme)
         plist['actualizacion'] = Database.last_new(plist['paper'], theme)
+        
+        total.append(plist)
 
     return total
