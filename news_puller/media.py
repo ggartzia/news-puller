@@ -8,7 +8,7 @@ log.setLevel(DEBUG)
 
 def get_media(theme):
     total = []
-    media = filter(lambda m: m['theme'] == topic, cfg.PAPER_LIST)
+    media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
 
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
