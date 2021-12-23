@@ -64,12 +64,12 @@ class Database(object):
             logger.error('There where some duplicated elements')
             
 
-    def select_last_news(hour):
+    def select_last_news(hour, theme):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
         print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}})
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme})
 
         return list(news)
 
