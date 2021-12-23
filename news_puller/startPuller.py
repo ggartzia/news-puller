@@ -42,9 +42,9 @@ def fetch_news(theme):
     return jsonify(news)
 
 
-@app.route('/get/news/<int:since>', methods=['GET'])
-def get_last_news(since):
-    news = Database.select_last_news(since)
+@app.route('/get/<theme>/<int:since>', methods=['GET'])
+def get_last_news(theme, since):
+    news = Database.select_last_news(since, theme)
 
     return jsonify(news)
 
