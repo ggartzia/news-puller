@@ -25,17 +25,21 @@ class Database(object):
         
         try:
             idfs = {}
-
+            print('Analize this title: ' + title)
             title = title.lower()
             title = re.sub("[^A-Za-zÑñÁáÉéÍíÓóÚú]", " ", title)
-
+            print('Clean: ' + title)
             for term in title.split():
                 # Use the number of docs that contain the term to calculate the IDF
                 term_docs = Database.DATABASE['news'].count_documents({'title' : {'$regex' : term}})
+                print('Num: ' + str(term_docs))
+                print('Num2: ' + str(num_docs - term_docs + 0.5))
+                print('Num3: ' + str(term_docs + 0.5))
                 idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
 
-                idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
-                
+            idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
+            
+            print('Analize this title: ' + str(idfs))
             topics = list(idfs.keys())
         
         except Exception as e:
@@ -113,7 +117,8 @@ class Database(object):
         print('Return last fetched new from ' + media + ' from theme ' + theme + ' in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        num = mongo_db.count_documents({'paper' : media, 'theme' : theme})
-        if num > 0 :
-            new = mongo_db.find({'paper' : media, 'theme' : theme}).sort({'published': -1}).limit(1)
-            return new['published']
+
+        print('Try')
+        new = mongo_db.find_one({'paper' : media, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
+        print('The last new is: ' + str(new))
+        return new['published']
