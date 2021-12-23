@@ -6,14 +6,14 @@ log = getLogger('werkzeug')
 log.setLevel(DEBUG)
 
 
-def get_media(topic):
+def get_media(theme):
     total = []
-    media = filter(lambda m: m['topic'] == topic, cfg.PAPER_LIST)
+    media = filter(lambda m: m['theme'] == topic, cfg.PAPER_LIST)
 
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
-        plist['numeroNoticias'] = Database.num_news(plist['paper'])
-        plist['actualizacion'] = Database.last_new(plist['paper'])
+        plist['numeroNoticias'] = Database.num_news(plist['paper'], theme)
+        plist['actualizacion'] = Database.last_new(plist['paper'], theme)
 
     return total
