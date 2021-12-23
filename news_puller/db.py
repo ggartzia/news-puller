@@ -21,19 +21,27 @@ class Database(object):
 
 
     def calculate_idf(num_docs, title):
-        idfs = {}
+        topics = []
+        
+        try:
+            idfs = {}
 
-        title = title.lower()
-        title = re.sub("[^A-Za-zÑñÁáÉéÍíÓóÚú]", " ", title)
+            title = title.lower()
+            title = re.sub("[^A-Za-zÑñÁáÉéÍíÓóÚú]", " ", title)
 
-        for term in title.split():
-            # Use the number of docs that contain the term to calculate the IDF
-            term_docs = Database.DATABASE['news'].count_documents({'title' : {'$regex' : term}})
-            idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
+            for term in title.split():
+                # Use the number of docs that contain the term to calculate the IDF
+                term_docs = Database.DATABASE['news'].count_documents({'title' : {'$regex' : term}})
+                idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
 
-            idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
-
-        return list(idfs.keys())
+                idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
+                
+            topics = list(idfs.keys())
+        
+        except Exception as e:
+            logger.error(e)
+            
+        return topics
 
 
     def save_news(news):
