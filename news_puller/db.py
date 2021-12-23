@@ -44,7 +44,7 @@ class Database(object):
             num_docs = mongo_db.count_documents({})
 
             for new in news:
-                new['idf'] = Database.calculate_idf(num_docs, new['title'])
+                new['topics'] = Database.calculate_idf(num_docs, new['title'])
                 mongo_db.insert_one(new)
         except Exception as e:
             logger.error(e)
@@ -84,19 +84,22 @@ class Database(object):
         return since_id
 
 
-    def num_news(media):
-        print('Return last new from ' + media + ' in MONGO')
+    def num_news(media, theme):
+        print('Return the number of documets from ' + media + ' from theme ' + theme + ' in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        num = mongo_db.count_documents({'paper' : media})
+        num = mongo_db.count_documents({'paper' : media, 'theme' : theme})
 
+        print('The number is: ' + str(num))
+        
         return num
 
 
-    def last_new(media):
-        print('Return last new from ' + media + ' in MONGO')
+    def last_new(media, theme):
+        print('Return last fetched new from ' + media + ' from theme ' + theme + ' in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        new = mongo_db.find({'paper' : media}).sort({'published': -1}).limit(1)
-
-        return new['published']
+        num = mongo_db.count_documents({'paper' : media, 'theme' : theme})
+        if num > 0 :
+            new = mongo_db.find({'paper' : media, 'theme' : theme}).sort({'published': -1}).limit(1)
+            return new['published']
