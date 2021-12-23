@@ -53,7 +53,7 @@ def get_news(theme):
     media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
     
     print('Calcular el numero de noticias para el tema seleccionado')
-    num_docs = Database.num_news(null, theme)
+    num_docs = Database.num_news(None, theme)
     
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
