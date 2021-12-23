@@ -8,10 +8,10 @@ log = getLogger('werkzeug')
 log.setLevel(DEBUG)
 
 
-def news_update(topic):
+def news_update(theme):
     # Fetch the last time it was executed and fetch only the news after that time
-    log.debug('news_update!')
-    api_url = cfg.HOST_URL + 'fetch/' + topic
+    print('news_update for ' + theme + ' media!')
+    api_url = cfg.HOST_URL + 'fetch/' + theme
     response = requests.get(api_url)
 
 
