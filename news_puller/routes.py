@@ -1,5 +1,6 @@
 from time import time
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
@@ -10,6 +11,7 @@ import news_puller.scheduler
 start_time = int(time())
 
 app = Flask(__name__)
+cors = CORS(app)
 Gzip(app)
 
 Database.initialize()
@@ -43,6 +45,7 @@ def fetch_news(theme):
 
 
 @app.route('/get/<theme>/<int:since>', methods=['GET'])
+@cross_origin()
 def get_last_news(theme, since):
     news = Database.select_last_news(since, theme)
 
@@ -50,6 +53,7 @@ def get_last_news(theme, since):
 
 
 @app.route('/get/media/<theme>', methods=['GET'])
+@cross_origin()
 def fetch_media(theme):
     media = get_media(theme)
 

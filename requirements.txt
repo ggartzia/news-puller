@@ -4,6 +4,7 @@ click
 dnspython
 Flask
 flask-gzip
+flask-cors
 Flask-PyMongo
 gunicorn
 idna
