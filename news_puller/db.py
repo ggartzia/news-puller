@@ -61,7 +61,7 @@ class Database(object):
             print('Update ' + id + ' new in MONGO')
             
             mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({ 'id': id }, { "$set": { 'tweetCount': tweetCount } })
+            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
             
         except Exception as e:
             logger.error(e)
@@ -74,7 +74,7 @@ class Database(object):
         try:
             print('Get ' + str(id) + ' new in MONGO')
             mongo_db = Database.DATABASE['tweets']
-            tweet = mongo_db.find_one({'id': id})
+            tweet = mongo_db.find_one({'_id': id})
         except:
             logger.error('There was an error fetching the data')
             
