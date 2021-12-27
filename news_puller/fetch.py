@@ -38,7 +38,7 @@ def filter_feed(num_docs, theme, paper, news):
                 filtered_news.append(new)
 
         except Exception as e:
-            log.error('Something happened with new: ' + str(url))
+            log.error('Something happened with new: ' + item['link'])
             log.error(e)
 
     return filtered_news
