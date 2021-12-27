@@ -1,54 +1,56 @@
 import news_puller.config as cfg
-import tweepy
-import json
 from logging import getLogger, DEBUG
 from news_puller.db import Database
+import requests
 
-
+    
 log = getLogger('werkzeug')
 log.setLevel(DEBUG)
 
 
-# 4 cadenas para la autenticacion
-auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
-auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
+def bearer_oauth(r):
+    """
+    Method required by bearer token authentication.
+    """
+
+    r.headers["Authorization"] = f"Bearer {cfg.TW_BEARER_TOKEN}"
+    r.headers["User-Agent"] = "v2RecentTweetCountsNews"
+    return r
 
 
-# con este objeto realizaremos todas las llamadas al API
-api = tweepy.API(auth,
-                 wait_on_rate_limit=True,
-                 wait_on_rate_limit_notify=True)
+def callTwitter(search_url, query_params):
+    response = requests.request("GET", search_url, auth=bearer_oauth, params=query_params)
+
+    if response.status_code != 200:
+        raise Exception(response.status_code, response.text)
+
+    return response.json()
 
 
-def searchTweets(url, since_id):
+def searchCount(new):
+    search_url = "https://api.twitter.com/2/tweets/counts/recent"
+    query_params = {'query': 'url:' + new.url, 'granularity': 'day'}
+    
+    response = callTwitter(search_url, query_params)
+
+    return response["meta"]["total_tweet_count"]
+
+
+def get_sharings(url):
     tweet_list = []
+    search_url = "https://api.twitter.com/2/tweets/search/recent"
+    query_params = {'query': 'url:' + url, 'max_results': 100, 'tweet.fields': 'created_at,public_metrics,text', 'user.fields': 'id,name,profile_image_url,username'}
 
-    #  + ' -is:retweet&max_results=100&tweet.fields=user,created_at,text,id,user,retweeted_status,retweet_count,favorite_count'
-    query = 'url:' + url
+    tweets = callTwitter(search_url, query_params)
 
-    tweets = tweepy.Cursor(api.search,
-                           q=query,
-                           result_type='recent',
-                           since_id=since_id).items(1500)
-
-    for tw in tweets:
-        tweet = {'_id': tw.id,
-                 'new': url,
-                 'date': tw.created_at,
-                 'user': tw.user.screen_name,
-                 'text': tw.text}
-        tweet_list.append(tweet)
-
-    return tweet_list
+    return tweets['data']
 
 
-def get_sharings():
+def get_count():
     news = Database.select_last_news(24)
 
-    for item in news:
-        url = item['_id']
-        since_id = Database.latest_tweet_id(url)
-        tweets = searchTweets(url, since_id)
-        if tweets:
-            Database.save_tweets(tweets)
-
+    for new in news:
+      count = searchCount(new)
+      if (new['tweetCount'] < count):
+        new['tweetCount'] = count
+        Database.update(new)
