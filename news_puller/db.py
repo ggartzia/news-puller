@@ -56,6 +56,18 @@ class Database(object):
             logger.error('There was an error while trying to save news')
 
 
+    def update(id, tweetCount):
+        try:
+            print('Update ' + id + ' new in MONGO')
+            
+            mongo_db = Database.DATABASE['news']
+            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
+            
+        except Exception as e:
+            logger.error(e)
+            logger.error('There was an error while trying to update news')
+            
+            
     def save_tweets(tweets):
         try:
             print('Save ' + str(len(tweets)) + ' tweets in MONGO')
