@@ -16,7 +16,7 @@ def news_update(theme):
 
 def twitter_update():
     print('Update the number of times a new was shared on twitter')
-    api_url = cfg.HOST_URL + 'update_twitter_counts/24'
+    api_url = cfg.HOST_URL + '/fetch/tweetCount/24'
     response = requests.get(api_url)
 
 
