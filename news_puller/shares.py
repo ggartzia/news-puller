@@ -29,7 +29,7 @@ def callTwitter(search_url, query_params):
 
 def searchCount(new):
     search_url = "https://api.twitter.com/2/tweets/counts/recent"
-    query_params = {'query': 'url:' + new.url, 'granularity': 'day'}
+    query_params = {'query': 'url:' + new['url'], 'granularity': 'day'}
     
     response = callTwitter(search_url, query_params)
 
@@ -42,7 +42,10 @@ def get_sharings(id):
     
     new = Database.search_new(id)
     
-    query_params = {'query': 'url:' + new.url, 'max_results': 100, 'tweet.fields': 'created_at,public_metrics,text', 'user.fields': 'id,name,profile_image_url,username'}
+    query_params = {'query': 'url:' + new['url'],
+                    'max_results': 100,
+                    'tweet.fields': 'created_at,public_metrics,text',
+                    'user.fields': 'id,name,profile_image_url,username'}
 
     tweets = callTwitter(search_url, query_params)
 
