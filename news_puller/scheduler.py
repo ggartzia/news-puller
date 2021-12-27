@@ -14,9 +14,9 @@ def news_update(theme):
     response = requests.get(api_url)
 
 
-def twitter_update(period):
+def twitter_update(theme, period):
     print('Update the number of times a new was shared on twitter')
-    api_url = cfg.HOST_URL + 'fetch/tweetCount/' + period
+    api_url = cfg.HOST_URL + 'fetch/' + theme + '/tweetCount/' + period
     response = requests.get(api_url)
 
 
@@ -24,7 +24,8 @@ scheduler = BackgroundScheduler(timezone="Europe/Berlin")
 scheduler.add_job(lambda: news_update('noticias'), 'interval', hours=1)
 scheduler.add_job(lambda: news_update('deportes'), 'interval', hours=2)
 scheduler.add_job(lambda: news_update('corazon'), 'interval', hours=5)
-scheduler.add_job(lambda: twitter_update(24), 'interval', minutes=5)
-
+scheduler.add_job(lambda: twitter_update('noticias', 24), 'interval', minutes=5)
+scheduler.add_job(lambda: twitter_update('deportes', 24), 'interval', minutes=10)
+scheduler.add_job(lambda: twitter_update('corazon', 24), 'interval', minutes=8)
 
 scheduler.start()
