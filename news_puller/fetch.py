@@ -10,13 +10,6 @@ log = getLogger('werkzeug')
 log.setLevel(DEBUG)
 
 
-def filter_tags(tags):
-    new_tags = []
-
-    for t in tags : new_tags.append(t['term'])
-    return new_tags
-
-
 def select_image(new):
     if 'media_thumbnail' in new:
         return new['media_thumbnail'][0]['url']
@@ -33,19 +26,20 @@ def filter_feed(num_docs, theme, paper, news):
     for item in news:
         try:
             if bool(item) :
-                new = {'id': b64encode(item['link']),
+                new = {'_id': b64encode(item['link'])
                        'url': item['link'],
                        'title': item['title'],
                        'paper': paper,
                        'theme': theme,
                        'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                       'topics' : Database.calculate_idf(num_docs, item['title']),
+                       'topics' : [], # Database.calculate_idf(num_docs, item['title']),
                        'image': select_image(item)}
 
                 filtered_news.append(new)
 
-        except:
-            log.error('Something happened with new: ' + str(item))
+        except Exception as e:
+            log.error('Something happened with new: ' + str(url))
+            log.error(e)
 
     return filtered_news
 
