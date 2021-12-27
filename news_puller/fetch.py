@@ -2,7 +2,9 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
+from base64 import b64encode
 import time
+
 
 log = getLogger('werkzeug')
 log.setLevel(DEBUG)
@@ -31,13 +33,13 @@ def filter_feed(num_docs, theme, paper, news):
     for item in news:
         try:
             if bool(item) :
-                title = item['title']
-                new = {'_id': item['link'],
-                       'title': title,
+                new = {'id': b64encode(item['link']),
+                       'url': item['link'],
+                       'title': item['title'],
                        'paper': paper,
                        'theme': theme,
                        'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                       'topics' : Database.calculate_idf(num_docs, title),
+                       'topics' : Database.calculate_idf(num_docs, item['title']),
                        'image': select_image(item)}
 
                 filtered_news.append(new)
