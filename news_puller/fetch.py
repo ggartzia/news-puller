@@ -65,7 +65,8 @@ def get_news(theme):
             else:
                 log.error('Some connection error', paper_news.status)
 
-        except:
+        except Exception as e:
+            log.error(e)
             log.error('Failed to load USE model, USE API won\'t be available')
 
     return total
