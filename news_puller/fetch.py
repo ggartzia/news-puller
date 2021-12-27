@@ -26,7 +26,7 @@ def filter_feed(num_docs, theme, paper, news):
     for item in news:
         try:
             if bool(item) :
-                new = {'_id': b64encode(item['link'])
+                new = {'_id': b64encode(item['link']),
                        'url': item['link'],
                        'title': item['title'],
                        'paper': paper,
