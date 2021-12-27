@@ -49,8 +49,8 @@ def get_sharings(id):
     return tweets['data']
 
 
-def update_twitter_counts(period):
-    news = Database.select_last_news(period)
+def update_twitter_counts(theme, period):
+    news = Database.select_last_news(period, theme)
 
     for new in news:
         count = searchCount(new)
