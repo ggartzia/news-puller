@@ -34,7 +34,7 @@ def health_check():
 
 @app.route('/', methods=['GET'])
 def index():
-    news = Database.select_last_news(24)
+    news = Database.select_last_news(24, 'noticias')
     return jsonify(news)
 
 
@@ -61,11 +61,11 @@ def fetch_media(theme):
     return jsonify(media)
 
 
-@app.route('/fetch/tweetCount/<int:since>', methods=['GET'])
-def fetch_twitter_counts(since):
-    counts = update_twitter_counts(since)
+@app.route('/fetch/<theme>/tweetCount/<int:since>', methods=['GET'])
+def fetch_twitter_counts(theme, since):
+    update_twitter_counts(theme, since)
 
-    return jsonify(counts)
+    return 'OK'
 
 
 @app.route('/get/tweets/<id>', methods=['GET'])
