@@ -36,10 +36,13 @@ def searchCount(new):
     return response["meta"]["total_tweet_count"]
 
 
-def get_sharings(url):
+def get_sharings(id):
     tweet_list = []
     search_url = "https://api.twitter.com/2/tweets/search/recent"
-    query_params = {'query': 'url:' + url, 'max_results': 100, 'tweet.fields': 'created_at,public_metrics,text', 'user.fields': 'id,name,profile_image_url,username'}
+    
+    new = Database.search_new(id)
+    
+    query_params = {'query': 'url:' + new.url, 'max_results': 100, 'tweet.fields': 'created_at,public_metrics,text', 'user.fields': 'id,name,profile_image_url,username'}
 
     tweets = callTwitter(search_url, query_params)
 
