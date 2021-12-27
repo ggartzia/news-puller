@@ -18,6 +18,13 @@ def select_image(new):
         return new['media_content'][0]['url']
 
 
+def create_unique_id(url):
+    message_bytes = url.encode()
+    base64_bytes = b64encode(message_bytes)
+    
+    return base64_bytes.decode()
+
+
 def filter_feed(num_docs, theme, paper, news):
     filtered_news = []
 
@@ -26,7 +33,7 @@ def filter_feed(num_docs, theme, paper, news):
     for item in news:
         try:
             if bool(item) :
-                new = {'_id': b64encode(item['link']),
+                new = {'_id': create_unique_id(item['link']),
                        'url': item['link'],
                        'title': item['title'],
                        'paper': paper,
