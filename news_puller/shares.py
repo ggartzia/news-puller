@@ -54,5 +54,5 @@ def update_twitter_counts(period):
 
     for new in news:
         count = searchCount(new)
-        if (new['tweetCount'] == None || new['tweetCount'] < count):
+        if (new.get('tweetCount', 0) < count):
             Database.update(new.id, count)
