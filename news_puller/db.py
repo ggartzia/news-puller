@@ -61,13 +61,26 @@ class Database(object):
             print('Update ' + id + ' new in MONGO')
             
             mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
+            mongo_db.update_one({ 'id': id }, { "$set": { 'tweetCount': tweetCount } })
             
         except Exception as e:
             logger.error(e)
-            logger.error('There was an error while trying to update news')
+            logger.error('There was an error while trying to update the new')
+
+
+    def search_new(id):
+        tweet = None
+        
+        try:
+            print('Get ' + str(id) + ' new in MONGO')
+            mongo_db = Database.DATABASE['tweets']
+            tweet = mongo_db.find_one({'id': id})
+        except:
+            logger.error('There was an error fetching the data')
             
-            
+        return tweet
+
+
     def save_tweets(tweets):
         try:
             print('Save ' + str(len(tweets)) + ' tweets in MONGO')
@@ -84,21 +97,6 @@ class Database(object):
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme})
 
         return list(news)
-
-
-    def latest_tweet_id(url):
-        since_id = 0
-
-        try:
-            mongo_db = Database.DATABASE['tweets']
-            tweet = mongo_db.find_one({'new': url})
-            if tweet:
-                since_id = tweet['_id']
-
-        except:
-            logger.error('The collection does not exist')
-
-        return since_id
 
 
     def num_news(media, theme):
