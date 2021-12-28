@@ -24,12 +24,16 @@ def callTwitter(search_url, query_params):
 
 
 def searchCount(name):
-    search_url = "https://api.twitter.com/2/tweets/counts/recent"
-    query_params = {'query': 'url:' + name, 'granularity': 'day'}
-    
-    response = callTwitter(search_url, query_params)
+    count = 0
 
-    return response["meta"]["total_tweet_count"]
+    if name:
+        search_url = "https://api.twitter.com/2/tweets/counts/recent"
+        query_params = {'query': 'url:' + name, 'granularity': 'day'}
+
+        response = callTwitter(search_url, query_params)
+        count = response["meta"]["total_tweet_count"]
+
+    return count
 
 
 def get_sharings(id):

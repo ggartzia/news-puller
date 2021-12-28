@@ -28,9 +28,8 @@ def create_unique_id(url):
 
 
 def getPath(url):
-    m = re.search('https?:\/\/.+\/(.*)', url)
-    print('Get new name ' + str(m))
-    return m.group(1)
+    m = re.search(r'([^\s]*\.com|es)(\S*)', url)
+    return m.group(2)
 
 
 def clean_data(news):
@@ -47,10 +46,10 @@ def clean_data(news):
         new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
         new['tweetCount'] = searchCount(new['name'])
         print('NEW HAS BEEN CLEANED ' + str(new))
+
         clean_news.append(new)
 
     return Database.save_news(clean_news)
-
 
 
 def filter_feed(num_docs, theme, paper, news):
