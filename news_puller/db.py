@@ -97,8 +97,9 @@ class Database(object):
             print('Delete ' + id + ' new in MONGO')
             mongo_db = Database.DATABASE['news']
             mongo_db.delete_one({'_id': id})
-        except:
-            logger.error('There was an error deleting the new')
+ 
+        except Exception as e:
+            logger.error(E)
 
 
     def select_last_news(hour, theme):

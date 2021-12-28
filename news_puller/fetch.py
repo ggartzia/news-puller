@@ -26,8 +26,9 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
-def clean_data(num_docs, news):
-
+def clean_data(news):
+    num_docs = len(news)
+    print('Clean ' + str(num_docs) + ' news in MONGO')
     clean_news = []
     for new in news:
         Database.delete(new['_id'])
@@ -36,6 +37,7 @@ def clean_data(num_docs, news):
         new['url'] = new['_id']
         new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
         new['tweetCount'] = searchCount(new)
+        print('NEW HAS BEEN CLEANED ' + str(new))
         clean_news.append(new)
 
     return Database.save_news(clean_news)
