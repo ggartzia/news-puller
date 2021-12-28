@@ -97,9 +97,9 @@ class Database(object):
             print('Delete ' + id + ' new in MONGO')
             mongo_db = Database.DATABASE['news']
             mongo_db.delete_one({'_id': id})
- 
+
         except Exception as e:
-            logger.error(E)
+            logger.error(e)
 
 
     def select_last_news(hour, theme):
@@ -147,16 +147,3 @@ class Database(object):
         new = mongo_db.find_one({'paper' : media, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
 
         return new['published']
-
-
-    def clean_data(new):
-        mongo_db = Database.DATABASE['news']
-
-        new = {'_id': create_unique_id(item['link']),
-                       'url': item['link'],
-                       'title': item['title'],
-                       'paper': paper,
-                       'theme': theme,
-                       'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                       'topics' : Database.calculate_idf(num_docs, theme, item['title']),
-                       'image': select_image(item)}

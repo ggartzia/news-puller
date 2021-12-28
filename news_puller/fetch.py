@@ -5,6 +5,7 @@ from news_puller.db import Database
 from news_puller.shares import searchCount
 from base64 import b64encode
 import time
+import re
 
 
 log = getLogger('werkzeug')
@@ -26,17 +27,25 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
+def getPath(url):
+    m = re.search('https?:\/\/.+\/(.*)', url)
+    print('Get new name ' + str(m))
+    return m.group(1)
+
+
 def clean_data(news):
     num_docs = len(news)
     print('Clean ' + str(num_docs) + ' news in MONGO')
     clean_news = []
     for new in news:
-        Database.delete(new['_id'])
+        id = new['_id']
+        Database.delete(id)
 
-        new['_id'] = create_unique_id(new['_id'])
-        new['url'] = new['_id']
+        new['_id'] = create_unique_id(id)
+        new['fullUrl'] = id
+        new['name'] = getPath(id)
         new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-        new['tweetCount'] = searchCount(new)
+        new['tweetCount'] = searchCount(new['name'])
         print('NEW HAS BEEN CLEANED ' + str(new))
         clean_news.append(new)
 
@@ -52,8 +61,10 @@ def filter_feed(num_docs, theme, paper, news):
     for item in news:
         try:
             if bool(item) :
-                new = {'_id': create_unique_id(item['link']),
-                       'url': item['link'],
+                link = item['link']
+                new = {'_id': create_unique_id(link),
+                       'fullUrl': link,
+                       'name': getPath(link)
                        'title': item['title'],
                        'paper': paper,
                        'theme': theme,
