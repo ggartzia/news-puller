@@ -58,20 +58,9 @@ class Database(object):
             
             mongo_db = Database.DATABASE['news']
 
-            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
-            #mongo_db.insert_many(news, ordered = False)
+            #result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
+            mongo_db.insert_many(news, ordered = False)
             print(result.bulk_api_result)
-
-        except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to save news')
-
-
-    def insert(new):
-        try:
-            mongo_db = Database.DATABASE['news']
-
-            mongo_db.update_one({'_id': new['_id']}, {"$set": new}, upsert=True)
 
         except Exception as e:
             logger.error(e)
@@ -103,16 +92,6 @@ class Database(object):
         return new
 
 
-    def delete(id):
-        try:
-            print('Delete ' + id)
-            mongo_db = Database.DATABASE['news']
-            mongo_db.delete_one({'_id': id})
-
-        except Exception as e:
-            logger.error(e)
-
-
     def select_last_news(hour, theme):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
         print('Return last ' + str(hour) + ' hours news in MONGO')
@@ -123,11 +102,28 @@ class Database(object):
         return list(news)
 
 
-    def select_news(theme):
+    def select_trending_news(hour):
+        last_hour_date_time = datetime.now() - timedelta(hours = hour)
+        print('Return trending news in the last ' + str(hour) + ' hours in MONGO')
+
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'theme' : theme, 'fullUrl' : { '$exists': False }}, sort=[('published', pymongo.ASCENDING)])
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, sort=[('tweetCount', pymongo.DESCENDING)])
 
         return list(news)
+
+
+    def select_topic_news(topic):
+        mongo_db = Database.DATABASE['news']
+        news = mongo_db.find({'topics': topic}, sort=[('published', pymongo.DESCENDING)])
+
+        return list(news)
+
+
+    def select_topics():
+        mongo_db = Database.DATABASE['news']
+        topics = mongo_db.distinct('topics')
+
+        return list(topics)
 
 
     def num_news(media, theme):

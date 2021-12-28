@@ -33,32 +33,6 @@ def getPath(url):
     return m[-1]
 
 
-def clean_data(news):
-    num_docs = len(news)
-    print('Clean ' + str(num_docs) + ' news in MONGO')
-    clean_news = []
-    for new in news:
-        try:
-            id = new.get('url', new['_id'])
-            
-            new['_id'] = create_unique_id(id)
-            new['fullUrl'] = id
-            new['name'] = getPath(id)
-            new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-
-            if new['published'] > "2021-12-21 00:00:00":
-                new['tweetCount'] = shareCount(new['name'])
-            else:
-                new['tweetCount'] = 0
-                
-            Database.insert(new)
-            Database.delete(id)
-
-        except Exception as e:
-            log.error('Something happened with new: ' + str(new))
-            log.error(e)
-
-
 def filter_feed(num_docs, theme, paper, news):
     filtered_news = []
 

@@ -2,7 +2,7 @@ from time import time
 from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
-from news_puller.fetch import get_news, clean_data
+from news_puller.fetch import get_news
 from news_puller.media import get_media
 from news_puller.shares import update_twitter_counts, get_sharings
 from news_puller.db import Database
@@ -53,9 +53,33 @@ def get_last_news(theme, since):
     return jsonify(news)
 
 
+@app.route('/get/trending/<int:since>', methods=['GET'])
+@cross_origin()
+def get_trending_news(since):
+    news = Database.select_trending_news(since)
+
+    return jsonify(news)
+
+
+@app.route('/get/news/<topic>', methods=['GET'])
+@cross_origin()
+def get_topic_news(topic):
+    news = Database.select_topic_news(topic)
+
+    return jsonify(news)
+
+
+@app.route('/get/topics', methods=['GET'])
+@cross_origin()
+def get_topics():
+    topics = Database.select_topics()
+
+    return jsonify(topics)
+
+
 @app.route('/get/media/<theme>', methods=['GET'])
 @cross_origin()
-def fetch_media(theme):
+def get_media(theme):
     media = get_media(theme)
 
     return jsonify(media)
@@ -74,11 +98,3 @@ def get_tweets(id):
     tweets = get_sharings(id)
 
     return jsonify(tweets)
-
-
-@app.route('/clean/<theme>', methods=['GET'])
-def clean_themed_data(theme):
-    news = Database.select_news(theme)
-    clean_data(news)
-
-    return jsonify(news)
