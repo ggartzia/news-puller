@@ -37,9 +37,8 @@ def clean_data(news):
     print('Clean ' + str(num_docs) + ' news in MONGO')
     clean_news = []
     for new in news:
-        id = new['_id']
-        Database.delete(id)
-
+        id = new['url'] or new['_id']
+        
         new['_id'] = create_unique_id(id)
         new['fullUrl'] = id
         new['name'] = getPath(id)
@@ -47,6 +46,7 @@ def clean_data(news):
         new['tweetCount'] = searchCount(new['name'])
         print('NEW HAS BEEN CLEANED ' + str(new))
 
+        Database.delete(id)
         clean_news.append(new)
 
     return Database.save_news(clean_news)
