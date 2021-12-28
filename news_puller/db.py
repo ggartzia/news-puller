@@ -33,7 +33,7 @@ class Database(object):
             idfs = {}
             
             title = title.lower()
-            title = re.sub("[^a-zñáéíóú]", " ", title)
+            title = re.sub("[^a-zñçáéíóú]", " ", title)
             sw = stopwords.words('spanish')
 
             for term in title.split():
@@ -60,7 +60,7 @@ class Database(object):
 
             result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
             #mongo_db.insert_many(news, ordered = False)
-            pprint(result.bulk_api_result)
+            print(result.bulk_api_result)
 
         except Exception as e:
             logger.error(e)
