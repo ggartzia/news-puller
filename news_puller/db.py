@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from math import log
 from logging import getLogger, DEBUG
 import pymongo
+
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
@@ -48,7 +49,7 @@ class Database(object):
         except Exception as e:
             logger.error(e)
             
-        return topics
+        return topics[:4]
 
 
     def save_news(news):
@@ -56,8 +57,11 @@ class Database(object):
             print('Save ' + str(len(news)) + ' news in MONGO')
             
             mongo_db = Database.DATABASE['news']
-            mongo_db.insert_many(news, ordered = False)
-            
+
+            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
+            #mongo_db.insert_many(news, ordered = False)
+            pprint(result.bulk_api_result)
+
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
