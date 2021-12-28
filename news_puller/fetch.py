@@ -25,6 +25,22 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
+def clean_data(num_docs, news):
+
+    clean_news = []
+    for new in news:
+        Database.delete(new['_id'])
+
+        new['_id'] = create_unique_id(new['_id'])
+        new['url'] = new['_id']
+        new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
+
+        clean_news.append(new)
+
+    return Database.save_news(clean_news)
+
+
+
 def filter_feed(num_docs, theme, paper, news):
     filtered_news = []
 

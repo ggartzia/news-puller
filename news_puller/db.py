@@ -80,25 +80,26 @@ class Database(object):
 
 
     def search_new(id):
-        tweet = None
+        new = None
         
         try:
             print('Get ' + str(id) + ' new in MONGO')
-            mongo_db = Database.DATABASE['tweets']
-            tweet = mongo_db.find_one({'_id': id})
+            mongo_db = Database.DATABASE['news']
+            new = mongo_db.find_one({'_id': id})
         except:
             logger.error('There was an error fetching the data')
             
-        return tweet
+        return new
 
 
-    def save_tweets(tweets):
+    def delete(id):
         try:
-            print('Save ' + str(len(tweets)) + ' tweets in MONGO')
-            Database.DATABASE['tweets'].insert_many(tweets, ordered = False)
+            print('Delete ' + id + ' new in MONGO')
+            mongo_db = Database.DATABASE['news']
+            mongo_db.delete_one({'_id': id})
         except:
-            logger.error('There where some duplicated elements')
-            
+            logger.error('There was an error deleting the new')
+
 
     def select_last_news(hour, theme):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
@@ -106,6 +107,18 @@ class Database(object):
         
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme})
+
+        return list(news)
+
+
+    def select_news_from(day, theme):
+        desde = datetime.now() - timedelta(hours = day * 24)
+        hasta = datetime.now() - timedelta(hours = (day + 1) * 24)
+        filtro = {'published': {'$gte': str(desde), '$lte': str(hasta)}, 'theme' : theme}
+        print('Filter with ' + str(filtro))
+
+        mongo_db = Database.DATABASE['news']
+        news = mongo_db.find(filtro)
 
         return list(news)
 
@@ -138,3 +151,16 @@ class Database(object):
         new = mongo_db.find_one({'paper' : media, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
 
         return new['published']
+
+
+    def clean_data(new):
+        mongo_db = Database.DATABASE['news']
+
+        new = {'_id': create_unique_id(item['link']),
+                       'url': item['link'],
+                       'title': item['title'],
+                       'paper': paper,
+                       'theme': theme,
+                       'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
+                       'topics' : Database.calculate_idf(num_docs, theme, item['title']),
+                       'image': select_image(item)}

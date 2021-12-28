@@ -2,7 +2,7 @@ from time import time
 from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
-from news_puller.fetch import get_news
+from news_puller.fetch import get_news, clean_data
 from news_puller.media import get_media
 from news_puller.shares import update_twitter_counts, get_sharings
 from news_puller.db import Database
@@ -74,3 +74,13 @@ def get_tweets(id):
     tweets = get_sharings(id)
 
     return jsonify(tweets)
+
+
+@app.route('/clean/<theme>/<int:frm>', methods=['GET'])
+def clean_data(theme, frm):
+    news = Database.select_news_from(frm, theme)
+
+    num_docs = Database.num_news(None, theme)
+    clean_data(num_docs, news)
+
+    return jsonify(news)
