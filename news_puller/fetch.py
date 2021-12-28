@@ -39,27 +39,24 @@ def clean_data(news):
     clean_news = []
     for new in news:
         try:
-            if 'fullUrl' not in new:
-                id = new.get('url', new['_id'])
-                
-                new['_id'] = create_unique_id(id)
-                new['fullUrl'] = id
-                new['name'] = getPath(id)
-                new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-                
-                if new['published'] > "2021-12-21 00:00:00":
-                    new['tweetCount'] = searchCount(new['name'])
-                else:
-                    new['tweetCount'] = 0
+            id = new.get('url', new['_id'])
+            
+            new['_id'] = create_unique_id(id)
+            new['fullUrl'] = id
+            new['name'] = getPath(id)
+            new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
 
-                Database.delete(id)
-                clean_news.append(new)
+            if new['published'] > "2021-12-21 00:00:00":
+                new['tweetCount'] = searchCount(new['name'])
+            else:
+                new['tweetCount'] = 0
+                
+            Database.insert(new)
+            Database.delete(id)
 
         except Exception as e:
             log.error('Something happened with new: ' + str(new))
             log.error(e)
-
-    return Database.save_news(clean_news)
 
 
 def filter_feed(num_docs, theme, paper, news):

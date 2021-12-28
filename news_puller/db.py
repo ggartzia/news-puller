@@ -67,6 +67,17 @@ class Database(object):
             logger.error('There was an error while trying to save news')
 
 
+    def insert(new):
+        try:
+            mongo_db = Database.DATABASE['news']
+
+            mongo_db.insert_one(new)
+
+        except Exception as e:
+            logger.error(e)
+            logger.error('There was an error while trying to save news')
+
+
     def update(id, tweetCount):
         try:
             print('Update ' + id + ' new in MONGO')
@@ -94,6 +105,7 @@ class Database(object):
 
     def delete(id):
         try:
+            print('Delete ' + id)
             mongo_db = Database.DATABASE['news']
             mongo_db.delete_one({'_id': id})
 
