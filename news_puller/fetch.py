@@ -64,7 +64,7 @@ def filter_feed(num_docs, theme, paper, news):
                 link = item['link']
                 new = {'_id': create_unique_id(link),
                        'fullUrl': link,
-                       'name': getPath(link)
+                       'name': getPath(link),
                        'title': item['title'],
                        'paper': paper,
                        'theme': theme,
