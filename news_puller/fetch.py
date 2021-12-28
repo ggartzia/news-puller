@@ -2,6 +2,7 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
+from news_puller.shares import searchCount
 from base64 import b64encode
 import time
 
@@ -34,7 +35,7 @@ def clean_data(num_docs, news):
         new['_id'] = create_unique_id(new['_id'])
         new['url'] = new['_id']
         new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-
+        new['tweetCount'] = searchCount(new)
         clean_news.append(new)
 
     return Database.save_news(clean_news)
