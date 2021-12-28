@@ -106,19 +106,14 @@ class Database(object):
         print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme})
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
 
         return list(news)
 
 
-    def select_news_from(day, theme):
-        desde = datetime.now() - timedelta(hours = day * 24)
-        hasta = datetime.now() - timedelta(hours = (day + 1) * 24)
-        filtro = {'published': {'$gte': str(desde), '$lte': str(hasta)}, 'theme' : theme}
-        print('Filter with ' + str(filtro))
-
+    def select_news(theme):
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find(filtro)
+        news = mongo_db.find({'theme' : theme}, sort=[('published', pymongo.ASCENDING)])
 
         return list(news)
 

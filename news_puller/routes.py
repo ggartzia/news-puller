@@ -76,9 +76,9 @@ def get_tweets(id):
     return jsonify(tweets)
 
 
-@app.route('/clean/<theme>/<int:frm>', methods=['GET'])
-def clean_data(theme, frm):
-    news = Database.select_news_from(frm, theme)
+@app.route('/clean/<theme>', methods=['GET'])
+def clean_data(theme):
+    news = Database.select_news(theme)
 
     num_docs = Database.num_news(None, theme)
     clean_data(num_docs, news)
