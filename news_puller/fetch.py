@@ -39,16 +39,17 @@ def clean_data(news):
     clean_news = []
     for new in news:
         try:
-            id = new.get('url', new['_id'])
-            
-            new['_id'] = create_unique_id(id)
-            new['fullUrl'] = id
-            new['name'] = getPath(id)
-            new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-            new['tweetCount'] = searchCount(new['name'])
+            if 'fullUrl' not in new:
+                id = new.get('url', new['_id'])
+                
+                new['_id'] = create_unique_id(id)
+                new['fullUrl'] = id
+                new['name'] = getPath(id)
+                new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
+                new['tweetCount'] = searchCount(new['name'])
 
-            Database.delete(id)
-            clean_news.append(new)
+                Database.delete(id)
+                clean_news.append(new)
 
         except Exception as e:
             log.error('Something happened with new: ' + str(new))
