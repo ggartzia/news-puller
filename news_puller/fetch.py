@@ -2,7 +2,7 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
-from news_puller.shares import searchCount
+from news_puller.shares import shareCount
 from base64 import b64encode
 import time
 import re
