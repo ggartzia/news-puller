@@ -37,17 +37,22 @@ def clean_data(news):
     print('Clean ' + str(num_docs) + ' news in MONGO')
     clean_news = []
     for new in news:
-        id = new.get('url', new['_id'])
-        
-        new['_id'] = create_unique_id(id)
-        new['fullUrl'] = id
-        new['name'] = getPath(id)
-        new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-        new['tweetCount'] = searchCount(new['name'])
-        print('NEW HAS BEEN CLEANED ' + str(new))
+        try:
+            id = new.get('url', new['_id'])
+            
+            new['_id'] = create_unique_id(id)
+            new['fullUrl'] = id
+            new['name'] = getPath(id)
+            new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
+            new['tweetCount'] = searchCount(new['name'])
+            print('NEW HAS BEEN CLEANED ' + str(new))
 
-        Database.delete(id)
-        clean_news.append(new)
+            Database.delete(id)
+            clean_news.append(new)
+
+        except Exception as e:
+            log.error('Something happened with new: ' + str(new))
+            log.error(e)
 
     return Database.save_news(clean_news)
 
