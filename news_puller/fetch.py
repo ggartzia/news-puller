@@ -37,7 +37,7 @@ def clean_data(news):
     print('Clean ' + str(num_docs) + ' news in MONGO')
     clean_news = []
     for new in news:
-        id = new['url'] or new['_id']
+        id = new.get('url', new['_id'])
         
         new['_id'] = create_unique_id(id)
         new['fullUrl'] = id
