@@ -28,8 +28,9 @@ def create_unique_id(url):
 
 
 def getPath(url):
-    m = re.search(r'([^\s]*\.com|es)(\S*)', url)
-    return m.group(2)
+    m = re.findall(r'[^\/]+', url)
+  
+    return m[-1]
 
 
 def clean_data(news):
