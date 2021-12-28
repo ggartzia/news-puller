@@ -4,9 +4,14 @@ from datetime import datetime, timedelta
 from math import log
 from logging import getLogger, DEBUG
 import pymongo
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
+
 
 class Database(object):
     
@@ -20,19 +25,21 @@ class Database(object):
         Database.DATABASE = client['news']
 
 
-    def calculate_idf(num_docs, title):
+    def calculate_idf(num_docs, theme, title):
         topics = []
         
         try:
             idfs = {}
             
             title = title.lower()
-            title = re.sub("[^A-Za-zÑñÁáÉéÍíÓóÚú]", " ", title)
+            title = re.sub("[^a-zñáéíóú]", " ", title)
+            sw = stopwords.words('spanish')
 
             for term in title.split():
-                # Use the number of docs that contain the term to calculate the IDF
-                term_docs = Database.DATABASE['news'].count_documents({'title' : {'$regex' : term}})
-                idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
+                if term not in sw:
+                    # Use the number of docs that contain the term to calculate the IDF
+                    term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})
+                    idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
 
             idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
             

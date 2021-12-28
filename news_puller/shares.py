@@ -29,7 +29,7 @@ def callTwitter(search_url, query_params):
 
 
 def getPath(url):
-    m = re.search('https?:\/\/.+(\/.*)', url)
+    m = re.search('https?:\/\/.+\/(.*)', url)
     return m.group(1)
 
 
