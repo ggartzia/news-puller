@@ -47,7 +47,7 @@ def clean_data(news):
             new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
 
             if new['published'] > "2021-12-21 00:00:00":
-                new['tweetCount'] = searchCount(new['name'])
+                new['tweetCount'] = shareCount(new['name'])
             else:
                 new['tweetCount'] = 0
                 

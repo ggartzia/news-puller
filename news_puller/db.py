@@ -71,7 +71,7 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
 
-            mongo_db.insert_one(new)
+            mongo_db.update_one({'_id': new['_id']}, {"$set": new}, upsert=True)
 
         except Exception as e:
             logger.error(e)

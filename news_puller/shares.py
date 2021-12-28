@@ -23,8 +23,9 @@ def callTwitter(search_url, query_params):
     return response.json()
 
 
-def searchCount(name):
+def shareCount(name):
     count = 0
+    print('Fech share count ' + name)
 
     if name:
         search_url = "https://api.twitter.com/2/tweets/counts/recent"
@@ -56,6 +57,6 @@ def update_twitter_counts(theme, period):
     news = Database.select_last_news(period, theme)
 
     for new in news:
-        count = searchCount(new['name'])
+        count = shareCount(new['name'])
         if (new.get('tweetCount', 0) < count):
             Database.update(new['_id'], count)
