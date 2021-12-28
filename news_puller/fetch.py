@@ -46,7 +46,11 @@ def clean_data(news):
                 new['fullUrl'] = id
                 new['name'] = getPath(id)
                 new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
-                new['tweetCount'] = searchCount(new['name'])
+                
+                if new['published'] > "2021-12-21 00:00:00":
+                    new['tweetCount'] = searchCount(new['name'])
+                else:
+                    new['tweetCount'] = 0
 
                 Database.delete(id)
                 clean_news.append(new)
