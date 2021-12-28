@@ -113,7 +113,7 @@ class Database(object):
 
     def select_news(theme):
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
+        news = mongo_db.find({'theme' : theme, 'fullUrl' : { '$exists': False }}, sort=[('published', pymongo.ASCENDING)])
 
         return list(news)
 
