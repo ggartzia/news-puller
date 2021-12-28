@@ -46,7 +46,6 @@ def clean_data(news):
             new['name'] = getPath(id)
             new['topics'] = Database.calculate_idf(num_docs, new['theme'], new['title'])
             new['tweetCount'] = searchCount(new['name'])
-            print('NEW HAS BEEN CLEANED ' + str(new))
 
             Database.delete(id)
             clean_news.append(new)

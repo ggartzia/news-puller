@@ -94,7 +94,6 @@ class Database(object):
 
     def delete(id):
         try:
-            print('Delete ' + id + ' new in MONGO')
             mongo_db = Database.DATABASE['news']
             mongo_db.delete_one({'_id': id})
 
@@ -114,7 +113,7 @@ class Database(object):
 
     def select_news(theme):
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'theme' : theme}, sort=[('published', pymongo.ASCENDING)])
+        news = mongo_db.find({'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
 
         return list(news)
 
