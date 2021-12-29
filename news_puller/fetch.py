@@ -42,14 +42,17 @@ def filter_feed(num_docs, theme, paper, news):
         try:
             if bool(item) :
                 link = item['link']
+                name = getPath(link)
+                title = item['title']
                 new = {'_id': create_unique_id(link),
                        'fullUrl': link,
-                       'name': getPath(link),
-                       'title': item['title'],
+                       'name': name,
+                       'title': title,
                        'paper': paper,
                        'theme': theme,
                        'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                       'topics' : Database.calculate_idf(num_docs, theme, item['title']),
+                       'topics' : Database.calculate_idf(num_docs, theme, title),
+                       'tweetCount' : shareCount(name),
                        'image': select_image(item)}
 
                 filtered_news.append(new)

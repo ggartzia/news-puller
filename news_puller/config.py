@@ -87,7 +87,7 @@ PAPER_LIST = [
     {
       'paper': 'publico',
       'name': 'Público',
-      'feed': 'https://www.publico.es/rss/',
+      'feed': 'https://www.publico.es/rss/politica',
       'logo': 'https://pbs.twimg.com/profile_images/1411931729695330305/TXpBeYs1_400x400.jpg',
       'theme': 'noticias'
     },

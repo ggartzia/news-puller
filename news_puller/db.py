@@ -58,8 +58,8 @@ class Database(object):
             
             mongo_db = Database.DATABASE['news']
 
-            #result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
-            mongo_db.insert_many(news, ordered = False)
+            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
+            #mongo_db.insert_many(news, ordered = False)
             print(result.bulk_api_result)
 
         except Exception as e:
@@ -140,8 +140,6 @@ class Database(object):
         
         mongo_db = Database.DATABASE['news']
         num = mongo_db.count_documents(filter)
-
-        print('The number is: ' + str(num))
         
         return num
 

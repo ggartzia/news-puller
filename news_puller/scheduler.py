@@ -21,9 +21,9 @@ def twitter_update(theme, period):
 
 
 scheduler = BackgroundScheduler(timezone="Europe/Berlin")
-#scheduler.add_job(lambda: news_update('noticias'), 'interval', minutes=15)
-#scheduler.add_job(lambda: news_update('deportes'), 'interval', minutes=30)
-#scheduler.add_job(lambda: news_update('corazon'), 'interval', minutes=60)
+scheduler.add_job(lambda: news_update('noticias'), 'interval', minutes=15)
+scheduler.add_job(lambda: news_update('deportes'), 'interval', minutes=20)
+scheduler.add_job(lambda: news_update('corazon'), 'interval', minutes=35)
 #scheduler.add_job(lambda: twitter_update('noticias', 12), 'interval', minutes=15)
 #scheduler.add_job(lambda: twitter_update('deportes', 12), 'interval', minutes=20)
 #scheduler.add_job(lambda: twitter_update('corazon', 12), 'interval', minutes=30)
