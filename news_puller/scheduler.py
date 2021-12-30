@@ -16,7 +16,7 @@ def twitter_update(theme, period):
     response = requests.get(api_url)
 
 
-scheduler = BackgroundScheduler(timezone="Europe/Berlin")
+scheduler = BackgroundScheduler()
 scheduler.add_job(lambda: news_update('noticias'), CronTrigger(minute='0,30'))
 scheduler.add_job(lambda: news_update('deportes'), CronTrigger(minute='15'))
 scheduler.add_job(lambda: news_update('corazon'), CronTrigger(minute='45'))
