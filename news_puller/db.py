@@ -102,6 +102,21 @@ class Database(object):
         return list(news)
 
 
+    def select_day_news(day, theme, order):
+        fromDay = datetime.now() - timedelta(days = (day - 1))
+        toDay = datetime.now() - timedelta(days = day)
+        print('Return news from ' + str(fromDay) + ' to ' + str(toDay) + ' hours news in MONGO')
+
+        mongo_db = Database.DATABASE['news']
+
+        orderBy = pymongo.DESCENDING
+        if (order == 1) : orderBy = pymongo.ASCENDING
+
+        news = mongo_db.find({'published': {'$gte': str(fromDay), '$lte': str(toDay)}, 'theme' : theme}, sort=[('published', orderBy)])
+
+        return list(news)
+
+
     def select_trending_news(hour):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
         print('Return trending news in the last ' + str(hour) + ' hours in MONGO')

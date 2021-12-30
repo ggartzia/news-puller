@@ -4,7 +4,7 @@ from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
-from news_puller.shares import update_twitter_counts, get_sharings
+from news_puller.shares import update_twitter_counts, get_sharings, shareCount
 from news_puller.db import Database
 import news_puller.scheduler
 
@@ -79,7 +79,7 @@ def get_topics():
 
 @app.route('/get/media/<theme>', methods=['GET'])
 @cross_origin()
-def get_media(theme):
+def fetch_media(theme):
     media = get_media(theme)
 
     return jsonify(media)
@@ -92,9 +92,21 @@ def fetch_twitter_counts(theme, since):
     return 'OK'
 
 
+@app.route('/update/<theme>/tweetCount/<int:day>/<int:order>', methods=['GET'])
+def test_twitter_counts(theme, day, order):
+    news = Database.select_day_news(day, theme, order)
+
+    for new in news:
+        count = shareCount(new['name'])
+        if (new.get('tweetCount', 0) < count):
+            Database.update(new['_id'], count)
+
+    return 'OK'
+
 @app.route('/get/tweets/<id>', methods=['GET'])
 @cross_origin()
 def get_tweets(id):
     tweets = get_sharings(id)
 
     return jsonify(tweets)
+
