@@ -92,17 +92,6 @@ def fetch_twitter_counts(theme, since):
     return 'OK'
 
 
-@app.route('/update/<theme>/tweetCount/<int:day>/<int:order>', methods=['GET'])
-def test_twitter_counts(theme, day, order):
-    news = Database.select_day_news(day, theme, order)
-
-    for new in news:
-        count = shareCount(new['name'])
-        if (new.get('tweetCount', 0) < count):
-            Database.update(new['_id'], count)
-
-    return 'OK'
-
 @app.route('/get/tweets/<id>', methods=['GET'])
 @cross_origin()
 def get_tweets(id):

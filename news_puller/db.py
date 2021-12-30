@@ -138,7 +138,17 @@ class Database(object):
         mongo_db = Database.DATABASE['news']
         topics = mongo_db.distinct('topics')
 
-        return list(topics)
+        news_by_topic = map(topics, num_news_by_topic)
+        news_by_topic = sorted(news_by_topic, key = lambda t: t['numNews'])
+
+        return news_by_topic[:100]
+
+
+    def num_news_by_topic(topic):
+        mongo_db = Database.DATABASE['news']
+        num = mongo_db.count_documents({'topics': topic})
+
+        return {'topic': topic, 'numNews': num}
 
 
     def num_news(media, theme):
