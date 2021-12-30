@@ -1,7 +1,8 @@
 import requests
 import news_puller.config as cfg
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron.CronTrigger import CronTrigger
+from apscheduler.triggers.cron import CronTrigger
+
 
 def news_update(theme):
     print('news_update for ' + theme + ' media!')
