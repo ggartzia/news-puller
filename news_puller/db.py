@@ -103,7 +103,10 @@ class Database(object):
         print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
+                              'theme' : theme},
+                             sort=[('published', pymongo.DESCENDING)])
+                       .limit(100)
 
         return list(news)
 
@@ -118,7 +121,9 @@ class Database(object):
         orderBy = pymongo.DESCENDING
         if (order == 1) : orderBy = pymongo.ASCENDING
 
-        news = mongo_db.find({'published': {'$gte': str(fromDay), '$lte': str(toDay)}, 'theme' : theme}, sort=[('published', orderBy)])
+        news = mongo_db.find({'published': {'$gte': str(fromDay), '$lte': str(toDay)},
+                              'theme' : theme},
+                             sort=[('published', orderBy)])
 
         return list(news)
 
@@ -128,26 +133,30 @@ class Database(object):
         print('Return trending news in the last ' + str(hour) + ' hours in MONGO')
 
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, sort=[('tweetCount', pymongo.DESCENDING)])
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
+                             sort=[('tweetCount', pymongo.DESCENDING)])
+                       .limit(100)
 
         return list(news)
 
 
     def select_topic_news(topic):
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'topics': topic}, sort=[('published', pymongo.DESCENDING)])
+        news = mongo_db.find({'topics': topic},
+                             sort=[('published', pymongo.DESCENDING)])
+                       .limit(100)
 
         return list(news)
 
 
-    def select_topics():
+    def select_topics(hour):
         mongo_db = Database.DATABASE['news']
-        last_hour_date_time = datetime.now() - timedelta(days = 1)
+        last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
         topics = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}).distinct('topics')
 
-        news_by_topic = map(lambda t: {'topic': t,
+        news_by_topic = map(lambda t: {'name': t,
                                        'numNews': mongo_db.count_documents({'topics': t})},
                             topics)
 
