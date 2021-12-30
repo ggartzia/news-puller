@@ -8,10 +8,7 @@ import pymongo
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
-
 sw = stopwords.words('spanish')
-stemmer = SnowballStemmer('spanish')
 
 
 logger = getLogger('werkzeug')
@@ -55,7 +52,7 @@ class Database(object):
         except Exception as e:
             logger.error(e)
             
-        return topics[:4]
+        return topics[:3]
 
 
     def save_news(news):
