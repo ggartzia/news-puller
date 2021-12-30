@@ -8,6 +8,10 @@ import pymongo
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
+
+sw = stopwords.words('spanish')
+stemmer = SnowballStemmer('spanish')
 
 
 logger = getLogger('werkzeug')
@@ -34,10 +38,12 @@ class Database(object):
             
             title = title.lower()
             title = re.sub("[^a-zñçáéíóú]", " ", title)
-            sw = stopwords.words('spanish')
-
+            
             for term in title.split():
                 if term not in sw:
+                    print("Convertir la palabra " + term + " en ")
+                    term = stemmer.stem(term)
+                    print(term)
                     # Use the number of docs that contain the term to calculate the IDF
                     term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})
                     idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))

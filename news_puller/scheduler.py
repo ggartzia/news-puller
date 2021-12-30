@@ -2,6 +2,7 @@ import requests
 import news_puller.config as cfg
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from pytz import utc
 
 
 def news_update(theme):
@@ -16,7 +17,7 @@ def twitter_update(theme, period):
     response = requests.get(api_url)
 
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone=utc)
 scheduler.add_job(lambda: news_update('noticias'), CronTrigger(minute='0,30'))
 scheduler.add_job(lambda: news_update('deportes'), CronTrigger(minute='15'))
 scheduler.add_job(lambda: news_update('corazon'), CronTrigger(minute='45'))
