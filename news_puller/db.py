@@ -136,7 +136,10 @@ class Database(object):
 
     def select_topics():
         mongo_db = Database.DATABASE['news']
-        topics = mongo_db.distinct('topics')
+        last_hour_date_time = datetime.now() - timedelta(days = 1)
+
+        mongo_db = Database.DATABASE['news']
+        topics = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}).distinct('topics')
 
         news_by_topic = map(lambda t: {'topic': t,
                                        'numNews': mongo_db.count_documents({'topics': t})},
