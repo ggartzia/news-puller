@@ -68,15 +68,15 @@ def get_news(paper):
     total = []
     media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
     
-    print('Numero de periodicos: ' + str(len(media)))
+    print('Numero de periodicos:', media)
 
     print('Calcular el numero de noticias para el tema seleccionado')
     num_docs = Database.num_news(None, None)
     
-    print('Numero de noticias: ' + str(num_docs))
+    print('Numero de noticias:', num_docs)
 
     for plist in media:
-        print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
+        print('Fetch', plist['paper'], 'news from', plist['feed'])
 
         try:
             paper_news = feedparser.parse(plist['feed'])
