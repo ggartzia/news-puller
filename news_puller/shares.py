@@ -10,13 +10,12 @@ log = getLogger('werkzeug')
 log.setLevel(DEBUG)
 
 
-auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
-auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
+#auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
+#auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
 
 
-api = tweepy.API(auth,
-                 wait_on_rate_limit=True,
-                 wait_on_rate_limit_notify=True)
+auth = tweepy.AppAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
+api = tweepy.API(auth)
 
 
 def bearer_oauth(r):
@@ -27,9 +26,8 @@ def bearer_oauth(r):
 
 def searchTweets(url):
     print('Fech share count ' + url)
-    tweets = tweepy.Cursor(api.search,
-                           q='url:' + url,
-                           result_type='recent')
+
+    tweets = tweepy.Cursor(api.search_tweets, q='url:' + url)
 
     print('Got ' + len(tweets))
     return len(tweets)
