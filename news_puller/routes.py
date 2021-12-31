@@ -39,7 +39,7 @@ def index():
 
 
 @app.route('/fetch/<media>', methods=['GET'])
-def fetch_news(theme):
+def fetch_news(media):
     news = get_news(media)
 
     return jsonify(news)
