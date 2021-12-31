@@ -32,7 +32,7 @@ def searchTweets(url):
 
         count = len(tweets)
     except Exception as e:
-        logger.error(e)
+        print(e)
 
     print('Got', count)
     return count
