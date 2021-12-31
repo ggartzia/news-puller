@@ -2,7 +2,7 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
-from news_puller.shares import shareCount
+from news_puller.shares import searchTweets
 from base64 import b64encode
 import time
 import re
@@ -52,7 +52,7 @@ def filter_feed(num_docs, theme, paper, news):
                        'theme': theme,
                        'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                        'topics' : Database.calculate_idf(num_docs, theme, title),
-                       'tweetCount' : shareCount(name),
+                       'tweetCount' : searchTweets(name),
                        'image': select_image(item)}
 
                 filtered_news.append(new)

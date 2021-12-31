@@ -27,7 +27,7 @@ class Database(object):
         Database.DATABASE = client['news']
 
 
-    def normalize(s):
+    def clean_title(s):
         replacements = (
             ("á", "a"),
             ("é", "e"),
@@ -43,7 +43,7 @@ class Database(object):
 
         s = re.sub("[^a-zñç]", " ", s)
 
-        return s
+        return s.split()
 
 
     def calculate_idf(num_docs, theme, title):
@@ -52,9 +52,7 @@ class Database(object):
         try:
             idfs = {}
             
-            title = this.normalize(title)
-            
-            for term in title.split():
+            for term in split_title(title):
                 if term not in sw:
                     # Use the number of docs that contain the term to calculate the IDF
                     term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})
