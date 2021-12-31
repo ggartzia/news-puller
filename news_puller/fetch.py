@@ -64,13 +64,17 @@ def filter_feed(num_docs, theme, paper, news):
     return filtered_news
 
 
-def get_news(media):
+def get_news(paper):
     total = []
-    media = filter(lambda m: m['paper'] == media, cfg.PAPER_LIST)
+    media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
+    
+    print('Numero de periodicos: ' len(media))
     
     print('Calcular el numero de noticias para el tema seleccionado')
     num_docs = Database.num_news(None, None)
     
+    print('Numero de noticias: ' num_docs)
+
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
