@@ -1,13 +1,8 @@
 import news_puller.config as cfg
-from logging import getLogger, DEBUG
 from news_puller.db import Database
 import requests
 import tweepy
 import json
-    
-
-log = getLogger('werkzeug')
-log.setLevel(DEBUG)
 
 
 #auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
@@ -28,9 +23,7 @@ def searchTweets(url):
     print('Fech share count', url)
     count = 0
     try:
-        tweets = tweepy.Cursor(api.search_tweets, q='url:' + url)
-
-        count = len(tweets)
+        count = tweepy.Cursor(api.search_tweets, q='url:' + url).count()
     except Exception as e:
         print(e)
 
