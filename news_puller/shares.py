@@ -25,12 +25,17 @@ def bearer_oauth(r):
 
 
 def searchTweets(url):
-    print('Fech share count ' + url)
+    print('Fech share count', url)
+    count = 0
+    try:
+        tweets = tweepy.Cursor(api.search_tweets, q='url:' + url)
 
-    tweets = tweepy.Cursor(api.search_tweets, q='url:' + url)
+        count = len(tweets)
+    except Exception as e:
+        logger.error(e)
 
-    print('Got ' + len(tweets))
-    return len(tweets)
+    print('Got', count)
+    return count
 
 
 def callTwitter(search_url, query_params):
