@@ -52,7 +52,7 @@ class Database(object):
         try:
             idfs = {}
             
-            title = normalize(title)
+            title = this.normalize(title)
             
             for term in title.split():
                 if term not in sw:
