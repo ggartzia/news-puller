@@ -27,20 +27,35 @@ class Database(object):
         Database.DATABASE = client['news']
 
 
+    def normalize(s):
+        replacements = (
+            ("á", "a"),
+            ("é", "e"),
+            ("í", "i"),
+            ("ó", "o"),
+            ("ú", "u"),
+        )
+
+        s = s.lower()
+
+        for a, b in replacements:
+            s = s.replace(a, b)
+
+        s = re.sub("[^a-zñç]", " ", s)
+
+        return s
+
+
     def calculate_idf(num_docs, theme, title):
         topics = []
         
         try:
             idfs = {}
             
-            title = title.lower()
-            title = re.sub("[^a-zñçáéíóú]", " ", title)
+            title = normalize(title)
             
             for term in title.split():
                 if term not in sw:
-                    print("Convertir la palabra " + term + " en ")
-                    term = stemmer.stem(term)
-                    print(term)
                     # Use the number of docs that contain the term to calculate the IDF
                     term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})
                     idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
@@ -52,7 +67,7 @@ class Database(object):
         except Exception as e:
             logger.error(e)
             
-        return topics[:3]
+        return topics[:4]
 
 
     def save_news(news):
@@ -102,8 +117,7 @@ class Database(object):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
-                             sort=[('published', pymongo.DESCENDING)])
-                       .limit(100)
+                             sort=[('published', pymongo.DESCENDING)]).limit(100)
 
         return list(news)
 
@@ -131,8 +145,7 @@ class Database(object):
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                             sort=[('tweetCount', pymongo.DESCENDING)])
-                       .limit(100)
+                             sort=[('tweetCount', pymongo.DESCENDING)]).limit(100)
 
         return list(news)
 
@@ -140,8 +153,7 @@ class Database(object):
     def select_topic_news(topic):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'topics': topic},
-                             sort=[('published', pymongo.DESCENDING)])
-                       .limit(100)
+                             sort=[('published', pymongo.DESCENDING)]).limit(100)
 
         return list(news)
 
