@@ -2,16 +2,37 @@ import news_puller.config as cfg
 from logging import getLogger, DEBUG
 from news_puller.db import Database
 import requests
-
+import tweepy
+import json
     
+
 log = getLogger('werkzeug')
 log.setLevel(DEBUG)
+
+
+auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
+auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
+
+
+api = tweepy.API(auth,
+                 wait_on_rate_limit=True,
+                 wait_on_rate_limit_notify=True)
 
 
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {cfg.TW_BEARER_TOKEN}"
     r.headers["User-Agent"] = "v2RecentTweetCountsNews"
     return r
+
+
+def searchTweets(url):
+    print('Fech share count ' + url)
+    tweets = tweepy.Cursor(api.search,
+                           q='url:' + url,
+                           result_type='recent')
+
+    print('Got ' + len(tweets))
+    return len(tweets)
 
 
 def callTwitter(search_url, query_params):
@@ -57,6 +78,6 @@ def update_twitter_counts(theme, period):
     news = Database.select_last_news(period, theme)
 
     for new in news:
-        count = shareCount(new['name'])
+        count = searchTweets(new['name'])
         if (new.get('tweetCount', 0) < count):
             Database.update(new['_id'], count)
