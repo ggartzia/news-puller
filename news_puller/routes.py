@@ -38,9 +38,9 @@ def index():
     return jsonify(news)
 
 
-@app.route('/fetch/<theme>', methods=['GET'])
+@app.route('/fetch/<media>', methods=['GET'])
 def fetch_news(theme):
-    news = get_news(theme)
+    news = get_news(media)
 
     return jsonify(news)
 

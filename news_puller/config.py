@@ -78,7 +78,7 @@ PAPER_LIST = [
       'theme': 'deportes'
     },
     {
-      'paper': 'Vanitatis',
+      'paper': 'vanitatis',
       'name': 'Vanitatis',
       'feed': 'https://rss.vanitatis.elconfidencial.com/noticias/',
       'logo': 'https://pbs.twimg.com/profile_images/1411972580152578048/AvHNQZfW_400x400.jpg',

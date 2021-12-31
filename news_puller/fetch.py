@@ -64,12 +64,12 @@ def filter_feed(num_docs, theme, paper, news):
     return filtered_news
 
 
-def get_news(theme):
+def get_news(media):
     total = []
-    media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
+    media = filter(lambda m: m['paper'] == media, cfg.PAPER_LIST)
     
     print('Calcular el numero de noticias para el tema seleccionado')
-    num_docs = Database.num_news(None, theme)
+    num_docs = Database.num_news(None, None)
     
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
@@ -78,7 +78,7 @@ def get_news(theme):
             paper_news = feedparser.parse(plist['feed'])
 
             if paper_news.status == 200:
-                news = filter_feed(num_docs, theme, plist['paper'], paper_news['entries'])
+                news = filter_feed(num_docs, plist['theme'], plist['paper'], paper_news['entries'])
                 Database.save_news(news)
                 total += news
 
