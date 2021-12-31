@@ -73,7 +73,7 @@ def get_news(paper):
     print('Calcular el numero de noticias para el tema seleccionado')
     num_docs = Database.num_news(None, None)
     
-    print('Numero de noticias: ' num_docs)
+    print('Numero de noticias: ' + str(num_docs))
 
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
