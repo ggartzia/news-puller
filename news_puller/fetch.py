@@ -68,8 +68,8 @@ def get_news(paper):
     total = []
     media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
     
-    print('Numero de periodicos: ' len(media))
-    
+    print('Numero de periodicos: ' + str(len(media)))
+
     print('Calcular el numero de noticias para el tema seleccionado')
     num_docs = Database.num_news(None, None)
     
