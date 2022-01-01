@@ -6,6 +6,7 @@ from news_puller.shares import searchTweets
 from base64 import b64encode
 from math import log
 import time
+import re
 
 
 logger = getLogger('werkzeug')
