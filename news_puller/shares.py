@@ -5,30 +5,16 @@ import tweepy
 import json
 
 
-auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
-auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
+#auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
+#auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
 
-api = tweepy.API(auth, wait_on_rate_limit=True)
+#api = tweepy.API(auth)
 
 
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {cfg.TW_BEARER_TOKEN}"
     r.headers["User-Agent"] = "v2RecentTweetCountsNews"
     return r
-
-
-def searchTweets(url):
-    count = 0
-
-    try:
-        tweets = tweepy.Cursor(api.search_tweets, q='url:' + url, count=1000).items()
-
-        count = sum(1 for _ in tweets)
-
-    except Exception as e:
-        print(e)
-
-    return count
 
 
 def callTwitter(search_url, query_params):
@@ -38,6 +24,19 @@ def callTwitter(search_url, query_params):
         raise Exception(response.status_code, response.text)
 
     return response.json()
+
+
+def shareCount(name):
+    count = 0
+
+    if name:
+        search_url = "https://api.twitter.com/2/tweets/counts/recent"
+        query_params = {'query': 'url:' + name, 'granularity': 'day'}
+
+        response = callTwitter(search_url, query_params)
+        count = response["meta"]["total_tweet_count"]
+
+    return count
 
 
 def get_sharings(id):
@@ -60,6 +59,6 @@ def update_twitter_counts(theme, period):
     news = Database.select_last_news(period, theme)
 
     for new in news:
-        count = searchTweets(new['name'])
+        count = shareCount(new['name'])
         if (new.get('tweetCount', 0) < count):
             Database.update(new['_id'], count)
