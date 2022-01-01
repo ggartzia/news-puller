@@ -67,7 +67,7 @@ class Database(object):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
-                             sort=[('published', pymongo.DESCENDING)]).limit(100)
+                             sort=[('published', pymongo.DESCENDING)]).limit(50)
 
         return list(news)
 
@@ -78,7 +78,7 @@ class Database(object):
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                             sort=[('tweetCount', pymongo.DESCENDING)]).limit(100)
+                             sort=[('tweetCount', pymongo.DESCENDING)]).limit(50)
 
         return list(news)
 
@@ -86,7 +86,7 @@ class Database(object):
     def select_topic_news(topic):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'topics': topic},
-                             sort=[('published', pymongo.DESCENDING)]).limit(100)
+                             sort=[('published', pymongo.DESCENDING)]).limit(50)
 
         return list(news)
 
@@ -102,9 +102,9 @@ class Database(object):
                                        'numNews': mongo_db.count_documents({'topics': t})},
                             topics)
 
-        sorted_topics = sorted(news_by_topic, key = lambda t: t['numNews'])
+        sorted_topics = sorted(news_by_topic, key = lambda t: t['numNews'], reverse=True)
 
-        return sorted_topics[:100]
+        return sorted_topics[:20]
 
 
     def num_news(filter):
