@@ -32,4 +32,4 @@ scheduler.add_job(lambda: news_update('hola'), CronTrigger(minute='52', timezone
 scheduler.add_job(lambda: news_update('lecturas'), CronTrigger(minute='55', timezone='UTC'))
 scheduler.add_job(lambda: news_update('diezminutos'), CronTrigger(minute='0', timezone='UTC'))
 
-scheduler.start()
+scheduler.start(use_reloader=False)
