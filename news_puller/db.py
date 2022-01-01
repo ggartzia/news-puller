@@ -1,7 +1,6 @@
 import re
 import news_puller.config as cfg
 from datetime import datetime, timedelta
-from math import log
 from logging import getLogger, DEBUG
 import pymongo
 
@@ -25,47 +24,6 @@ class Database(object):
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
         print('Connection done')
         Database.DATABASE = client['news']
-
-
-    def split_title(s):
-        replacements = (
-            ("á", "a"),
-            ("é", "e"),
-            ("í", "i"),
-            ("ó", "o"),
-            ("ú", "u"),
-        )
-
-        s = s.lower()
-
-        for a, b in replacements:
-            s = s.replace(a, b)
-
-        s = re.sub("[^a-zñç]", " ", s)
-
-        return s.split()
-
-
-    def calculate_idf(num_docs, theme, title):
-        topics = []
-        
-        try:
-            idfs = {}
-            
-            for term in self.split_title(title):
-                if term not in sw:
-                    # Use the number of docs that contain the term to calculate the IDF
-                    term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})
-                    idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
-
-            idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
-            
-            topics = list(idfs.keys())
-        
-        except Exception as e:
-            logger.error(e)
-            
-        return topics[:4]
 
 
     def save_news(news):
@@ -172,17 +130,8 @@ class Database(object):
         return sorted_topics[:100]
 
 
-    def num_news(media, theme):
+    def num_news(filter):
         print('Return the number of documets in MONGO')
-
-        filter = {}
-        if media : 
-            filter['paper'] = media
-            
-        if theme : 
-            filter['theme'] = theme
-        
-        print('Filter by ' + str(filter))
         
         mongo_db = Database.DATABASE['news']
         num = mongo_db.count_documents(filter)

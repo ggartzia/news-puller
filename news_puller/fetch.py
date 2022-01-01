@@ -4,12 +4,12 @@ from logging import getLogger, DEBUG
 from news_puller.db import Database
 from news_puller.shares import searchTweets
 from base64 import b64encode
+from math import log
 import time
-import re
 
 
-log = getLogger('werkzeug')
-log.setLevel(DEBUG)
+logger = getLogger('werkzeug')
+logger.setLevel(DEBUG)
 
 
 def select_image(new):
@@ -31,6 +31,46 @@ def getPath(url):
     m = re.findall(r'[^\/]+', url)
   
     return m[-1]
+
+def split_title(s):
+    replacements = (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+    )
+
+    s = s.lower()
+
+    for a, b in replacements:
+        s = s.replace(a, b)
+
+    s = re.sub("[^a-zñç]", " ", s)
+
+    return s.split()
+
+
+def calculate_idf(num_docs, theme, title):
+    topics = []
+    
+    try:
+        idfs = {}
+        
+        for term in split_title(title):
+            if term not in sw:
+                # Use the number of docs that contain the term to calculate the IDF
+                term_docs = Database.num_news({'theme': theme, 'title' : {'$regex' : term}})
+                idfs[term] = log((num_docs - term_docs + 0.5) / (term_docs + 0.5))
+
+        idfs = {k: v for k, v in idfs.items() if v > cfg.TF_IDF_MIN_WEIGHT}
+        
+        topics = list(idfs.keys())
+    
+    except Exception as e:
+        logger.error(e)
+        
+    return topics[:4]
 
 
 def filter_feed(num_docs, theme, paper, news):
@@ -58,8 +98,8 @@ def filter_feed(num_docs, theme, paper, news):
                 filtered_news.append(new)
 
         except Exception as e:
-            log.error('Something happened with new: ' + item['link'])
-            log.error(e)
+            logger.error('Something happened with new: ' + item['link'])
+            logger.error(e)
 
     return filtered_news
 
@@ -71,7 +111,7 @@ def get_news(paper):
     print('Numero de periodicos:', media)
 
     print('Calcular el numero de noticias para el tema seleccionado')
-    num_docs = Database.num_news(None, None)
+    num_docs = Database.num_news({})
     
     print('Numero de noticias:', num_docs)
 
@@ -87,10 +127,10 @@ def get_news(paper):
                 total += news
 
             else:
-                log.error('Some connection error', paper_news.status)
+                logger.error('Some connection error', paper_news.status)
 
         except Exception as e:
-            log.error(e)
-            log.error('Failed to load USE model, USE API won\'t be available')
+            logger.error(e)
+            logger.error('Failed to load USE model, USE API won\'t be available')
 
     return total

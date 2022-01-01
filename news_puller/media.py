@@ -13,7 +13,7 @@ def get_media(theme):
     for plist in media:
         print('Fetch ' + plist['paper'] + ' news from ' + plist['feed'])
 
-        plist['numeroNoticias'] = Database.num_news(plist['paper'], theme)
+        plist['numeroNoticias'] = Database.num_news({'paper': plist['paper'], 'theme': theme})
         plist['actualizacion'] = Database.last_new(plist['paper'], theme)
         
         total.append(plist)
