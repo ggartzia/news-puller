@@ -27,7 +27,7 @@ class Database(object):
         Database.DATABASE = client['news']
 
 
-    def clean_title(s):
+    def split_title(s):
         replacements = (
             ("á", "a"),
             ("é", "e"),
