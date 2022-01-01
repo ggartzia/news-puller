@@ -28,7 +28,6 @@ def searchTweets(url):
     except Exception as e:
         print(e)
 
-    print('Got', count)
     return count
 
 
@@ -39,20 +38,6 @@ def callTwitter(search_url, query_params):
         raise Exception(response.status_code, response.text)
 
     return response.json()
-
-
-def shareCount(name):
-    count = 0
-    print('Fech share count ' + name)
-
-    if name:
-        search_url = "https://api.twitter.com/2/tweets/counts/recent"
-        query_params = {'query': 'url:' + name, 'granularity': 'day'}
-
-        response = callTwitter(search_url, query_params)
-        count = response["meta"]["total_tweet_count"]
-
-    return count
 
 
 def get_sharings(id):
