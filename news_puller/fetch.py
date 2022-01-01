@@ -7,6 +7,10 @@ from base64 import b64encode
 from math import log
 import time
 import re
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+sw = stopwords.words('spanish')
 
 
 logger = getLogger('werkzeug')
@@ -32,6 +36,7 @@ def getPath(url):
     m = re.findall(r'[^\/]+', url)
   
     return m[-1]
+
 
 def split_title(s):
     replacements = (

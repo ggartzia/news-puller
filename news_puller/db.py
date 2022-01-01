@@ -4,11 +4,6 @@ from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
 
-import nltk
-nltk.download('stopwords')
-from nltk.corpus import stopwords
-sw = stopwords.words('spanish')
-
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
