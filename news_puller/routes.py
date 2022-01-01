@@ -4,7 +4,7 @@ from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
-from news_puller.shares import update_twitter_counts, get_sharings, shareCount
+from news_puller.shares import update_twitter_counts, get_sharings
 from news_puller.db import Database
 import news_puller.scheduler
 
