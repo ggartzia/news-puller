@@ -52,7 +52,7 @@ class Database(object):
         try:
             idfs = {}
             
-            for term in split_title(title):
+            for term in self.split_title(title):
                 if term not in sw:
                     # Use the number of docs that contain the term to calculate the IDF
                     term_docs = Database.DATABASE['news'].count_documents({'theme': theme, 'title' : {'$regex' : term}})

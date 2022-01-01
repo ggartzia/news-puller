@@ -23,7 +23,7 @@ def searchTweets(url):
     try:
         tweets = tweepy.Cursor(api.search_tweets, q='url:' + url, count=1000).items()
 
-        count = tweets.count()
+        count = sum(1 for _ in tweets)
 
     except Exception as e:
         print(e)
