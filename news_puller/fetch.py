@@ -46,7 +46,7 @@ def filter_tags(theme, new):
       if t['name'] in new['title'] + new.get('summary', ''):
         new_tags.append(t['name'])
   else:
-      Database.save_topics(new_tags, theme):
+      Database.save_topics(new_tags, theme)
 
   return theme, new_tags[:4]
 
