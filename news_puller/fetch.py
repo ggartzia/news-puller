@@ -37,7 +37,7 @@ def filter_tags(theme, new):
 
   for t in new.get('tags',[]) : new_tags.append(t['term'])
 
-print(new_tags)
+  print(new_tags)
 
   if 'Deportes' in new_tags:
     theme = 'deportes'
