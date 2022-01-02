@@ -50,36 +50,36 @@ def filter_tags(theme, new):
 
 
 def filter_feed(theme, paper, news):
-    filtered_news = []
+  filtered_news = []
 
-    print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
-    
-    for item in news:
-        try:
-            if bool(item) :
-              print(item.keys())
-                link = item['link']
-                name = getPath(link)
-                title = item['title']
-                theme, tags = filter_tags(theme, item)
-                new = {'_id': create_unique_id(link),
-                       'fullUrl': link,
-                       'name': name,
-                       'title': title,
-                       'paper': paper,
-                       'theme': theme,
-                       'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                       'topics' : tags,
-                       'tweetCount' : shareCount(name),
-                       'image': select_image(item)}
+  print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
+  
+  for item in news:
+    try:
+      if bool(item) :
+        print(item.keys())
+        link = item['link']
+        name = getPath(link)
+        title = item['title']
+        theme, tags = filter_tags(theme, item)
+        new = {'_id': create_unique_id(link),
+               'fullUrl': link,
+               'name': name,
+               'title': title,
+               'paper': paper,
+               'theme': theme,
+               'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
+               'topics' : tags,
+               'tweetCount' : shareCount(name),
+               'image': select_image(item)}
 
-                filtered_news.append(new)
+        filtered_news.append(new)
 
-        except Exception as e:
-            logger.error('Something happened with new: ' + item['link'])
-            logger.error(e)
+    except Exception as e:
+        logger.error('Something happened with new: ' + item['link'])
+        logger.error(e)
 
-    return filtered_news
+  return filtered_news
 
 
 def get_news(paper):
