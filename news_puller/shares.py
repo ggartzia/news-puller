@@ -53,12 +53,3 @@ def get_sharings(id):
     tweets = callTwitter(search_url, query_params)
 
     return tweets['data']
-
-
-def update_twitter_counts(theme, period):
-    news = Database.select_last_news(period, theme)
-
-    for new in news:
-        count = shareCount(new['name'])
-        if (new.get('tweetCount', 0) < count):
-            Database.update(new['_id'], count)
