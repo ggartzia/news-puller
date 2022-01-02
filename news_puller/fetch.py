@@ -35,18 +35,16 @@ def getPath(url):
 def filter_tags(theme, new):
   new_tags = []
 
-  for t in new.get('tags',[]) : new_tags.append(t['term'])
+  for t in new.get('tags',[]) : new_tags.append(t['term'].lower())
 
-  print(new_tags)
-
-  if 'Deportes' in new_tags:
+  if 'deportes' in new_tags:
     theme = 'deportes'
-    new_tags.remove('Deportes')
+    new_tags.remove('deportes')
     
   if len(new_tags) < 2:
     for t in Database.select_topics(24):
       print(t['name'])
-      if t['name'] in new['title'] + new.get('content', ''):
+      if t['name'] in new['title'] + new.get('summary', ''):
         new_tags.append(t['name'])
     
   return theme, new_tags[:4]
@@ -60,7 +58,6 @@ def filter_feed(theme, paper, news):
   for item in news:
     try:
       if bool(item) :
-        print(item)
         link = item['link']
         name = getPath(link)
         title = item['title']
