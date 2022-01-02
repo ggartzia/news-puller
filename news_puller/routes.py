@@ -69,10 +69,10 @@ def get_topic_news(topic):
     return jsonify(news)
 
 
-@app.route('/get/topics/<int:since>', methods=['GET'])
+@app.route('/get/topics/<theme>', methods=['GET'])
 @cross_origin()
-def get_topics(since):
-    topics = Database.select_topics(since)
+def get_topics(theme):
+    topics = Database.select_topics(theme)
 
     return jsonify(topics)
 

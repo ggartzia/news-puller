@@ -35,13 +35,18 @@ class Database(object):
             logger.error('There was an error while trying to save news')
 
 
-    def save_topics(topics):
+    def save_topics(topics, theme):
         try:
             print('Save ' + str(len(topics)) + ' topics in MONGO')
             
             mongo_db = Database.DATABASE['topics']
 
-            mongo_db.insert_many(topics, ordered = False)
+            topic_list = map(lambda t: {'name' : t,
+                                        'theme': theme,
+                                        'usage': mongo_db.count_documents({'topics': t})},
+                             topics)
+
+            mongo_db.insert_many(topic_list, ordered = False)
 
         except Exception as e:
             logger.error(e)
@@ -104,20 +109,12 @@ class Database(object):
         return list(news)
 
 
-    def select_topics(hour):
-        mongo_db = Database.DATABASE['news']
-        last_hour_date_time = datetime.now() - timedelta(hours = hour)
+    def select_topics(theme):
+        mongo_db = Database.DATABASE['topics']
 
-        mongo_db = Database.DATABASE['news']
-        topics = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}).distinct('topics')
-
-        news_by_topic = map(lambda t: {'name': t,
-                                       'numNews': mongo_db.count_documents({'topics': t})},
-                            topics)
-
-        sorted_topics = sorted(news_by_topic, key = lambda t: t['numNews'], reverse=True)
-
-        return sorted_topics[:20]
+        topics = mongo_db.find({'theme': theme},
+                               sort=[('usage', pymongo.DESCENDING)]).limit(50)
+        return topics
 
 
     def num_news(filter):
