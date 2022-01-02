@@ -37,12 +37,15 @@ def filter_tags(theme, new):
 
   for t in new.get('tags',[]) : new_tags.append(t['term'])
 
+print(new_tags)
+
   if 'Deportes' in new_tags:
     theme = 'deportes'
     new_tags.remove('Deportes')
     
   if len(new_tags) < 2:
-    for t in topics:
+    for t in Database.select_topics(24):
+      print(t['name'])
       if t['name'] in new['title'] + new.get('content', ''):
         new_tags.append(t['name'])
     
@@ -57,7 +60,7 @@ def filter_feed(theme, paper, news):
   for item in news:
     try:
       if bool(item) :
-        print(item.keys())
+        print(item)
         link = item['link']
         name = getPath(link)
         title = item['title']
