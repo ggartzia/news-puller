@@ -37,7 +37,7 @@ def twitter_shares(new):
     search_url = 'https://api.twitter.com/2/tweets/search/recent'
     query_params = {'query': 'url:' + new['name'],
                     'max_results': 100,
-                    'tweet.fields': 'id,created_at,author_id, text',
+                    'tweet.fields': 'id,created_at,author_id,text',
                     'expansions': 'author_id',
                     'user.fields': 'id,name,profile_image_url,username'}
 
