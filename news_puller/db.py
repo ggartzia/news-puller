@@ -40,15 +40,9 @@ class Database(object):
             print('Save ' + str(len(topics)) + ' topics in MONGO')
             
             mongo_topics = Database.DATABASE['topics']
-            mongo_news = Database.DATABASE['news']
-            
-            topic_list = map(lambda t: {'name' : t,
-                                        'theme': theme,
-                                        'usage': mongo_news.count_documents({'topics': t})},
-                             topics)
+            result = mongo_topics.bulk_write([pymongo.UpdateOne({'_id': t['name']}, {'$set': {'name': t['name'], 'theme': theme}, '$inc':{'usage': 1}}, upsert=True) for t in topics])
 
-            mongo_topics.insert_many(topic_list, ordered = False)
-
+            print('bulk result', result)
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
