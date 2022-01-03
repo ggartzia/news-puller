@@ -36,8 +36,6 @@ class Database(object):
 
     def save_topics(topics, theme):
         try:
-            print('Save', topics, ' in MONGO')
-
             mongo_db = Database.DATABASE['topics']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
                                                                 {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
@@ -49,8 +47,6 @@ class Database(object):
 
     def save_tweets(tweets):
         try:
-            print('Save', len(tweets), 'in MONGO')
-            
             if len(tweets) > 0:
               mongo_db = Database.DATABASE['tweets']
               mongo_db.insert_many(tweets, ordered = False)
