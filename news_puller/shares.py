@@ -40,6 +40,8 @@ def shareCount(name):
 
 
 def twitter_shares(new):
+    tweets= []
+    
     search_url = "https://api.twitter.com/2/tweets/search/recent"
     query_params = {'query': 'url:' + new['name'],
                     'max_results': 100,
@@ -48,15 +50,15 @@ def twitter_shares(new):
 
     if "last_tweet" in new:
         query_params['since_id'] = new['last_tweet']
+
+    try:
+      tweets = callTwitter(search_url, query_params)
+      print('Call twitter', tweets.keys())
+      tweets = tweets['data']
+    
+      new['last_tweet'] = tweets[0]['id']
         
-    print('Call twitter', query_params)
-    
-    tweets = callTwitter(search_url, query_params)
-    tweets = tweets['data']
-    
-    print('First tweet',tweets[0])
-    print('Last tweet',tweets[-1])
-    
-    new['last_tweet'] = tweets[0]['id']
-    
+     except Exception as e:
+        logger.error(e)
+        
     return new, tweets
