@@ -40,7 +40,7 @@ class Database(object):
             print('Save ' + str(len(topics)) + ' topics in MONGO')
             
             mongo_topics = Database.DATABASE['topics']
-            result = mongo_topics.bulk_write([pymongo.UpdateOne({'_id': t['name']}, {'$set': {'name': t['name'], 'theme': theme}, '$inc':{'usage': 1}}, upsert=True) for t in topics])
+            result = mongo_topics.bulk_write([pymongo.UpdateOne({'_id': t['name']}, {'$setOnInsert': {'name': t['name'], 'theme': theme, 'usage': 1} , '$inc':{'usage': 1}}, upsert=True) for t in topics])
 
             print('bulk result', result)
         except Exception as e:
