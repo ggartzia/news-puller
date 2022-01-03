@@ -39,14 +39,11 @@ def shareCount(name):
     return count
 
 
-def get_sharings(id):
-    tweet_list = []
+def twitter_shares(new):
     search_url = "https://api.twitter.com/2/tweets/search/recent"
-    
-    new = Database.search_new(id)
-
     query_params = {'query': 'url:' + new['name'],
                     'max_results': 100,
+                    'since_id': new.get('last_tweet', 0),
                     'tweet.fields': 'created_at,public_metrics,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
