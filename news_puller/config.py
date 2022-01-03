@@ -15,10 +15,10 @@ PAPER_LIST = [
       'theme': 'deportes'
     },
     {
-      'paper': 'elpais',
-      'name': 'EL PAÍS',
-      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/sociedad/portada',
-      'logo': 'https://pbs.twimg.com/profile_images/1236548818402971648/F-pcFaq6_400x400.jpg',
+      'paper': 'infocorazon',
+      'name': 'Info Corazón',
+      'feed': 'http://www.infocorazon.com/feed/',
+      'logo': 'http://www.infocorazon.com/wp-content/themes/info2007/images/logo1.jpg',
       'theme': 'corazon'
     },
     {
