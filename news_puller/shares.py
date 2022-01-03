@@ -58,7 +58,7 @@ def twitter_shares(new):
       tweets = [dict(twt, **{'new':new['_id']}) for twt in tweets['data']]
       new['last_tweet'] = tweets[0]['id']
         
-     except Exception as e:
-        logger.error(e)
+    except Exception as e:
+      logger.error(e)
         
     return new, tweets
