@@ -18,9 +18,10 @@ def twitter_update(theme, period):
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(lambda: news_update('elpais'), CronTrigger(minute='5', timezone='UTC'))
-scheduler.add_job(lambda: news_update('elmundo'), CronTrigger(minute='10', timezone='UTC'))
-scheduler.add_job(lambda: news_update('huffington'), CronTrigger(minute='15', timezone='UTC'))
-scheduler.add_job(lambda: news_update('vanguardia'), CronTrigger(minute='20', timezone='UTC'))
+scheduler.add_job(lambda: news_update('elmundo'), CronTrigger(minute='9', timezone='UTC'))
+scheduler.add_job(lambda: news_update('huffington'), CronTrigger(minute='13', timezone='UTC'))
+scheduler.add_job(lambda: news_update('infocorazon'), CronTrigger(minute='17', timezone='UTC'))
+scheduler.add_job(lambda: news_update('vanguardia'), CronTrigger(minute='21', timezone='UTC'))
 scheduler.add_job(lambda: news_update('confidencial'), CronTrigger(minute='25', timezone='UTC'))
 scheduler.add_job(lambda: news_update('vanitatis'), CronTrigger(minute='29', timezone='UTC'))
 scheduler.add_job(lambda: news_update('publico'), CronTrigger(minute='33', timezone='UTC'))
