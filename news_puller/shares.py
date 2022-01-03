@@ -1,14 +1,6 @@
 import news_puller.config as cfg
-from news_puller.db import Database
 import requests
-import tweepy
 import json
-
-
-#auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
-#auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
-
-#api = tweepy.API(auth)
 
 
 def bearer_oauth(r):
@@ -54,8 +46,6 @@ def twitter_shares(new):
 
     try:
       tweets = callTwitter(search_url, query_params)
-      print('Call twitter', tweets.keys())
-        
       tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
       new['last_tweet'] = tweets['meta']['newest_id']
         
