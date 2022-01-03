@@ -44,7 +44,7 @@ def twitter_shares(new):
     query_params = {'query': 'url:' + new['name'],
                     'max_results': 100,
                     'since_id': new.get('last_tweet', 0),
-                    'tweet.fields': 'created_at,public_metrics,text',
+                    'tweet.fields': 'id,created_at,public_metrics,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
     print('Call twitter', query_params)
