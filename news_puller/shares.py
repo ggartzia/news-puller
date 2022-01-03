@@ -47,6 +47,14 @@ def twitter_shares(new):
                     'tweet.fields': 'created_at,public_metrics,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
+    print('Call twitter', query_params)
+    
     tweets = callTwitter(search_url, query_params)
-
-    return tweets['data']
+    tweets = tweets['data']
+    
+    print('First tweet',tweets[0])
+    print('Last tweet',tweets[-1])
+    
+    new['last_tweet'] = 1
+    
+    return new, tweets
