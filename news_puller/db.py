@@ -27,8 +27,7 @@ class Database(object):
             
             mongo_db = Database.DATABASE['news']
 
-            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {"$set": n}, upsert=True) for n in news])
-            #mongo_db.insert_many(news, ordered = False)
+            mongo_db.insert_many(news, ordered = False)
 
         except Exception as e:
             logger.error(e)
@@ -46,6 +45,18 @@ class Database(object):
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
+
+
+    def update(id, tweetCount):
+        try:
+            print('Update ' + id + ' new in MONGO')
+
+            mongo_db = Database.DATABASE['news']
+            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
+
+        except Exception as e:
+            logger.error(e)
+            logger.error('There was an error while trying to update the new')
 
 
     def search_new(id):
