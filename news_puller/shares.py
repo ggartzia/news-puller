@@ -54,8 +54,8 @@ def twitter_shares(new):
     try:
       tweets = callTwitter(search_url, query_params)
       print('Call twitter', tweets.keys())
-      tweets = tweets['data']
-    
+        
+      tweets = [dict(twt, **{'new':new['_id']}) for twt in tweets['data']]
       new['last_tweet'] = tweets[0]['id']
         
      except Exception as e:
