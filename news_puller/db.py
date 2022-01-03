@@ -36,12 +36,12 @@ class Database(object):
 
     def save_topics(topics, theme):
         try:
-            print('Save ' + str(len(topics)) + ' topics in MONGO')
+            print('Save', topics, ' in MONGO')
             
             mongo_topics = Database.DATABASE['topics']
-            result = mongo_topics.bulk_write([pymongo.UpdateOne({'name': t['name'], 'theme': theme}, {'$setOnInsert': {'name': t['name'], 'theme': theme, 'usage': 1} , '$inc':{'usage': 1}}, upsert=True) for t in topics])
-
-            print('bulk result', result)
+            result = mongo_topics.bulk_write([pymongo.UpdateOne({'name': t['name'], 'theme': theme},
+                                                                {'$setOnInsert': {'name': t['name'], 'theme': theme, 'usage': 1} , '$inc':{'usage': 1}},
+                                                                upsert=True) for t in topics])
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
@@ -49,10 +49,8 @@ class Database(object):
 
     def update(id, tweetCount):
         try:
-            print('Update ' + id + ' new in MONGO')
-
             mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
+            mongo_db.update_one({ '_id': id }, { '$set': { 'tweetCount': tweetCount } })
 
         except Exception as e:
             logger.error(e)
@@ -63,7 +61,6 @@ class Database(object):
         new = None
         
         try:
-            print('Get ' + str(id) + ' new in MONGO')
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
         except:
@@ -74,7 +71,6 @@ class Database(object):
 
     def select_last_news(hour, theme):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
-        print('Return last ' + str(hour) + ' hours news in MONGO')
         
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
@@ -86,7 +82,6 @@ class Database(object):
 
     def select_trending_news(hour):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
-        print('Return trending news in the last ' + str(hour) + ' hours in MONGO')
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
