@@ -39,30 +39,19 @@ class Database(object):
         try:
             print('Save ' + str(len(topics)) + ' topics in MONGO')
             
-            mongo_db = Database.DATABASE['topics']
-
+            mongo_topics = Database.DATABASE['topics']
+            mongo_news = Database.DATABASE['news']
+            
             topic_list = map(lambda t: {'name' : t,
                                         'theme': theme,
-                                        'usage': mongo_db.count_documents({'topics': t})},
+                                        'usage': mongo_news.count_documents({'topics': t})},
                              topics)
 
-            mongo_db.insert_many(topic_list, ordered = False)
+            mongo_topics.insert_many(topic_list, ordered = False)
 
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
-
-
-    def update(id, tweetCount):
-        try:
-            print('Update ' + id + ' new in MONGO')
-            
-            mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({ '_id': id }, { "$set": { 'tweetCount': tweetCount } })
-            
-        except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to update the new')
 
 
     def search_new(id):
