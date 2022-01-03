@@ -75,7 +75,7 @@ def filter_feed(theme, paper, news):
 
           filtered_news.append(new)
 
-        twitter_shares(new)
+        Database.save_tweets(twitter_shares(new))
 
     except Exception as e:
         logger.error('Something happened with new: ' + item['link'])
