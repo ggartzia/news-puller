@@ -36,15 +36,20 @@ def filter_tags(theme, new):
   new_tags = []
 
   for t in new.get('tags',[]) : new_tags.append(t['term'].lower())
+  new_tags = list(dict.fromkeys(new_tags))
 
   if 'deportes' in new_tags:
     theme = 'deportes'
     new_tags.remove('deportes')
-
+    
   if len(new_tags) < 2:
-    for t in Database.select_topics(theme):
-      if t['name'] in new['title'] + new.get('summary', ''):
-        new_tags.append(t['name'])
+    possible_topics = Database.select_topics(theme)
+    possible_topics = [t['name'] for t in possible_topics if t['name'] not in new_tags]
+    
+    while len(new_tags) < 4 and len(possible_topics) > 0:
+      t = possible_topics.pop(0)
+      if t in new['title'] + new.get('summary', ''):
+        new_tags.append(t)
 
   Database.save_topics(new_tags, theme)
 
@@ -62,7 +67,6 @@ def filter_feed(theme, paper, news):
         id = create_unique_id(link)
         new = Database.search_new(id)
         if (new is None):
-          theme, tags = filter_tags(theme, item)
           new = {'_id': id,
                  'fullUrl': link,
                  'name': getPath(link),
@@ -72,10 +76,13 @@ def filter_feed(theme, paper, news):
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                  'topics' : tags,
                  'image': select_image(item)}
+        else:
+          new['title'] = item['title']
+          new['image'] = select_image(item)
 
-          filtered_news.append(new)
-
-        Database.save_tweets(twitter_shares(new))
+        new, tweets = twitter_shares(new)
+        filtered_news.append(new)
+        Database.save_tweets(tweets)
 
     except Exception as e:
         logger.error('Something happened with new: ' + item['link'])
