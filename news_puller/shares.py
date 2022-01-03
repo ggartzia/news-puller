@@ -41,13 +41,14 @@ def twitter_shares(new):
                     'expansions': 'author_id',
                     'user.fields': 'id,name,profile_image_url,username'}
 
-    if 'last_tweet' in new:
-        query_params['since_id'] = new['last_tweet']
+    if 'lastTweet' in new:
+        query_params['since_id'] = new['lastTweet']
 
     tweets = callTwitter(search_url, query_params)
     if 'data' in tweets:
       tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
-      new['last_tweet'] = tweets['meta']['newest_id']
+      new['tweetCount'] = tweets['meta']['result_count']
+      new['lastTweet'] = tweets['meta']['newest_id']
     else:
       print('Twitter only returned', tweets)
         
