@@ -23,11 +23,11 @@ class Database(object):
 
     def save_news(news):
         try:
-            print('Save ' + str(len(news)) + ' news in MONGO')
+            print('Save', len(news),' news in MONGO')
             
-            mongo_db = Database.DATABASE['news']
-
-            mongo_db.insert_many(news, ordered = False)
+            if len(news) > 0:
+              mongo_db = Database.DATABASE['news']
+              mongo_db.insert_many(news, ordered = False)
 
         except Exception as e:
             logger.error(e)
@@ -37,9 +37,9 @@ class Database(object):
     def save_topics(topics, theme):
         try:
             print('Save', topics, ' in MONGO')
-            
-            mongo_topics = Database.DATABASE['topics']
-            result = mongo_topics.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
+
+            mongo_db = Database.DATABASE['topics']
+            result = mongo_db.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
                                                                 {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
                                                                 upsert=True) for t in topics])
         except Exception as e:
@@ -51,22 +51,13 @@ class Database(object):
         try:
             print('Save', len(tweets), 'in MONGO')
             
-            mongo_topics = Database.DATABASE['tweets']
-            mongo_db.insert_many(tweets, ordered = False)
+            if len(tweets) > 0:
+              mongo_db = Database.DATABASE['tweets']
+              mongo_db.insert_many(tweets, ordered = False)
             
         except Exception as e:
             logger.error(e)
             logger.error('There was an error while trying to save news')
-            
-            
-    def update(id, tweetCount):
-        try:
-            mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({ '_id': id }, { '$set': { 'tweetCount': tweetCount } })
-
-        except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to update the new')
 
 
     def search_new(id):
