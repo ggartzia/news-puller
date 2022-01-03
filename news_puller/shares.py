@@ -43,10 +43,12 @@ def twitter_shares(new):
     search_url = "https://api.twitter.com/2/tweets/search/recent"
     query_params = {'query': 'url:' + new['name'],
                     'max_results': 100,
-                    'since_id': new.get('last_tweet', 0),
                     'tweet.fields': 'id,created_at,public_metrics,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
+    if "last_tweet" in new:
+        query_params['since_id'] = new['last_tweet']
+        
     print('Call twitter', query_params)
     
     tweets = callTwitter(search_url, query_params)
@@ -55,6 +57,6 @@ def twitter_shares(new):
     print('First tweet',tweets[0])
     print('Last tweet',tweets[-1])
     
-    new['last_tweet'] = 1
+    new['last_tweet'] = tweets[0]['id']
     
     return new, tweets
