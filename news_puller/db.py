@@ -47,6 +47,18 @@ class Database(object):
             logger.error('There was an error while trying to save news')
 
 
+  def save_tweets(tweets):
+        try:
+            print('Save', len(tweets), 'in MONGO')
+            
+            mongo_topics = Database.DATABASE['tweets']
+            mongo_db.insert_many(tweets, ordered = False)
+            
+        except Exception as e:
+            logger.error(e)
+            logger.error('There was an error while trying to save news')
+            
+            
     def update(id, tweetCount):
         try:
             mongo_db = Database.DATABASE['news']
@@ -105,6 +117,14 @@ class Database(object):
                                sort=[('usage', pymongo.DESCENDING)]).limit(50)
         return topics
 
+
+    def select_tweets(id):
+        mongo_db = Database.DATABASE['tweets']
+
+        topics = mongo_db.find({'new': id},
+                               sort=[('created_at', pymongo.DESCENDING)]).limit(50)
+        return topics
+    
 
     def num_news(filter):
         mongo_db = Database.DATABASE['news']
