@@ -46,16 +46,17 @@ def filter_tags(theme, new):
       if t['name'] in new['title'] + new.get('summary', ''):
         new_tags.append(t['name'])
 
+  Database.save_topics(new_tags, theme)
+
   return theme, new_tags
 
 
 def filter_feed(theme, paper, news):
   filtered_news = []
-  all_topics = []
   print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
   
-  try:
-    for item in news:
+  for item in news:
+    try:
       if bool(item) :
         link = item['link']
         name = getPath(link)
@@ -72,16 +73,11 @@ def filter_feed(theme, paper, news):
                'tweetCount' : shareCount(name),
                'image': select_image(item)}
 
-        all_topics.append(lambda t: {'name' : t,
-                                     'theme': theme},
-                          tags)
         filtered_news.append(new)
 
-    Database.save_topics(all_topics)
-
-  except Exception as e:
-      logger.error('Something happened with new: ' + item['link'])
-      logger.error(e)
+    except Exception as e:
+        logger.error('Something happened with new: ' + item['link'])
+        logger.error(e)
 
   return filtered_news
 
