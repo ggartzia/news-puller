@@ -24,10 +24,10 @@ class Database(object):
     def save_news(news):
         try:
             print('Save', len(news),' news in MONGO')
-            
-            if len(news) > 0:
-              mongo_db = Database.DATABASE['news']
-              mongo_db.insert_many(news, ordered = False)
+
+            mongo_db = Database.DATABASE['news']
+            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']}, {'$set': n}, upsert=True) for n in news])
+            #mongo_db.insert_many(news, ordered = False)
 
         except Exception as e:
             logger.error(e)
