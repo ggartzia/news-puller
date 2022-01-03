@@ -48,7 +48,7 @@ def filter_tags(theme, new):
   else:
       Database.save_topics(new_tags, theme)
 
-  return theme, new_tags[:4]
+  return theme, new_tags
 
 
 def filter_feed(theme, paper, news):
