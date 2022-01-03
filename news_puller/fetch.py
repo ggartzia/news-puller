@@ -2,7 +2,7 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
-from news_puller.shares import shareCount
+from news_puller.shares import twitter_shares
 from base64 import b64encode
 import time
 import re
@@ -59,26 +59,23 @@ def filter_feed(theme, paper, news):
     try:
       if bool(item) :
         link = item['link']
-        name = getPath(link)
         id = create_unique_id(link)
-        if (Database.search_new(id) is None):
-          title = item['title']
+        new = Database.search_new(id)
+        if (new is None):
           theme, tags = filter_tags(theme, item)
           new = {'_id': id,
                  'fullUrl': link,
-                 'name': name,
-                 'title': title,
+                 'name': getPath(link),
+                 'title': item['title'],
                  'paper': paper,
                  'theme': theme,
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                  'topics' : tags,
-                 'tweetCount' : shareCount(name),
                  'image': select_image(item)}
 
           filtered_news.append(new)
 
-        else:
-          Database.update(id, shareCount(name))
+        twitter_shares(new)
 
     except Exception as e:
         logger.error('Something happened with new: ' + item['link'])
