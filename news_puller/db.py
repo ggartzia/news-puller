@@ -47,7 +47,7 @@ class Database(object):
             logger.error('There was an error while trying to save news')
 
 
-  def save_tweets(tweets):
+    def save_tweets(tweets):
         try:
             print('Save', len(tweets), 'in MONGO')
             
