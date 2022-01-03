@@ -67,6 +67,7 @@ def filter_feed(theme, paper, news):
         id = create_unique_id(link)
         new = Database.search_new(id)
         if (new is None):
+          theme, tags = filter_tags(theme, item)
           new = {'_id': id,
                  'fullUrl': link,
                  'name': getPath(link),
