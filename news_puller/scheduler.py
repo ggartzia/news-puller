@@ -5,13 +5,11 @@ from apscheduler.triggers.cron import CronTrigger
 
 
 def news_update(media):
-    print('news_update for ' + media + ' media!')
     api_url = cfg.HOST_URL + 'fetch/' + media
     response = requests.get(api_url)
 
 
 def twitter_update(theme, period):
-    print('Update the number of times a new was shared on twitter')
     api_url = cfg.HOST_URL + 'fetch/' + theme + '/tweetCount/' + str(period)
     response = requests.get(api_url)
 
