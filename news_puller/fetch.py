@@ -58,7 +58,6 @@ def filter_tags(theme, new):
 
 def filter_feed(theme, paper, news):
   filtered_news = []
-  print('The paper ' + paper + ' has returned ' + str(len(news)) + ' news.')
   
   for item in news:
     try:
@@ -86,8 +85,7 @@ def filter_feed(theme, paper, news):
         Database.save_tweets(tweets)
 
     except Exception as e:
-        logger.error('Something happened with new: ' + item['link'])
-        logger.error(e)
+        logger.error('Something happened with new: %s. %s', item['link'], e)
 
   return filtered_news
 
@@ -97,8 +95,6 @@ def get_news(paper):
     media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
 
     for plist in media:
-        print('Fetch', plist['paper'], 'news from', plist['feed'])
-
         try:
             paper_news = feedparser.parse(plist['feed'])
 
@@ -111,7 +107,6 @@ def get_news(paper):
                 logger.error('Some connection error', paper_news.status)
 
         except Exception as e:
-            logger.error(e)
-            logger.error('Failed to load USE model, USE API won\'t be available')
+            logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
 
     return total
