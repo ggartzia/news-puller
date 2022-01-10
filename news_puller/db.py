@@ -15,16 +15,12 @@ class Database(object):
     DATABASE = None
 
     def initialize():
-        print('Connect with ' + Database.URI)
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
-        print('Connection done')
         Database.DATABASE = client['news']
 
 
     def save_news(news):
         try:
-            print('Save', len(news),' news in MONGO')
-
             mongo_db = Database.DATABASE['news']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']},
                                                             {'$inc':{'tweetCount': n.pop('tweetCount', 0)}, '$set': n},
@@ -32,8 +28,7 @@ class Database(object):
             #mongo_db.insert_many(news, ordered = False)
 
         except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to save news')
+            logger.error('There was an error while trying to save news: %s', e)
 
 
     def save_topics(topics, theme):
@@ -43,8 +38,7 @@ class Database(object):
                                                             {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
                                                             upsert=True) for t in topics])
         except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to save news')
+            logger.error('There was an error while trying to save news: %s', e)
 
 
     def save_tweets(tweets):
@@ -54,8 +48,7 @@ class Database(object):
               mongo_db.insert_many(tweets, ordered = False)
             
         except Exception as e:
-            logger.error(e)
-            logger.error('There was an error while trying to save news')
+            logger.error('There was an error while trying to save news: %s', e)
 
 
     def search_new(id):
@@ -64,8 +57,8 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
-        except:
-            logger.error('There was an error fetching the data')
+        except Exception as e:
+            logger.error('There was an error fetching the data: %s', e)
             
         return new
 
@@ -117,9 +110,7 @@ class Database(object):
 
     def num_news(filter):
         mongo_db = Database.DATABASE['news']
-        num = mongo_db.count_documents(filter)
-        
-        return num
+        return mongo_db.count_documents(filter)
 
 
     def last_new(media, theme):
