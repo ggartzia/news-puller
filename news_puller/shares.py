@@ -42,7 +42,7 @@ def twitter_shares(new):
                     'user.fields': 'id,name,profile_image_url,username'}
 
     if 'lastTweet' in new:
-        query_params['since_id'] = new['lastTweet']
+        query_params['since_id'] = int(new['lastTweet']) + 1
 
     tweets = callTwitter(search_url, query_params)
     

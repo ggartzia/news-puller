@@ -97,7 +97,8 @@ class Database(object):
 
         topics = mongo_db.find({'theme': theme},
                                sort=[('usage', pymongo.DESCENDING)]).limit(50)
-        return topics
+
+        return list(map(lambda t: t.title(), topics))
 
 
     def select_tweets(id):
