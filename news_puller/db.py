@@ -92,13 +92,32 @@ class Database(object):
         return list(news)
 
 
+    def select_related_news(id):
+        mongo_db = Database.DATABASE['news']
+        main_new = mongo_db.find({'_id': ObjectId(id)})
+        print('main new: ', main_new)
+        news = mongo_db.find({'topics': {'$all': main_new.topics}},
+                             sort=[('published', pymongo.DESCENDING)]).limit(50)
+
+        return list(news) 
+
+
+    def to_title(topic):
+        if (isinstance(topic, str)):
+            return topic.title()
+
+        topic['name'] = topic['name'].title()
+        return topic
+
+
     def select_topics(theme):
         mongo_db = Database.DATABASE['topics']
 
         topics = mongo_db.find({'theme': theme},
                                sort=[('usage', pymongo.DESCENDING)]).limit(50)
 
-        return list(map(lambda t: t.title(), topics))
+        return [to_title(t) for t in topics]
+
 
 
     def select_tweets(id):

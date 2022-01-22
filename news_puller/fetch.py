@@ -74,7 +74,7 @@ def filter_feed(theme, paper, news):
                  'paper': paper,
                  'theme': theme,
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                 'topics' : list(map(lambda t: t.title(), tags)),
+                 'topics' : [Database.to_title(t) for t in tags],
                  'image': select_image(item)}
         else:
           new['title'] = item['title']
