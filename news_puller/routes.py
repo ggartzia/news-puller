@@ -25,7 +25,7 @@ def health_pool():
 def health_check():
     response = {
         'overallStatus': 0,
-        'version': __version__,
+        'version': 1,
         'startTime': start_time
     }
     return jsonify(response)
@@ -68,9 +68,17 @@ def get_topic_news(topic):
     return jsonify(news)
 
 
+@app.route('/get/new/<id>', methods=['GET'])
+@cross_origin()
+def get_new(id):
+    new = Database.search_new(id)
+
+    return jsonify(new)
+
+
 @app.route('/get/relatedNews/<id>', methods=['GET'])
 @cross_origin()
-def get_related_news(topic):
+def get_related_news(id):
     news = Database.select_related_news(id)
 
     return jsonify(news)

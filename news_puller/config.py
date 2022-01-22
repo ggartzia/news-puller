@@ -94,13 +94,13 @@ PAPER_LIST = [
       'paper': 'marca',
       'name': 'Marca',
       'feed': 'https://e00-marca.uecdn.es/rss/portada.xml',
-      'theme': 'deporte'
+      'theme': 'deportes'
     },
     {
       'paper': 'as',
       'name': 'AS',
       'feed': 'https://as.com/rss/tags/ultimas_noticias.xml',
-      'theme': 'deporte'
+      'theme': 'deportes'
     },
     {
       'paper': 'hola',

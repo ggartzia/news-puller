@@ -94,10 +94,11 @@ class Database(object):
 
     def select_related_news(id):
         mongo_db = Database.DATABASE['news']
-        main_new = mongo_db.find({'_id': ObjectId(id)})
+        main_new = Database.search_new(id)
         print('main new: ', main_new)
-        news = mongo_db.find({'topics': {'$all': main_new.topics}},
-                             sort=[('published', pymongo.DESCENDING)]).limit(50)
+        if main_new:
+            news = mongo_db.find({'topics': {'$all': main_new.topics}},
+                                 sort=[('published', pymongo.DESCENDING)]).limit(50)
 
         return list(news) 
 
@@ -120,12 +121,12 @@ class Database(object):
 
 
 
-    def select_tweets(id):
+    def select_tweets(new):
         mongo_db = Database.DATABASE['tweets']
 
-        topics = mongo_db.find({'new': id},
-                               sort=[('created_at', pymongo.DESCENDING)]).limit(50)
-        return topics
+        news = mongo_db.find({'_id': new},
+                             sort=[('created_at', pymongo.DESCENDING)]).limit(50)
+        return news
     
 
     def num_news(filter):
