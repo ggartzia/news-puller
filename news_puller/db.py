@@ -119,7 +119,7 @@ class Database(object):
         topics = mongo_db.find({'theme': theme},
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
 
-        return topics
+        return list(topics)
 
 
 
@@ -128,7 +128,8 @@ class Database(object):
 
         news = mongo_db.find({'new': new},
                              sort=[('created_at', pymongo.DESCENDING)]).limit(50)
-        return news
+
+        return list(news)
     
 
     def num_news(filter):
