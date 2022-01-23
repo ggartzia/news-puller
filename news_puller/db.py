@@ -51,6 +51,16 @@ class Database(object):
             logger.error('There was an error while trying to save news: %s', e)
 
 
+    def save_users(users):
+        try:
+            if len(users) > 0:
+              mongo_db = Database.DATABASE['users']
+              mongo_db.insert_many(users, ordered = False)
+
+        except Exception as e:
+            logger.error('There was an error while trying to save news: %s', e)
+
+
     def search_new(id):
         new = None
         

@@ -93,9 +93,10 @@ def filter_feed(theme, paper, news):
           new['title'] = item['title']
           new['image'] = select_image(item)
 
-        new, tweets = twitter_shares(new)
+        new, tweets, users = twitter_shares(new)
         filtered_news.append(new)
         Database.save_tweets(tweets)
+        Database.save_users(users)
 
     except Exception as e:
         logger.error('Something happened with new: %s. %s', item['link'], e)
