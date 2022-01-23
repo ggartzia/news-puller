@@ -38,7 +38,7 @@ def fetch_news(media):
     return jsonify(news)
 
 
-@app.route('/get/<theme>/<int:since>/page/<page>', methods=['GET'])
+@app.route('/get/<theme>/<int:since>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_last_news(theme, since, page):
     news = Database.select_last_news(since, theme, page)
@@ -46,7 +46,7 @@ def get_last_news(theme, since, page):
     return jsonify(news)
 
 
-@app.route('/get/trending/<int:since>/page/<page>', methods=['GET'])
+@app.route('/get/trending/<int:since>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_trending_news(since, page):
     news = Database.select_trending_news(since, page)
@@ -54,7 +54,7 @@ def get_trending_news(since, page):
     return jsonify(news)
 
 
-@app.route('/get/news/<topic>/page/<page>', methods=['GET'])
+@app.route('/get/news/<topic>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_topic_news(topic, page):
     news = Database.select_topic_news(topic, page)
@@ -70,7 +70,7 @@ def get_new(id):
     return jsonify(new)
 
 
-@app.route('/get/relatedNews/<id>/page/<page>', methods=['GET'])
+@app.route('/get/relatedNews/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_related_news(id, page):
     news = Database.select_related_news(id, page)
@@ -94,7 +94,7 @@ def fetch_media(theme):
     return jsonify(media)
 
 
-@app.route('/get/tweets/<id>/page/<page>', methods=['GET'])
+@app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_tweets(id, page):
     tweets = Database.select_tweets(id, page)
