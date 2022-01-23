@@ -33,6 +33,7 @@ def shareCount(name):
 
 def twitter_shares(new):
     tweet_list= []
+    users = []
     
     search_url = 'https://api.twitter.com/2/tweets/search/recent'
     query_params = {'query': 'url:' + new['name'],
