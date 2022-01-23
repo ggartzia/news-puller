@@ -23,7 +23,7 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']},
-                                                            {'$inc': {'tweetCount': n['tweetCount']}, '$set': n.pop('tweetCount')},
+                                                            {'$inc': {'tweetCount': n.pop('tweetCount', 0)}, '$set': n},
                                                             upsert=True) for n in news])
 
         except Exception as e:
