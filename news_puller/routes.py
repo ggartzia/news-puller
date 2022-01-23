@@ -31,12 +31,6 @@ def health_check():
     return jsonify(response)
 
 
-@app.route('/', methods=['GET'])
-def index():
-    news = Database.select_last_news(24, 'noticias')
-    return jsonify(news)
-
-
 @app.route('/fetch/<media>', methods=['GET'])
 def fetch_news(media):
     news = get_news(media)
@@ -44,26 +38,26 @@ def fetch_news(media):
     return jsonify(news)
 
 
-@app.route('/get/<theme>/<int:since>', methods=['GET'])
+@app.route('/get/<theme>/<int:since>/page/<page>', methods=['GET'])
 @cross_origin()
-def get_last_news(theme, since):
-    news = Database.select_last_news(since, theme)
+def get_last_news(theme, since, page):
+    news = Database.select_last_news(since, theme, page)
 
     return jsonify(news)
 
 
-@app.route('/get/trending/<int:since>', methods=['GET'])
+@app.route('/get/trending/<int:since>/page/<page>', methods=['GET'])
 @cross_origin()
-def get_trending_news(since):
-    news = Database.select_trending_news(since)
+def get_trending_news(since, page):
+    news = Database.select_trending_news(since, page)
 
     return jsonify(news)
 
 
-@app.route('/get/news/<topic>', methods=['GET'])
+@app.route('/get/news/<topic>/page/<page>', methods=['GET'])
 @cross_origin()
-def get_topic_news(topic):
-    news = Database.select_topic_news(topic)
+def get_topic_news(topic, page):
+    news = Database.select_topic_news(topic, page)
 
     return jsonify(news)
 
@@ -76,10 +70,10 @@ def get_new(id):
     return jsonify(new)
 
 
-@app.route('/get/relatedNews/<id>', methods=['GET'])
+@app.route('/get/relatedNews/<id>/page/<page>', methods=['GET'])
 @cross_origin()
-def get_related_news(id):
-    news = Database.select_related_news(id)
+def get_related_news(id, page):
+    news = Database.select_related_news(id, page)
 
     return jsonify(news)
 
@@ -100,10 +94,10 @@ def fetch_media(theme):
     return jsonify(media)
 
 
-@app.route('/get/tweets/<id>', methods=['GET'])
+@app.route('/get/tweets/<id>/page/<page>', methods=['GET'])
 @cross_origin()
-def get_tweets(id):
-    tweets = Database.select_tweets(id)
+def get_tweets(id, page):
+    tweets = Database.select_tweets(id, page)
 
     return jsonify(tweets)
 

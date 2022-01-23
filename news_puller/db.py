@@ -13,6 +13,7 @@ class Database(object):
     
     URI = 'mongodb+srv://%s:%s@newscluster.3saws.mongodb.net/news?retryWrites=true&w=majority' % (cfg.MONGO_USERNAME, cfg.MONGO_PASSWORD)
     DATABASE = None
+    PAGE_SIZE = 12
 
     def initialize():
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
@@ -75,42 +76,42 @@ class Database(object):
         return new
 
 
-    def select_last_news(hour, theme):
+    def select_last_news(hour, theme, page):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
         
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
-                             sort=[('published', pymongo.DESCENDING)]).limit(50)
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
 
         return list(news)
 
 
-    def select_trending_news(hour):
+    def select_trending_news(hour, page):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                             sort=[('tweetCount', pymongo.DESCENDING)]).limit(50)
+                             sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
 
         return list(news)
 
 
-    def select_topic_news(topic):
+    def select_topic_news(topic, page):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'topics': topic},
-                             sort=[('published', pymongo.DESCENDING)]).limit(50)
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
 
         return list(news)
 
 
-    def select_related_news(id):
+    def select_related_news(id, page):
         mongo_db = Database.DATABASE['news']
         main_new = Database.search_new(id)
 
         if main_new:
             news = mongo_db.find({'topics': {'$all': main_new['topics']}},
-                                 sort=[('published', pymongo.DESCENDING)]).limit(50)
+                                 sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
 
         return list(news) 
 
@@ -124,11 +125,11 @@ class Database(object):
         return list(topics)
 
 
-    def select_tweets(new):
+    def select_tweets(new, page):
         mongo_db = Database.DATABASE['tweets']
 
         news = mongo_db.find({'new': new},
-                             sort=[('created_at', pymongo.DESCENDING)]).limit(50)
+                             sort=[('created_at', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
 
         return list(news)
     
