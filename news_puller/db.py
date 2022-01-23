@@ -23,9 +23,8 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']},
-                                                            {'$inc':{'tweetCount': n.pop('tweetCount', 0)}, '$set': n},
+                                                            {'$inc': {'tweetCount': n['tweetCount']}, '$set': n.pop('tweetCount')},
                                                             upsert=True) for n in news])
-            #mongo_db.insert_many(news, ordered = False)
 
         except Exception as e:
             logger.error('There was an error while trying to save news: %s', e)
@@ -37,6 +36,7 @@ class Database(object):
             result = mongo_db.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
                                                             {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
                                                             upsert=True) for t in topics])
+
         except Exception as e:
             logger.error('There was an error while trying to save news: %s', e)
 
@@ -55,7 +55,9 @@ class Database(object):
         try:
             if len(users) > 0:
               mongo_db = Database.DATABASE['users']
-              mongo_db.insert_many(users, ordered = False)
+              mongo_db.bulk_write([pymongo.UpdateOne(u,
+                                                     {'$setOnInsert': u , '$inc':{'tweets': 1}},
+                                                     upsert=True) for u in users])
 
         except Exception as e:
             logger.error('There was an error while trying to save news: %s', e)
@@ -122,7 +124,6 @@ class Database(object):
         return list(topics)
 
 
-
     def select_tweets(new):
         mongo_db = Database.DATABASE['tweets']
 
@@ -132,9 +133,9 @@ class Database(object):
         return list(news)
     
 
-    def num_news(filter):
+    def num_news(paper, theme):
         mongo_db = Database.DATABASE['news']
-        return mongo_db.count_documents(filter)
+        return mongo_db.count_documents({'paper': paper, 'theme': theme})
 
 
     def last_new(media, theme):
@@ -143,3 +144,7 @@ class Database(object):
         new = mongo_db.find_one({'paper' : media, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
 
         return new['published']
+
+    def num_tweets(new):
+        mongo_db = Database.DATABASE['tweets']
+        return mongo_db.count_documents({'new': new})

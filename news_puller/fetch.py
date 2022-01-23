@@ -83,20 +83,20 @@ def filter_feed(theme, paper, news):
           new = {'_id': id,
                  'fullUrl': link,
                  'name': getPath(link),
-                 'title': item['title'],
                  'paper': paper,
                  'theme': theme,
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                 'topics' : tags,
-                 'image': select_image(item)}
-        else:
-          new['title'] = item['title']
-          new['image'] = select_image(item)
+                 'topics' : tags}
 
         new, tweets, users = twitter_shares(new)
-        filtered_news.append(new)
         Database.save_tweets(tweets)
         Database.save_users(users)
+
+        new['title'] = item['title']
+        new['image'] = select_image(item)
+        new['tweetCount'] = new.get('tweetCount', 0) + len(tweets)
+
+        filtered_news.append(new)
 
     except Exception as e:
         logger.error('Something happened with new: %s. %s', item['link'], e)

@@ -6,7 +6,7 @@ def get_media(theme):
     media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
 
     for plist in media:
-        plist['numeroNoticias'] = Database.num_news({'paper': plist['paper'], 'theme': theme})
+        plist['numeroNoticias'] = Database.num_news(plist['paper'], theme)
         plist['actualizacion'] = Database.last_new(plist['paper'], theme)
         
         total.append(plist)
