@@ -58,7 +58,7 @@ def filter_tags(theme, new):
     possible_topics = Database.select_topics(theme, 100)
 
     while len(new_tags) < 4 and len(possible_topics) > 0:
-      topic_name = possible_topics.pop(0)[name]
+      topic_name = possible_topics.pop(0)['name']
 
       if topic_name not in new_tags and topic_name in text:
         new_tags.append(topic_name)
