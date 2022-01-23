@@ -82,7 +82,7 @@ class Database(object):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
-                             sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
 
@@ -92,7 +92,7 @@ class Database(object):
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                             sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
+                             sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
 
@@ -100,7 +100,7 @@ class Database(object):
     def select_topic_news(topic, page):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'topics': topic},
-                             sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
 
@@ -111,7 +111,7 @@ class Database(object):
 
         if main_new:
             news = mongo_db.find({'topics': {'$all': main_new['topics']}},
-                                 sort=[('published', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
+                                 sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news) 
 
@@ -129,7 +129,7 @@ class Database(object):
         mongo_db = Database.DATABASE['tweets']
 
         news = mongo_db.find({'new': new},
-                             sort=[('created_at', pymongo.DESCENDING)]).skip(page * PAGE_SIZE).limit(PAGE_SIZE)
+                             sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
     
