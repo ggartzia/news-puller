@@ -103,21 +103,13 @@ class Database(object):
         return list(news) 
 
 
-    def to_title(topic):
-        if (isinstance(topic, str)):
-            return topic.title()
-
-        topic['name'] = topic['name'].title()
-        return topic
-
-
     def select_topics(theme):
         mongo_db = Database.DATABASE['topics']
 
         topics = mongo_db.find({'theme': theme},
                                sort=[('usage', pymongo.DESCENDING)]).limit(50)
 
-        return [to_title(t) for t in topics]
+        return topics
 
 
 

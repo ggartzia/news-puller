@@ -35,7 +35,7 @@ def getPath(url):
 def filter_tags(theme, new):
   new_tags = []
 
-  for t in new.get('tags',[]) : new_tags.append(t['term'].lower())
+  for t in new.get('tags',[]) : new_tags.append(t['term'].title())
   new_tags = list(dict.fromkeys(new_tags))
 
   if 'deportes' in new_tags:
@@ -74,7 +74,7 @@ def filter_feed(theme, paper, news):
                  'paper': paper,
                  'theme': theme,
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                 'topics' : [Database.to_title(t) for t in tags],
+                 'topics' : tags,
                  'image': select_image(item)}
         else:
           new['title'] = item['title']
