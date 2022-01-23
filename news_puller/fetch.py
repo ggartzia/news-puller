@@ -32,24 +32,37 @@ def getPath(url):
   
     return m[-1]
 
+def normalize(s):
+    replacements = (
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+    )
+    for a, b in replacements:
+        s = s.replace(a, b).replace(a.upper(), b.upper())
+    return s.title()
+
 def filter_tags(theme, new):
   new_tags = []
 
-  for t in new.get('tags',[]) : new_tags.append(t['term'].title())
-  new_tags = list(dict.fromkeys(new_tags))
+  for t in new.get('tags',[]) : new_tags.append(normalize(t['term']))
+  print('New tags', new_tags)
 
-  if 'deportes' in new_tags:
+  if 'Deportes' in new_tags:
     theme = 'deportes'
-    new_tags.remove('deportes')
+    new_tags.remove('Deportes')
     
-  if len(new_tags) < 2:
-    possible_topics = Database.select_topics(theme)
-    possible_topics = [t['name'] for t in possible_topics if t['name'] not in new_tags]
-    
+  if len(new_tags) < 3:
+    text = normalize(new['title'] + ' ' + new.get('summary', ''))
+    possible_topics = Database.select_topics(theme, 100)
+
     while len(new_tags) < 4 and len(possible_topics) > 0:
-      t = possible_topics.pop(0)
-      if t in new['title'] + new.get('summary', ''):
-        new_tags.append(t)
+      topic_name = possible_topics.pop(0)[name]
+
+      if topic_name not in new_tags and topic_name in text:
+        new_tags.append(topic_name)
 
   Database.save_topics(new_tags, theme)
 

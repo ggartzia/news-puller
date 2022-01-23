@@ -103,11 +103,11 @@ class Database(object):
         return list(news) 
 
 
-    def select_topics(theme):
+    def select_topics(theme, limit):
         mongo_db = Database.DATABASE['topics']
 
         topics = mongo_db.find({'theme': theme},
-                               sort=[('usage', pymongo.DESCENDING)]).limit(50)
+                               sort=[('usage', pymongo.DESCENDING)]).limit(limit)
 
         return topics
 

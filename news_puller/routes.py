@@ -87,7 +87,7 @@ def get_related_news(id):
 @app.route('/get/topics/<theme>', methods=['GET'])
 @cross_origin()
 def get_topics(theme):
-    topics = Database.select_topics(theme)
+    topics = Database.select_topics(theme, 50)
 
     return jsonify(topics)
 
