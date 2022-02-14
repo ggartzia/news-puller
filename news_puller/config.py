@@ -135,3 +135,10 @@ GOOGLE_API_URL = 'https://factchecktools.googleapis.com/v1alpha1/claims:search'
 GOOGLE_API_KEY = 'xxxxxx'
 
 TF_IDF_MIN_WEIGHT = 3
+
+ASTRA_DB_ID = 'ff960c0d-6ca7-4ecb-8d50-c8f31318eac5'
+ASTRA_DB_REGION = 'europe-west1'
+ASTRA_DB_CLIENT_ID = 'ePrgnldibiEOgDfCggFxwUZx'
+ASTRA_DB_CLIENT_SECRET = 'ZdzC7Sg92.f8LJ9B9JmHg67JBaXAdTTGDP9RRdZ_9LndLzgJg_CeZwW0UBErkG1jgZcZ2e+D355Qz93bHduhm4B-LbD3-av0PNaC50XTc1Foo-wCDh1gNJDgfrm5aE4d'
+ASTRA_DB_CLIENT_ROLE = 'API Admin User'
+ASTRA_DB_APPLICATION_TOKEN = 'AstraCS:ePrgnldibiEOgDfCggFxwUZx:760db48e58f4abb0e6822c7b592210f87b85801f78c0536f0e5c57aabbcef8d7'
