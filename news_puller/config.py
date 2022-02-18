@@ -3,7 +3,7 @@ PAPER_LIST = [
     {
       'paper': 'elpais',
       'name': 'EL PAÍS',
-      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada',
+      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/espana/portada',
       'theme': 'noticias'
     },
     {
@@ -11,12 +11,6 @@ PAPER_LIST = [
       'name': 'EL PAÍS',
       'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/deportes/portada',
       'theme': 'deportes'
-    },
-    {
-      'paper': 'infocorazon',
-      'name': 'Info Corazón',
-      'feed': 'http://www.infocorazon.com/feed/',
-      'theme': 'corazon'
     },
     {
       'paper': 'elmundo',
@@ -47,12 +41,6 @@ PAPER_LIST = [
       'name': 'La Vanguardia',
       'feed': 'https://www.lavanguardia.com/rss/deportes.xml',
       'theme': 'deportes'
-    },
-    {
-      'paper': 'vanguardia',
-      'name': 'La Vanguardia',
-      'feed': 'https://www.lavanguardia.com/rss/gente.xml',
-      'theme': 'corazon'
     },
     {
       'paper': 'confidencial',
