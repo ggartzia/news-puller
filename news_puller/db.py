@@ -142,9 +142,11 @@ class Database(object):
     def last_new(paper, theme):
         mongo_db = Database.DATABASE['news']
         new = mongo_db.find_one({'paper' : paper, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
-        print("This is the new: ")
-        print(str(new))
-        return new['published']
+        
+        if new is None:
+            return None
+        else:
+            return new['published']
 
     def num_tweets(new):
         mongo_db = Database.DATABASE['tweets']
