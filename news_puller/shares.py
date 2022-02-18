@@ -37,6 +37,8 @@ def twitter_shares(new):
     if 'data' in tweets:
       tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
       new['lastTweet'] = tweets['meta']['newest_id']
+      print("Number of tweets", new.get('tweetCount', 0), len(tweet_list))
+      new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
         
     if 'includes' in tweets:
         users = tweets['includes']['users']
