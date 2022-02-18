@@ -136,15 +136,12 @@ class Database(object):
 
     def num_news(paper, theme):
         mongo_db = Database.DATABASE['news']
-        print("How many news has " + paper + "pupished for " + theme + " news?")
         return mongo_db.count_documents({'paper': paper, 'theme': theme})
 
 
     def last_new(paper, theme):
         mongo_db = Database.DATABASE['news']
-        print("What is the last new for " + paper + " for " + theme + " news?")
         new = mongo_db.find_one({'paper' : paper, 'theme' : theme}, sort=[('published', pymongo.DESCENDING)])
-        print("Last new: " + str(new))
         return new['published']
 
     def num_tweets(new):
