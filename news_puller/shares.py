@@ -22,11 +22,11 @@ def twitter_shares(new):
     tweet_list= []
     users = []
     
-    search_url = 'https://api.twitter.com/2/tweets/search/recent'
-    query_params = {'query': 'url:' + new['name'],
+    search_url = 'https://api.twitter.com/2/tweets/search/all'
+    query_params = {'query': 'url:' + new['fullUrl'],
                     'max_results': 100,
-                    'tweet.fields': 'id,created_at,author_id,text',
                     'expansions': 'author_id',
+                    'tweet.fields': 'id,created_at,author_id,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
     if 'lastTweet' in new:
@@ -40,7 +40,6 @@ def twitter_shares(new):
       new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
         
     if 'includes' in tweets:
-        users = tweets['includes']['users']
         users = [dict(user, **{'_id': user['id']}) for user in tweets['includes']['users']]
 
     return new, tweet_list, users

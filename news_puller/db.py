@@ -56,6 +56,7 @@ class Database(object):
         try:
             if len(users) > 0:
               mongo_db = Database.DATABASE['users']
+              print('This are the users', users)
               mongo_db.bulk_write([pymongo.UpdateOne(u,
                                                      {'$setOnInsert': u , '$inc':{'tweets': 1}},
                                                      upsert=True) for u in users])
