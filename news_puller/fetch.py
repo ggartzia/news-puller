@@ -20,6 +20,13 @@ def select_image(new):
         return new['media_content'][0]['url']
 
 
+def get_description(new):
+    if 'media_description' in new:
+        print('Descripcion limpia', new['media_description'])
+        return new['media_description']
+
+    return new['description']
+
 def create_unique_id(url):
     message_bytes = url.encode()
     base64_bytes = b64encode(message_bytes)
@@ -27,7 +34,7 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
-def getPath(url):
+def get_path(url):
     m = re.findall(r'[^\/]+', url)
   
     return m[-1]
@@ -48,10 +55,8 @@ def filter_tags(theme, new):
   new_tags = []
 
   for t in new.get('tags',[]) : new_tags.append(normalize(t['term']))
-
-  if 'Deportes' in new_tags:
-    theme = 'deportes'
-    new_tags.remove('Deportes')
+  # remove duplicates from list
+  new_tags = list(dict.fromkeys(new_tags))
     
   if len(new_tags) < 3:
     text = normalize(new['title'] + ' ' + new.get('summary', ''))
@@ -65,7 +70,7 @@ def filter_tags(theme, new):
 
   Database.save_topics(new_tags, theme)
 
-  return theme, new_tags
+  return new_tags
 
 
 def filter_feed(theme, paper, news):
@@ -77,23 +82,23 @@ def filter_feed(theme, paper, news):
         link = item['link']
         id = create_unique_id(link)
         new = Database.search_new(id)
+
         if (new is None):
-          theme, tags = filter_tags(theme, item)
           new = {'_id': id,
                  'fullUrl': link,
-                 'name': getPath(link),
+                 'name': get_path(link),
+                 'title': item['title'],
+                 'description': get_description(item),
                  'paper': paper,
                  'theme': theme,
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                 'topics' : tags}
+                 'topics' : filter_tags(theme, item)}
 
         new, tweets, users = twitter_shares(new)
         Database.save_tweets(tweets)
         Database.save_users(users)
 
-        new['title'] = item['title']
         new['image'] = select_image(item)
-        new['tweetCount'] = new.get('tweetCount', 0) + len(tweets)
 
         filtered_news.append(new)
 
