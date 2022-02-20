@@ -35,9 +35,10 @@ def twitter_shares(new):
     tweets = callTwitter(search_url, query_params)
     
     if 'data' in tweets:
-      tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
-      new['lastTweet'] = tweets['meta']['newest_id']
-      new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
+        print('this is the data recieved:', data)
+        tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
+        new['lastTweet'] = tweets['meta']['newest_id']
+        new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
         
     if 'includes' in tweets:
         users = [dict(user, **{'_id': user['id']}) for user in tweets['includes']['users']]
