@@ -15,17 +15,28 @@ logger.setLevel(DEBUG)
 def select_image(new):
     if 'media_thumbnail' in new:
         return new['media_thumbnail'][0]['url']
-
+    
     elif 'media_content' in new:
         return new['media_content'][0]['url']
+    
+    print('Enclosure image', new['enclosure'])
+    return new['enclosure']
 
 
 def get_description(new):
     if 'media_description' in new:
         print('Descripcion limpia', new['media_description'])
         return new['media_description']
-
+    
+    elif 'dc_abstract' in new:
+        return new['dc_abstract']
+    
+    elif 'summary' in new:
+        return new['summary']
+    
+    # clean description of html tags
     return new['description']
+
 
 def create_unique_id(url):
     message_bytes = url.encode()
@@ -39,6 +50,7 @@ def get_path(url):
   
     return m[-1]
 
+
 def normalize(s):
     replacements = (
         ("á", "a"),
@@ -50,6 +62,7 @@ def normalize(s):
     for a, b in replacements:
         s = s.replace(a, b).replace(a.upper(), b.upper())
     return s.title()
+
 
 def filter_tags(theme, new):
   new_tags = []
@@ -91,6 +104,7 @@ def filter_feed(theme, paper, news):
                  'description': get_description(item),
                  'paper': paper,
                  'theme': theme,
+                 #pubDate OR updated
                  'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                  'topics' : filter_tags(theme, item)}
 
