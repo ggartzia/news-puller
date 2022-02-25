@@ -10,18 +10,14 @@ import re
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
-STOP_WORDS = load_file()
 
 
-def load_file():
-    stop_words = []
-    with open('spanish.txt', 'rb') as language_file:
-        stop_words = [line.decode('utf-8').strip()
-                      for line in language_file.readlines()]
-    
-    return stop_words
+STOP_WORDS = []
+with open('spanish.txt', 'rb') as language_file:
+    STOP_WORDS = [line.decode('utf-8').strip()
+                  for line in language_file.readlines()]
 
-    
+
 def select_image(new):
     if 'media_thumbnail' in new:
         return new['media_thumbnail'][0]['url']
