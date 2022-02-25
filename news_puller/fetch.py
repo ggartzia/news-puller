@@ -10,8 +10,18 @@ import re
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
+STOP_WORDS = load_file()
 
 
+def load_file():
+    stop_words = []
+    with open('spanish.txt', 'rb') as language_file:
+        stop_words = [line.decode('utf-8').strip()
+                      for line in language_file.readlines()]
+    
+    return stop_words
+
+    
 def select_image(new):
     if 'media_thumbnail' in new:
         return new['media_thumbnail'][0]['url']
@@ -65,25 +75,23 @@ def normalize(s):
 
 
 def filter_tags(theme, new):
-  new_tags = []
+    new_tags = []
+  
+    text = new['title'] + ' ' + new.get('description', '')
 
-  for t in new.get('tags',[]) : new_tags.append(normalize(t['term']))
-  # remove duplicates from list
-  new_tags = list(dict.fromkeys(new_tags))
+    #remove punctuation and split into seperate words
+    words = re.findall(r'\w+', text.lower(), flags = re.UNICODE | re.LOCALE)
     
-  if len(new_tags) < 3:
-    text = normalize(new['title'] + ' ' + new.get('summary', ''))
-    possible_topics = Database.select_topics(theme, 100)
+    new_tags = filter(lambda x: x not in STOP_WORDS, words)
+    print("Removed stop words with our STOP_WORDS", new_tags)
+    
+    new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
+    
+    # We have to check the usage of the words in the database
+    new['topics'] = new_tags
+    Database.save_topics(new_tags, theme)
 
-    while len(new_tags) < 4 and len(possible_topics) > 0:
-      topic_name = possible_topics.pop(0)['name']
-
-      if topic_name not in new_tags and topic_name in text:
-        new_tags.append(topic_name)
-
-  Database.save_topics(new_tags, theme)
-
-  return new_tags
+    return new
 
 
 def filter_feed(theme, paper, news):
@@ -105,15 +113,16 @@ def filter_feed(theme, paper, news):
                  'paper': paper,
                  'theme': theme,
                  #pubDate OR updated
-                 'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                 'topics' : filter_tags(theme, item)}
+                 'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed'])
+                }
+            new = filter_tags(theme, new)
 
         new, tweets, users = twitter_shares(new)
         Database.save_tweets(tweets)
         Database.save_users(users)
 
         new['image'] = select_image(item)
-
+        
         filtered_news.append(new)
 
     except Exception as e:
