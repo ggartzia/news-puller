@@ -74,10 +74,10 @@ def normalize(s):
     return s.title()
 
 
-def filter_tags(theme, new):
+def filter_tags(theme, title, description):
     new_tags = []
   
-    text = new['title'] + ' ' + new.get('description', '')
+    text = title + ' ' + description
 
     #remove punctuation and split into seperate words
     words = re.findall(r'\w+', text.lower(), flags = re.UNICODE | re.LOCALE)
@@ -88,10 +88,9 @@ def filter_tags(theme, new):
     new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
     
     # We have to check the usage of the words in the database
-    new['topics'] = new_tags
     Database.save_topics(new_tags, theme)
 
-    return new
+    return new_tags
 
 
 def filter_feed(theme, paper, news):
@@ -105,17 +104,19 @@ def filter_feed(theme, paper, news):
         new = Database.search_new(id)
 
         if (new is None):
-          new = {'_id': id,
-                 'fullUrl': link,
-                 'name': get_path(link),
-                 'title': item['title'],
-                 'description': get_description(item),
-                 'paper': paper,
-                 'theme': theme,
-                 #pubDate OR updated
-                 'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed'])
-                }
-            new = filter_tags(theme, new)
+            title = item['title']
+            description = get_description(item)
+            new = {'_id': id,
+                   'fullUrl': link,
+                   'name': get_path(link),
+                   'title': title,
+                   'description': description,
+                   'paper': paper,
+                   'theme': theme,
+                   #pubDate OR updated
+                   'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
+                   'topics': filter_tags(theme, title, description)
+                  }
 
         new, tweets, users = twitter_shares(new)
         Database.save_tweets(tweets)
