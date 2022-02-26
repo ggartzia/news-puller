@@ -12,8 +12,9 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
+CLEANR = re.compile('<.*?>')
 STOP_WORDS = []
-with open('spanish.txt', 'rb') as language_file:
+with open('./spanish.txt', 'rb') as language_file:
     STOP_WORDS = [line.decode('utf-8').strip()
                   for line in language_file.readlines()]
 
@@ -30,18 +31,21 @@ def select_image(new):
 
 
 def get_description(new):
+    description = ''
+
     if 'media_description' in new:
-        print('Descripcion limpia', new['media_description'])
-        return new['media_description']
+        description = re.sub(CLEANR, '', new['media_description'])
     
     elif 'dc_abstract' in new:
-        return new['dc_abstract']
+        description = new['dc_abstract']
     
     elif 'summary' in new:
-        return new['summary']
-    
-    # clean description of html tags
-    return new['description']
+        description = new['summary']
+
+    else
+      description = new['description']
+
+    return description
 
 
 def create_unique_id(url):
@@ -57,34 +61,14 @@ def get_path(url):
     return m[-1]
 
 
-def normalize(s):
-    replacements = (
-        ("á", "a"),
-        ("é", "e"),
-        ("í", "i"),
-        ("ó", "o"),
-        ("ú", "u"),
-    )
-    for a, b in replacements:
-        s = s.replace(a, b).replace(a.upper(), b.upper())
-    return s.title()
-
-
-def filter_tags(theme, title, description):
-    new_tags = []
-  
-    text = title + ' ' + description
-
+def split_tags(text):
     #remove punctuation and split into seperate words
-    words = re.findall(r'\w+', text.lower(), flags = re.UNICODE | re.LOCALE)
+    text = re.findall(r'\w+', text.lower(), flags = re.UNICODE | re.LOCALE)
     
     new_tags = filter(lambda x: x not in STOP_WORDS, words)
     print("Removed stop words with our STOP_WORDS", new_tags)
     
     new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
-    
-    # We have to check the usage of the words in the database
-    Database.save_topics(new_tags, theme)
 
     return new_tags
 
@@ -111,8 +95,10 @@ def filter_feed(theme, paper, news):
                    'theme': theme,
                    #pubDate OR updated
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                   'topics': filter_tags(theme, title, description)
+                   'topics': split_tags(title) + split_tags(description)
                   }
+
+            Database.save_topics(new['topics'])
 
         new, tweets, users = twitter_shares(new)
         Database.save_tweets(tweets)
