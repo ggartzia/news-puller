@@ -73,7 +73,7 @@ def split_tags(text):
     new_tags = list(filter(lambda x: x not in STOP_WORDS, text))
     print("Removed stop words with our STOP_WORDS", new_tags)
     
-    new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
+    new_tags = new_tags + list(zip(*[new_tags[i:] for i in range(2)]))
 
     return new_tags
 

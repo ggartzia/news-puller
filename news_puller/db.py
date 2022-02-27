@@ -41,7 +41,7 @@ class Database(object):
 
             print('Saved topics:', result)
             most_used_topics = mongo_db.find({'name': {"$in":topics}, 'theme': theme},
-                                             sort=[('usage', pymongo.DESCENDING)]).limit(3)
+                                             sort=[('usage', pymongo.DESCENDING)]).limit(5)
         except Exception as e:
             logger.error('There was an error while trying to save news: %s', e)
 
