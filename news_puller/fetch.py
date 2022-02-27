@@ -107,15 +107,16 @@ def filter_feed(theme, paper, news):
                    'description': description,
                    'paper': paper,
                    'theme': theme,
+                   'image': select_image(item),
                    #pubDate OR updated
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                    'topics': get_tags(title, description, theme)
                   }
 
-        new, tweets, users = tweepy_shares(new)
-        Database.save_tweets(tweets)
-        Database.save_users(users)
+        tweet_list = tweepy_shares(new)
 
+        new['lastTweet'] = tweet_list[-1]['_id']
+        new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
         new['image'] = select_image(item)
         
         filtered_news.append(new)
