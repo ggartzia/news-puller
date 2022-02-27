@@ -70,7 +70,7 @@ def split_tags(text):
     #remove punctuation and split into seperate words
     text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
     
-    new_tags = filter(lambda x: x not in STOP_WORDS, words)
+    new_tags = filter(lambda x: x not in STOP_WORDS, text)
     print("Removed stop words with our STOP_WORDS", new_tags)
     
     new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
@@ -78,13 +78,13 @@ def split_tags(text):
     return new_tags
 
 
-def get_tags (title, description):
+def get_tags(title, description, theme):
     tags = split_tags(title) + split_tags(description)
 
     print("Calculated tags", tags)
     tags = list(dict.fromkeys(tags))
 
-    Database.save_topics(tags)
+    tags = Database.save_topics(tags, theme)
 
     return tags
 
@@ -111,7 +111,7 @@ def filter_feed(theme, paper, news):
                    'theme': theme,
                    #pubDate OR updated
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                   'topics': get_tags(title, description)
+                   'topics': get_tags(title, description, theme)
                   }
 
             Database.save_topics(new['topics'])
