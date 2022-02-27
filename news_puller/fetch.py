@@ -14,8 +14,12 @@ logger.setLevel(DEBUG)
 
 
 CLEANR = re.compile('<.*?>')
+
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+STOP_WORDS_DIR = os.path.join(CURRENT_DIR, 'spanish.txt')
 STOP_WORDS = []
-with open(os.getcwd() + '/spanish.txt', 'rb') as language_file:
+
+with open(STOP_WORDS_DIR, 'rb') as language_file:
     STOP_WORDS = [line.decode('utf-8').strip()
                   for line in language_file.readlines()]
 
