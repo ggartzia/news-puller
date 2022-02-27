@@ -80,12 +80,9 @@ def split_tags(text):
 
 
 def get_tags(title, description, theme):
-    tags = split_tags(title) + split_tags(description)
-
-    print("Calculated tags", tags)
-    tags = list(dict.fromkeys(tags))
-
-    tags = Database.save_topics(tags, theme)
+    #tags = split_tags(title) + split_tags(description)
+    #tags = list(dict.fromkeys(tags))
+    tags = Database.save_topics(split_tags(title), theme)
 
     return tags
 
