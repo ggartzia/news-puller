@@ -42,7 +42,7 @@ def get_description(new):
     elif 'summary' in new:
         description = new['summary']
 
-    else
+    else:
       description = new['description']
 
     return description
@@ -73,6 +73,17 @@ def split_tags(text):
     return new_tags
 
 
+def get_tags (title, description):
+    tags = split_tags(title) + split_tags(description)
+
+    print("Calculated tags", tags)
+    tags = list(dict.fromkeys(tags))
+
+    Database.save_topics(tags)
+
+    return tags
+
+
 def filter_feed(theme, paper, news):
   filtered_news = []
   
@@ -95,7 +106,7 @@ def filter_feed(theme, paper, news):
                    'theme': theme,
                    #pubDate OR updated
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                   'topics': split_tags(title) + split_tags(description)
+                   'topics': get_tags(title, description)
                   }
 
             Database.save_topics(new['topics'])
