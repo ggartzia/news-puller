@@ -71,9 +71,10 @@ def split_tags(text):
     text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
     
     new_tags = list(filter(lambda x: x not in STOP_WORDS, text))
-    print("Removed stop words with our STOP_WORDS", new_tags)
     
-    new_tags = new_tags + list(zip(*[new_tags[i:] for i in range(2)]))
+    double_tags = list(zip(*[new_tags[i:] for i in range(2)]))
+
+    new_tags = new_tags + list(map(lambda l: ' '.join(l), double_tags))
 
     return new_tags
 
@@ -113,8 +114,6 @@ def filter_feed(theme, paper, news):
                    'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                    'topics': get_tags(title, description, theme)
                   }
-
-            Database.save_topics(new['topics'])
 
         new, tweets, users = twitter_shares(new)
         Database.save_tweets(tweets)
