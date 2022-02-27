@@ -14,7 +14,7 @@ logger.setLevel(DEBUG)
 
 CLEANR = re.compile('<.*?>')
 STOP_WORDS = []
-with open('./spanish.txt', 'rb') as language_file:
+with open(os.getcwd() + '/spanish.txt', 'rb') as language_file:
     STOP_WORDS = [line.decode('utf-8').strip()
                   for line in language_file.readlines()]
 
