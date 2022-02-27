@@ -5,6 +5,7 @@ from news_puller.db import Database
 from news_puller.shares import twitter_shares
 from base64 import b64encode
 import time
+import os
 import re
 
 
