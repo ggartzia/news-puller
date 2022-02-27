@@ -70,7 +70,7 @@ def split_tags(text):
     #remove punctuation and split into seperate words
     text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
     
-    new_tags = filter(lambda x: x not in STOP_WORDS, text)
+    new_tags = list(filter(lambda x: x not in STOP_WORDS, text))
     print("Removed stop words with our STOP_WORDS", new_tags)
     
     new_tags = new_tags + zip(*[new_tags[i:] for i in range(2)])
