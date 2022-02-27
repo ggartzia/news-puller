@@ -29,9 +29,11 @@ def tweepy_shares(new):
     tweet_list= []
     users = []
 
-    for tweet in tweepy.Cursor(api.search_tweets,
-                               q='url:' + new['fullUrl'],
-                               since_id=int(new.get('lastTweet', 0)) + 1).items(100):
+    tweets = tweepy.Cursor(api.search_tweets,
+                           q='url:' + new['fullUrl'],
+                           since_id=int(new.get('lastTweet', 0)) + 1).items(100)
+    
+    for tweet in tweets:
         print(tweet._json)
 
 
