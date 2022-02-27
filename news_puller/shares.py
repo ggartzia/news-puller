@@ -28,20 +28,17 @@ def callTwitter(search_url, query_params):
 def tweepy_shares(new):
     tweet_list= []
     users = []
-    
-    count = tweepy.Cursor(api.search_tweets, q='url:' + url).items()
-    search_url = 'https://api.twitter.com/2/tweets/search/all'
     query_params = {'query': 'url:' + new['fullUrl'],
-                    'max_results': 100,
                     'expansions': 'author_id',
                     'tweet.fields': 'id,created_at,author_id,text',
                     'user.fields': 'id,name,profile_image_url,username'}
 
-    if 'lastTweet' in new:
-        query_params['since_id'] = int(new['lastTweet']) + 1
+    for tweet in tweepy.Cursor(api.search_tweets,
+                               q='url:' + new['fullUrl'],
+                               since_id=int(new.get('lastTweet', 0)) + 1).items(100):
+        print(tweet._json)
 
-    tweets = callTwitter(search_url, query_params)
-    
+
     if 'data' in tweets:
         print('this is the data recieved:', data)
         tweet_list = [dict(twt, **{'new':new['_id'], '_id': twt['id']}) for twt in tweets['data']]
