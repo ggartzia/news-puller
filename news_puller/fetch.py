@@ -2,7 +2,7 @@ import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
-from news_puller.shares import twitter_shares
+from news_puller.shares import tweepy_shares
 from base64 import b64encode
 import time
 import os
