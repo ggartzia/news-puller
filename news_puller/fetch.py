@@ -68,7 +68,7 @@ def get_path(url):
 
 def split_tags(text):
     #remove punctuation and split into seperate words
-    text = re.findall(r'\w+', text.lower(), flags = re.UNICODE | re.LOCALE)
+    text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
     
     new_tags = filter(lambda x: x not in STOP_WORDS, words)
     print("Removed stop words with our STOP_WORDS", new_tags)
