@@ -28,10 +28,6 @@ def callTwitter(search_url, query_params):
 def tweepy_shares(new):
     tweet_list= []
     users = []
-    query_params = {'query': 'url:' + new['fullUrl'],
-                    'expansions': 'author_id',
-                    'tweet.fields': 'id,created_at,author_id,text',
-                    'user.fields': 'id,name,profile_image_url,username'}
 
     for tweet in tweepy.Cursor(api.search_tweets,
                                q='url:' + new['fullUrl'],

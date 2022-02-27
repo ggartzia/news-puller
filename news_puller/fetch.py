@@ -112,7 +112,7 @@ def filter_feed(theme, paper, news):
                    'topics': get_tags(title, description, theme)
                   }
 
-        new, tweets, users = twitter_shares(new)
+        new, tweets, users = tweepy_shares(new)
         Database.save_tweets(tweets)
         Database.save_users(users)
 
