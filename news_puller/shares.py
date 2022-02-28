@@ -17,10 +17,10 @@ def tweepy_shares(new):
         tweets = tweepy.Cursor(api.search_tweets,
                                q='url:' + new['fullUrl'],
                                since_id=new.get('lastTweet', 0) + 1).items(100)
-        print("Last tweet id: " new.get('lastTweet', 0))
+        print("Last tweet id: ", new.get('lastTweet', 0))
         for tweet in tweets:
             twt = tweet._json
-            print("Tweet id: " twt['id'])
+            print("Tweet id: ", twt['id'])
             users.append({'_id': twt['user']['id'],
                           'name': twt['user']['name'],
                           'screen_name': twt['user']['screen_name'],
