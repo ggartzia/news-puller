@@ -24,13 +24,22 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']},
-                                                            {'$inc': {'tweetCount': n.pop('tweetCount', 0)}, '$set': n},
+                                                            {'$set': n},
                                                             upsert=True) for n in news])
 
         except Exception as e:
             logger.error('There was an error while trying to save news: %s', e)
 
 
+    def save_new(new):
+        try:
+            mongo_db = Database.DATABASE['news']
+            mongo_db.update_one({'_id': new['_id']}, {'$set': new}, upsert=True)
+
+        except Exception as e:
+            logger.error('There was an error while trying to save new: %s, %s', new, e)
+            
+            
     def save_topics(topics, theme):
         most_used_topics = []
         try:
