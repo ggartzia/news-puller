@@ -25,14 +25,21 @@ with open(STOP_WORDS_DIR, 'rb') as language_file:
 
 
 def select_image(new):
+    thumb_image = ''
     if 'media_thumbnail' in new:
-        return new['media_thumbnail'][0]['url']
+        thumb_image = new['media_thumbnail'][0]['url']
     
     elif 'media_content' in new:
-        return new['media_content'][0]['url']
+        thumb_image = new['media_content'][0]['url']
     
-    print('Enclosure image', new['enclosure'])
-    return new['enclosure']
+    elif 'enclosure' in new:
+        print('Enclosure image', new['enclosure'])
+        thumb_image = new['enclosure'][0]['url']
+        
+    else:
+        print('No images', new)
+        
+    return thumb_image
 
 
 def get_description(new):
@@ -115,9 +122,7 @@ def filter_feed(theme, paper, news):
         tweet_list = tweepy_shares(new)
         
         if (tweet_list):
-            print("Tweet list count", len(tweet_list))
-            print("Last tweet", tweet_list[-1])
-            new['lastTweet'] = tweet_list[-1]['_id']
+            new['lastTweet'] = tweet_list[0]['_id']
             new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
         
         new['image'] = select_image(item)
