@@ -36,9 +36,6 @@ def select_image(new):
         print('Enclosure image', new['enclosure'])
         thumb_image = new['enclosure'][0]['url']
         
-    else:
-        print('No images', new)
-        
     return thumb_image
 
 
@@ -46,11 +43,16 @@ def get_description(new):
     description = ''
 
     if 'media_description' in new:
+        print("How can we avoid this", new)
         description = re.sub(CLEANR, '', new['media_description'])
     
     elif 'dc_abstract' in new:
+        print("How dc_abstract stores data", new['dc_abstract'])
         description = new['dc_abstract']
     
+    elif 'content' in new:
+        description = new['content'][0]['value']
+        
     elif 'summary' in new:
         description = new['summary']
 
@@ -136,7 +138,6 @@ def filter_feed(theme, paper, news):
 
 
 def get_news(paper):
-    total = []
     media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
 
     for plist in media:
@@ -146,7 +147,6 @@ def get_news(paper):
             if paper_news.status == 200:
                 news = filter_feed(plist['theme'], plist['paper'], paper_news['entries'])
                 Database.save_news(news)
-                total += news
 
             else:
                 logger.error('Some connection error', paper_news.status)
@@ -154,4 +154,4 @@ def get_news(paper):
         except Exception as e:
             logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
 
-    return total
+    pass
