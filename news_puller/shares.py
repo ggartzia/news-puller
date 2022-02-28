@@ -18,18 +18,18 @@ def tweepy_shares(new):
                            since_id=new.get('lastTweet', 0) + 1).items(100)
 
     for tweet in tweets:
-        user = {'_id': twt['user']['id'],
-                'name': twt['user']['name'],
-                'screen_name': twt['user']['screen_name'],
-                'image': twt['user']['profile_image_url_https']}
-        users.append(user)
+        twt = tweet._json
 
-        twt = {'new': new['_id'],
-               '_id': twt['id'],
-               'created_at': twt['created_at'],
-               'text': twt['text'],
-               'user': user['_id']}
-        tweet_list.append(twt)
+        users.append({'_id': twt['user']['id'],
+                      'name': twt['user']['name'],
+                      'screen_name': twt['user']['screen_name'],
+                      'image': twt['user']['profile_image_url_https']})
+
+        tweet_list.append({'_id': twt['id'],
+                           'created_at': twt['created_at'],
+                           'text': twt['text'],
+                           'new': new['_id'],
+                           'user': twt['user']['id']})
     
     Database.save_tweets(tweet_list)
     Database.save_users(users)
