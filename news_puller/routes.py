@@ -33,9 +33,9 @@ def health_check():
 
 @app.route('/fetch/<media>', methods=['GET'])
 def fetch_news(media):
-    news = get_news(media)
+    get_news(media)
 
-    return jsonify(news)
+    return 'OK'
 
 
 @app.route('/get/<theme>/<int:since>/page/<int:page>', methods=['GET'])
