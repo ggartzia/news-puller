@@ -47,7 +47,6 @@ def get_description(new):
         description = re.sub(CLEANR, '', new['media_description'])
     
     elif 'dc_abstract' in new:
-        print("How dc_abstract stores data", new['dc_abstract'])
         description = new['dc_abstract']
     
     elif 'content' in new:
@@ -97,42 +96,45 @@ def get_tags(title, description, theme):
 
 
 def filter_feed(theme, paper, news):
-  for item in news:
-    try:
-      if bool(item) :
-        link = item['link']
-        id = create_unique_id(link)
-        new = Database.search_new(id)
+    twitter_exceded = False
+    for item in news:
+        try:
+            if bool(item) :
+                link = item['link']
+                id = create_unique_id(link)
+                new = Database.search_new(id)
 
-        if (new is None):
-            title = item['title']
-            description = get_description(item)
-            new = {'_id': id,
-                   'fullUrl': link,
-                   'name': get_path(link),
-                   'title': title,
-                   'description': description,
-                   'paper': paper,
-                   'theme': theme,
-                   #pubDate OR updated
-                   'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                   'topics': get_tags(title, description, theme)
-                  }
+                if (new is None):
+                    title = item['title']
+                    description = get_description(item)
+                    new = {'_id': id,
+                           'fullUrl': link,
+                           'name': get_path(link),
+                           'title': title,
+                           'description': description,
+                           'paper': paper,
+                           'theme': theme,
+                           'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
+                           'topics': get_tags(title, description, theme)
+                          }
 
-        tweet_list = tweepy_shares(new)
-        
-        if (tweet_list):
-            new['lastTweet'] = tweet_list[0]['_id']
-            new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
-        
-        new['image'] = select_image(item)
-        
-        Database.save_new(new)
+                if not twitter_exceded:
+                    tweet_list = tweepy_shares(new)
 
-    except Exception as e:
-        logger.error('Something happened with new: %s. %s', item['link'], e)
+                    if (tweet_list == -1):
+                        twitter_exceded = True
+                    elif tweet_list:
+                        new['lastTweet'] = tweet_list[0]['_id']
+                        new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
 
-  pass
+                new['image'] = select_image(item)
+
+                Database.save_new(new)
+
+        except Exception as e:
+            logger.error('Something happened with new: %s. %s', item['link'], e)
+
+    pass
 
 
 def get_news(paper):
