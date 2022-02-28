@@ -97,8 +97,6 @@ def get_tags(title, description, theme):
 
 
 def filter_feed(theme, paper, news):
-  filtered_news = []
-  
   for item in news:
     try:
       if bool(item) :
@@ -129,12 +127,12 @@ def filter_feed(theme, paper, news):
         
         new['image'] = select_image(item)
         
-        filtered_news.append(new)
+        Database.save_new(new)
 
     except Exception as e:
         logger.error('Something happened with new: %s. %s', item['link'], e)
 
-  return filtered_news
+  pass
 
 
 def get_news(paper):
@@ -145,9 +143,7 @@ def get_news(paper):
             paper_news = feedparser.parse(plist['feed'])
 
             if paper_news.status == 200:
-                news = filter_feed(plist['theme'], plist['paper'], paper_news['entries'])
-                Database.save_news(news)
-
+                filter_feed(plist['theme'], plist['paper'], paper_news['entries'])
             else:
                 logger.error('Some connection error', paper_news.status)
 
