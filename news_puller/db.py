@@ -20,17 +20,6 @@ class Database(object):
         Database.DATABASE = client['news']
 
 
-    def save_news(news):
-        try:
-            mongo_db = Database.DATABASE['news']
-            result = mongo_db.bulk_write([pymongo.UpdateOne({'_id': n['_id']},
-                                                            {'$set': n},
-                                                            upsert=True) for n in news])
-
-        except Exception as e:
-            logger.error('There was an error while trying to save news: %s', e)
-
-
     def save_new(new):
         try:
             mongo_db = Database.DATABASE['news']
@@ -54,7 +43,7 @@ class Database(object):
         except Exception as e:
             logger.error('There was an error while trying to save topics: %s', e)
 
-        return most_used_topics
+        return list(most_used_topics)
 
 
     def save_tweets(tweets):
