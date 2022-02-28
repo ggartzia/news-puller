@@ -1,6 +1,11 @@
 import news_puller.config as cfg
 import tweepy
 from news_puller.db import Database
+from logging import getLogger, DEBUG
+
+
+logger = getLogger('werkzeug')
+logger.setLevel(DEBUG)
 
 
 auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
