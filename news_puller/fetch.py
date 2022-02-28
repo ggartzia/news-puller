@@ -113,11 +113,13 @@ def filter_feed(theme, paper, news):
                   }
 
         tweet_list = tweepy_shares(new)
-
-        print("Tweet list count", len(tweet_list))
-        print("Last tweet", tweet_list[-1])
-        new['lastTweet'] = tweet_list[-1]['_id']
-        new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
+        
+        if (tweet_list):
+            print("Tweet list count", len(tweet_list))
+            print("Last tweet", tweet_list[-1])
+            new['lastTweet'] = tweet_list[-1]['_id']
+            new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
+        
         new['image'] = select_image(item)
         
         filtered_news.append(new)
