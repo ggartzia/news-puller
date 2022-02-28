@@ -40,8 +40,8 @@ def tweepy_shares(new):
         Database.save_tweets(tweet_list)
         Database.save_users(users)
         
+        return tweet_list
+    
     except Exception as e:
-        pass
-        #logger.error('Something happened fetching tweets for: %s. %s', new['fullUrl'], e)
-
-    return tweet_list
+        logger.error('Something happened fetching tweets: %s', e)
+        return -1
