@@ -78,7 +78,14 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        return list(news)
+        mongo_db = Database.DATABASE['topics']
+        print("return only most used topics")
+        news = [n['topics'] = list(mongo_db.find({'name': {'$in': n['topics']}, 'theme': theme},
+                                                 {'_id': 0},
+                                                 sort=[('usage', pymongo.DESCENDING)]).limit(5))
+                for n in list(news)]
+        print(news)
+        return news
 
 
     def select_trending_news(hour, page):
@@ -88,6 +95,7 @@ class Database(object):
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, {'_id': 0 },
                              sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
+        
         return list(news)
 
 
