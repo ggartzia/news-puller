@@ -28,15 +28,40 @@ class Database(object):
         except Exception as e:
             logger.error('There was an error while trying to save new: %s, %s', new, e)
             
-            
+    
+    def save_topic(query):
+        updateResult = mongo_db.update_one(query, {'$inc': {'tweets': 1}})
+        return (updateResult.modified_count == 1)
+
+
     def save_topics(topics, theme):
+        saved_topics = []
+
         try:
             mongo_db = Database.DATABASE['topics']
-            result = mongo_db.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
-                                                            {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
-                                                            upsert=True) for t in topics])
+
+            for t in topics:
+                new_topics = []
+                words = t.split()
+                # Calculate only two words topics, if the two word topic exists in the DB, count and move on
+                if save_topic({'name': t, 'theme': theme}):
+                    new_topics.append(t) 
+                # If it does not exist, split the topic, if one or both exists count.
+                else:
+                    for w in words:
+                        if save_topic({'name': w, 'theme': theme}):
+                            new_topics.append(w)
+                # If none of them exist, save the three of them.
+                if not new_topics:
+                    new_topics = [t] + words
+
+                # Return only the topics saved
+                saved_topics.extend(new_topics)
+
         except Exception as e:
             logger.error('There was an error while trying to save topics: %s', e)
+
+        return saved_topics
 
 
     def save_tweets(tweets):
@@ -90,7 +115,7 @@ class Database(object):
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         news = map(Database.update_topics, list(news))
-        
+
         return list(news)
 
 

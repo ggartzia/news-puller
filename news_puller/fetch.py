@@ -70,20 +70,18 @@ def split_tags(text):
     #remove punctuation and split into seperate words
     text = re.findall(r'[a-záéíóúñç]+', text.lower(), flags = re.UNICODE)
     
-    new_tags = list(filter(lambda x: x not in STOP_WORDS, text))
+    words = list(filter(lambda x: x not in STOP_WORDS, text))
     
-    double_tags = list(zip(*[new_tags[i:] for i in range(2)]))
+    double_tags = list(zip(*[words[i:] for i in range(2)]))
 
-    new_tags = new_tags + list(map(lambda l: ' '.join(l), double_tags))
-
-    return new_tags
+    return list(map(lambda l: ' '.join(l), double_tags))
 
 
 def get_tags(title, description, theme):
     tags = split_tags(title) + split_tags(description)
     tags = list(dict.fromkeys(tags))
     
-    Database.save_topics(tags, theme)
+    tags = Database.save_topics(tags, theme)
 
     return tags
 
