@@ -98,7 +98,7 @@ def filter_feed(theme, paper, news):
                 if (new is None):
                     title = item['title']
                     description = get_description(item)
-                    new = {'_id': id,
+                    new = {'id': id,
                            'fullUrl': link,
                            'name': get_path(link),
                            'title': title,
