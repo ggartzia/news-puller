@@ -21,7 +21,7 @@ scheduler.add_job(lambda: news_update('elpais'), CronTrigger(minute='5', timezon
 scheduler.add_job(lambda: news_update('hola'), CronTrigger(minute='12', timezone='UTC'))
 scheduler.add_job(lambda: news_update('lecturas'), CronTrigger(minute='15', timezone='UTC'))
 scheduler.add_job(lambda: news_update('elmundo'), CronTrigger(minute='20', timezone='UTC'))
-scheduler.add_job(lambda: news_update('vanitatis'), CronTrigger(minute='25', timezone='UTC'))
+scheduler.add_job(lambda: news_update('mundodeportivo'), CronTrigger(minute='25', timezone='UTC'))
 scheduler.add_job(lambda: news_update('as'), CronTrigger(minute='28', timezone='UTC'))
 scheduler.add_job(lambda: news_update('huffington'), CronTrigger(minute='32', timezone='UTC'))
 scheduler.add_job(lambda: news_update('okdiario'), CronTrigger(minute='37', timezone='UTC'))
