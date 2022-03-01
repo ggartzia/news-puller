@@ -62,12 +62,6 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
-def get_path(url):
-    m = re.findall(r'[^\/]+', url)
-  
-    return m[-1]
-
-
 def split_tags(text):
     #remove punctuation and split into seperate words
     text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
@@ -105,7 +99,6 @@ def filter_feed(theme, paper, news):
                     description = get_description(item)
                     new = {'id': id,
                            'fullUrl': link,
-                           'name': get_path(link),
                            'title': title,
                            'description': description,
                            'paper': paper,
