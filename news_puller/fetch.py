@@ -4,7 +4,7 @@ from logging import getLogger, DEBUG
 from news_puller.db import Database
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
-import BeautifulSoup
+import html
 import time
 import os
 import re
@@ -49,10 +49,10 @@ def get_description(new):
 
     elif 'description' in new:
       description = new['description']
-
-    html_decoded_string = BeautifulSoup(description, convertEntities=BeautifulSoup.HTML_ENTITIES)
-    print("------New description", html_decoded_string)
-    return html_decoded_string
+    
+    # Remove html tags from description
+    html_decoded_string = html.unescape(description)
+    return re.sub(r'<(.|\n)*?>', '', html_decoded_string)
 
 
 def create_unique_id(url):
@@ -92,6 +92,7 @@ def get_tags(title, description, theme):
 
 def filter_feed(theme, paper, news):
     twitter_exceded = False
+    # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
         try:
             if bool(item) :
