@@ -7,22 +7,10 @@ PAPER_LIST = [
       'theme': 'noticias'
     },
     {
-      'paper': 'elpais',
-      'name': 'EL PAÍS',
-      'feed': 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/deportes/portada',
-      'theme': 'deportes'
-    },
-    {
       'paper': 'elmundo',
       'name': 'El Mundo',
       'feed': 'https://e00-elmundo.uecdn.es/elmundo/rss/espana.xml',
       'theme': 'noticias'
-    },
-    {
-      'paper': 'elmundo',
-      'name': 'El Mundo',
-      'feed': 'https://e00-elmundo.uecdn.es/elmundodeporte/rss/portada.xml',
-      'theme': 'deportes'
     },
     {
       'paper': 'huffington',
@@ -37,28 +25,16 @@ PAPER_LIST = [
       'theme': 'noticias'
     },
     {
-      'paper': 'vanguardia',
-      'name': 'La Vanguardia',
-      'feed': 'https://www.lavanguardia.com/rss/deportes.xml',
-      'theme': 'deportes'
-    },
-    {
       'paper': 'confidencial',
       'name': 'El Confidencial',
       'feed': 'https://rss.elconfidencial.com/espana/',
       'theme': 'noticias'
     },
     {
-      'paper': 'confidencial',
-      'name': 'El Confidencial',
-      'feed': 'https://rss.elconfidencial.com/deportes/',
+      'paper': 'mundodeportivo',
+      'name': 'Mundo Deportivo',
+      'feed': 'https://www.mundodeportivo.com/mvc/feed/rss/home',
       'theme': 'deportes'
-    },
-    {
-      'paper': 'vanitatis',
-      'name': 'Vanitatis',
-      'feed': 'https://rss.vanitatis.elconfidencial.com/noticias/',
-      'theme': 'corazon'
     },
     {
       'paper': 'publico',
