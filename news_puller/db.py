@@ -71,13 +71,16 @@ class Database(object):
 
 
     def select_last_news(hour, theme, page):
+        print("select_last_news", hour, theme, page)
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
-        
+        print("select_last_news", last_hour_date_time)
         mongo_db = Database.DATABASE['news']
+        print("database")
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-
+        print("this are the news", news)
+        print("this are the news", list(news))
         return list(news)
 
 
@@ -111,11 +114,13 @@ class Database(object):
 
 
     def select_topics(theme, limit):
+        print("select_topics", theme, limit)
         mongo_db = Database.DATABASE['topics']
 
         topics = mongo_db.find({'theme': theme},
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
-
+        print("this are the topics", topics)
+        print("this are the topics", list(topics))
         return list(topics)
 
 
