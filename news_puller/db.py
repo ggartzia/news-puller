@@ -114,12 +114,10 @@ class Database(object):
 
 
     def select_topics(theme, limit):
-        print("select_topics", theme, limit)
         mongo_db = Database.DATABASE['topics']
 
-        topics = mongo_db.find({'theme': theme},
+        topics = mongo_db.find({'theme': theme}, {'_id': 0 },
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
-        print("this are the topics", topics)
         print("this are the topics", list(topics))
         return list(topics)
 
