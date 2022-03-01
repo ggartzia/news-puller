@@ -13,8 +13,6 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
-CLEANR = re.compile('<.*?>')
-
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 STOP_WORDS_DIR = os.path.join(CURRENT_DIR, 'spanish.txt')
 STOP_WORDS = []
@@ -31,10 +29,6 @@ def select_image(new):
     
     elif 'media_content' in new:
         thumb_image = new['media_content'][0]['url']
-    
-    elif 'enclosure' in new:
-        print('Enclosure image', new['enclosure'])
-        thumb_image = new['enclosure'][0]['url']
         
     return thumb_image
 
@@ -42,11 +36,7 @@ def select_image(new):
 def get_description(new):
     description = ''
 
-    if 'media_description' in new:
-        print("How can we avoid this", new)
-        description = re.sub(CLEANR, '', new['media_description'])
-    
-    elif 'dc_abstract' in new:
+    if 'dc_abstract' in new:
         description = new['dc_abstract']
     
     elif 'content' in new:
@@ -88,8 +78,8 @@ def split_tags(text):
 
 
 def get_tags(title, description, theme):
-    #tags = split_tags(title) + split_tags(description)
-    #tags = list(dict.fromkeys(tags))
+    tags = split_tags(title) + split_tags(description)
+    tags = list(dict.fromkeys(tags))
     tags = Database.save_topics(split_tags(title), theme)
 
     return tags
