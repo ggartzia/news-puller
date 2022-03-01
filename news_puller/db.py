@@ -56,16 +56,13 @@ class Database(object):
             logger.error('There was an error while trying to save tweets: %s', e)
 
 
-    def save_users(users):
+    def save_user(user):
         try:
-            if users:
-              mongo_db = Database.DATABASE['users']
-              mongo_db.bulk_write([pymongo.UpdateOne(u,
-                                                     {'$setOnInsert': u , '$inc':{'tweets': 1}},
-                                                     upsert=True) for u in users])
+            mongo_db = Database.DATABASE['users']
+            mongo_db.update_one({'_id': user['id']}, {'$setOnInsert': user , '$inc':{'tweets': 1}}, upsert=True)
 
         except Exception as e:
-            logger.error('There was an error while trying to save users: %s', e)
+            logger.error('There was an error while trying to save user: %s, %s', user, e)
 
 
     def search_new(id):
