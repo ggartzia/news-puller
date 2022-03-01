@@ -7,7 +7,7 @@ logger.setLevel(DEBUG)
 
 def get_media(theme):
     total = []
-    media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST)
+    media = filter(lambda m: m['theme'] == theme, cfg.PAPER_LIST.values())
 
     try:
         for plist in media:
