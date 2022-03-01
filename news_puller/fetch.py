@@ -4,6 +4,7 @@ from logging import getLogger, DEBUG
 from news_puller.db import Database
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
+import BeautifulSoup
 import time
 import os
 import re
@@ -12,6 +13,7 @@ import re
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
+NUM_NEWS_PARSE = 50
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 STOP_WORDS_DIR = os.path.join(CURRENT_DIR, 'spanish.txt')
@@ -48,7 +50,9 @@ def get_description(new):
     elif 'description' in new:
       description = new['description']
 
-    return description
+    html_decoded_string = BeautifulSoup(description, convertEntities=BeautifulSoup.HTML_ENTITIES)
+    print("------New description", html_decoded_string)
+    return html_decoded_string
 
 
 def create_unique_id(url):
@@ -88,7 +92,7 @@ def get_tags(title, description, theme):
 
 def filter_feed(theme, paper, news):
     twitter_exceded = False
-    for item in news:
+    for item in news[:NUM_NEWS_PARSE]:
         try:
             if bool(item) :
                 link = item['link']
