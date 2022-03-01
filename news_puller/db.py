@@ -89,7 +89,9 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        return map(Database.update_topics, list(news))
+        news = map(Database.update_topics, list(news))
+        
+        return list(news)
 
 
     def select_trending_news(hour, page):
