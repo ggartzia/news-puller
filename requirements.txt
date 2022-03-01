@@ -21,4 +21,3 @@ numpy
 DateTime
 tweepy
 APScheduler
-beautifulsoup4
