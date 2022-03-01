@@ -35,6 +35,11 @@ def select_image(new):
     return thumb_image
 
 
+def clean_html(text):
+    html_decoded_string = html.unescape(text)
+    return re.sub(r'<(.|\n)*?>', '', html_decoded_string)
+
+
 def get_description(new):
     description = ''
 
@@ -51,8 +56,7 @@ def get_description(new):
       description = new['description']
     
     # Remove html tags from description
-    html_decoded_string = html.unescape(description)
-    return re.sub(r'<(.|\n)*?>', '', html_decoded_string)
+    return clean_html(description)
 
 
 def create_unique_id(url):
@@ -95,7 +99,7 @@ def filter_feed(theme, paper, news):
                 new = Database.search_new(id)
 
                 if (new is None):
-                    title = item['title']
+                    title = clean_html(item['title'])
                     description = get_description(item)
                     new = {'id': id,
                            'fullUrl': link,
