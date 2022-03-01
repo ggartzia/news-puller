@@ -25,12 +25,14 @@ def tweepy_shares(new):
 
         for tweet in tweets:
             twt = tweet._json
-
-            users.append({'_id': twt['user']['id'],
-                          'name': twt['user']['name'],
-                          'screen_name': twt['user']['screen_name'],
-                          'image': twt['user']['profile_image_url_https']})
-
+            
+            # Save user individually to upsert
+            Database.save_user({'id': twt['user']['id'],
+                                'name': twt['user']['name'],
+                                'screen_name': twt['user']['screen_name'],
+                                'image': twt['user']['profile_image_url_https']})
+            
+            # Add tweet on a list and return the list
             tweet_list.append({'_id': twt['id'],
                                'created_at': twt['created_at'],
                                'text': twt['text'],
@@ -38,7 +40,6 @@ def tweepy_shares(new):
                                'user': twt['user']['id']})
 
         Database.save_tweets(tweet_list)
-        Database.save_users(users)
         
         return tweet_list
     
