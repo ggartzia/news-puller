@@ -64,7 +64,7 @@ def create_unique_id(url):
 
 def split_tags(text):
     #remove punctuation and split into seperate words
-    text = re.findall(r'\w+', text.lower(), flags = re.UNICODE)
+    text = re.findall(r'[a-záéíóúñç]+', text.lower(), flags = re.UNICODE)
     
     new_tags = list(filter(lambda x: x not in STOP_WORDS, text))
     
