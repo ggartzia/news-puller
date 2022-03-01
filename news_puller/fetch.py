@@ -55,7 +55,7 @@ def get_description(new):
     elif 'summary' in new:
         description = new['summary']
 
-    else:
+    elif 'description' in new:
       description = new['description']
 
     return description
