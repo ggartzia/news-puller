@@ -70,6 +70,17 @@ class Database(object):
         return new
 
 
+    def update_topics(new):
+        mongo_db = Database.DATABASE['topics']
+        topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
+                               {'_id': 0},
+                               sort=[('usage', pymongo.DESCENDING)]).limit(5)
+        
+        new['topics'] = list(topics)
+        
+        return new
+
+
     def select_last_news(hour, theme, page):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
@@ -78,14 +89,7 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        mongo_db = Database.DATABASE['topics']
-        print("return only most used topics")
-        news = [n['topics'] = list(mongo_db.find({'name': {'$in': n['topics']}, 'theme': theme},
-                                                 {'_id': 0},
-                                                 sort=[('usage', pymongo.DESCENDING)]).limit(5))
-                for n in list(news)]
-        print(news)
-        return news
+        return map(update_topics, list(news))
 
 
     def select_trending_news(hour, page):
