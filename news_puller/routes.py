@@ -82,7 +82,8 @@ def get_related_news(id, page):
 @cross_origin()
 def get_topics(theme):
     topics = Database.select_topics(theme, 50)
-
+    print("Hello topics", topics)
+    print("Hello topics", jsonify(topics))
     return jsonify(topics)
 
 
