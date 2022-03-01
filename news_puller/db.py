@@ -23,7 +23,7 @@ class Database(object):
     def save_new(new):
         try:
             mongo_db = Database.DATABASE['news']
-            mongo_db.update_one({'_id': new['_id']}, {'$set': new}, upsert=True)
+            mongo_db.update_one({'_id': new['id']}, {'$set': new}, upsert=True)
 
         except Exception as e:
             logger.error('There was an error while trying to save new: %s, %s', new, e)
@@ -75,7 +75,7 @@ class Database(object):
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
-                              'theme' : theme},
+                              'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
@@ -85,7 +85,7 @@ class Database(object):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, {'_id': 0 },
                              sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(news)
