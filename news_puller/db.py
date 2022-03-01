@@ -71,16 +71,13 @@ class Database(object):
 
 
     def select_last_news(hour, theme, page):
-        print("select_last_news", hour, theme, page)
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
-        print("select_last_news", last_hour_date_time)
+
         mongo_db = Database.DATABASE['news']
-        print("database")
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme},
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-        print("this are the news", news)
-        print("this are the news", list(news))
+
         return list(news)
 
 
@@ -96,6 +93,7 @@ class Database(object):
 
     def select_topic_news(topic, page):
         mongo_db = Database.DATABASE['news']
+        
         news = mongo_db.find({'topics': topic},
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
@@ -115,10 +113,10 @@ class Database(object):
 
     def select_topics(theme, limit):
         mongo_db = Database.DATABASE['topics']
-
+        
         topics = mongo_db.find({'theme': theme}, {'_id': 0 },
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
-        print("this are the topics", list(topics))
+
         return list(topics)
 
 
@@ -133,6 +131,7 @@ class Database(object):
 
     def num_news(paper, theme):
         mongo_db = Database.DATABASE['news']
+        
         return mongo_db.count_documents({'paper': paper, 'theme': theme})
 
 
@@ -147,4 +146,5 @@ class Database(object):
 
     def num_tweets(new):
         mongo_db = Database.DATABASE['tweets']
+        
         return mongo_db.count_documents({'new': new})
