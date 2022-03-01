@@ -30,20 +30,13 @@ class Database(object):
             
             
     def save_topics(topics, theme):
-        most_used_topics = []
         try:
             mongo_db = Database.DATABASE['topics']
             result = mongo_db.bulk_write([pymongo.UpdateOne({'name': t, 'theme': theme},
                                                             {'$setOnInsert': {'name': t, 'theme': theme} , '$inc':{'usage': 1}},
                                                             upsert=True) for t in topics])
-
-            most_used_topics = mongo_db.find({'name': {'$in': topics},
-                                              'theme': theme},
-                                             sort=[('usage', pymongo.DESCENDING)]).limit(3)
         except Exception as e:
             logger.error('There was an error while trying to save topics: %s', e)
-
-        return list(most_used_topics)
 
 
     def save_tweets(tweets):
