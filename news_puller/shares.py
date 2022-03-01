@@ -36,7 +36,7 @@ def tweepy_shares(new):
             tweet_list.append({'_id': twt['id'],
                                'created_at': twt['created_at'],
                                'text': twt['text'],
-                               'new': new['_id'],
+                               'new': new['id'],
                                'user': twt['user']['id']})
 
         Database.save_tweets(tweet_list)
