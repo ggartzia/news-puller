@@ -128,18 +128,16 @@ def filter_feed(theme, paper, news):
 
 
 def get_news(paper):
-    media = filter(lambda m: m['paper'] == paper, cfg.PAPER_LIST)
+    try:
+        media = cfg.PAPER_LIST[paper]
+        paper_news = feedparser.parse(media['feed'])
 
-    for plist in media:
-        try:
-            paper_news = feedparser.parse(plist['feed'])
+        if paper_news.status == 200:
+            filter_feed(media['theme'], media['paper'], paper_news['entries'])
+        else:
+            logger.error('Some connection error', paper_news.status)
 
-            if paper_news.status == 200:
-                filter_feed(plist['theme'], plist['paper'], paper_news['entries'])
-            else:
-                logger.error('Some connection error', paper_news.status)
-
-        except Exception as e:
-            logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
+    except Exception as e:
+        logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
 
     pass
