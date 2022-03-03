@@ -44,12 +44,12 @@ class Database(object):
                 new_topics = []
                 words = t.split()
                 # Calculate only two words topics, if the two word topic exists in the DB, count and move on
-                if save_topic({'name': t, 'theme': theme}):
+                if Database.save_topic({'name': t, 'theme': theme}):
                     new_topics.append(t) 
                 # If it does not exist, split the topic, if one or both exists count.
                 else:
                     for w in words:
-                        if save_topic({'name': w, 'theme': theme}):
+                        if Database.save_topic({'name': w, 'theme': theme}):
                             new_topics.append(w)
                 # If none of them exist, save the three of them.
                 if not new_topics:
