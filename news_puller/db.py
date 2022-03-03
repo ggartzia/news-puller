@@ -29,32 +29,34 @@ class Database(object):
             logger.error('There was an error while trying to save new: %s, %s', new, e)
 
 
+    def update_topic(mongo_db, topic, theme, saved_topics):
+        if topic not in saved_topics:
+            updateResult = mongo_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'tweets': 1}})
+            return (updateResult.modified_count == 1)
+        return True
+
+
     def save_topics(topics, theme):
         print("Start topics", topics)
         saved_topics = []
         mongo_db = Database.DATABASE['topics']
-        save = lambda t: (
-            if t not in saved_topics:
-                updateResult = mongo_db.update_one({'name': t, 'theme': theme}, {'$inc': {'tweets': 1}})
-                return (updateResult.modified_count == 1)
-            return True)
 
         try:
             for t in topics:
                 new_topics = []
 
                 # Calculate only two words topics, if the two word topic exists in the DB, count and move on
-                if save(t): new_topics.append(t)
+                if Database.update_topic(mongo_db, t, theme, saved_topics): new_topics.append(t)
                 else:
                     # If it does not exist, split the topic, if one or both exists count.
                     words = t.split()
                     for w in words:
-                        if save(w): new_topics.append(w)
+                        if Database.update_topic(mongo_db, w, theme, saved_topics): new_topics.append(w)
 
                     # If none of them exist, save the three of them.
                     if not new_topics: 
                         new_topics = [t] + words
-                        mongo_db.insert_many([{'name': t, 'theme': theme} for t in new_topics])
+                        mongo_db.insert_many([{'name': t, 'theme': theme, 'tweets': 1} for t in new_topics])
 
                 # Return only the topics saved
                 saved_topics.extend(new_topics)
