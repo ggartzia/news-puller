@@ -32,6 +32,7 @@ class Database(object):
     def update_topic(mongo_db, topic, theme, saved_topics):
         if topic not in saved_topics:
             updateResult = mongo_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'tweets': 1}})
+            print("updateResult", updateResult, updateResult.modified_count, (updateResult.modified_count == 1))
             return (updateResult.modified_count == 1)
         return True
 
@@ -54,7 +55,8 @@ class Database(object):
                         if Database.update_topic(mongo_db, w, theme, saved_topics): new_topics.append(w)
 
                     # If none of them exist, save the three of them.
-                    if not new_topics: 
+                    if not new_topics:
+                        print("what have we saved?", new_topics)
                         new_topics = [t] + words
                         mongo_db.insert_many([{'name': t, 'theme': theme, 'tweets': 1} for t in new_topics])
 
