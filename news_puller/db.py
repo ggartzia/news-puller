@@ -33,11 +33,10 @@ class Database(object):
         print("Start topics", topics)
         saved_topics = []
         mongo_db = Database.DATABASE['topics']
-        save = lambda t: (
-                    if t not in saved_topics:
-                        updateResult = mongo_db.update_one({'name': t, 'theme': theme}, {'$inc': {'tweets': 1}})
-                        return (updateResult.modified_count == 1)
-                    return True)
+        save = lambda t: (if t not in saved_topics:
+                              updateResult = mongo_db.update_one({'name': t, 'theme': theme}, {'$inc': {'tweets': 1}})
+                              return (updateResult.modified_count == 1)
+                          return True)
 
         try:
             for t in topics:
