@@ -30,6 +30,8 @@ class Database(object):
             
     
     def save_topic(query):
+        mongo_db = Database.DATABASE['topics']
+        
         updateResult = mongo_db.update_one(query, {'$inc': {'tweets': 1}})
         return (updateResult.modified_count == 1)
 
@@ -38,19 +40,20 @@ class Database(object):
         saved_topics = []
 
         try:
-            mongo_db = Database.DATABASE['topics']
-
             for t in topics:
                 new_topics = []
                 words = t.split()
+
                 # Calculate only two words topics, if the two word topic exists in the DB, count and move on
                 if Database.save_topic({'name': t, 'theme': theme}):
-                    new_topics.append(t) 
+                    new_topics.append(t)
+
                 # If it does not exist, split the topic, if one or both exists count.
                 else:
                     for w in words:
                         if Database.save_topic({'name': w, 'theme': theme}):
                             new_topics.append(w)
+
                 # If none of them exist, save the three of them.
                 if not new_topics:
                     new_topics = [t] + words
