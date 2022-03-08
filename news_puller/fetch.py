@@ -70,7 +70,7 @@ def split_tags(text):
     #remove punctuation and split into seperate words
     text = re.findall(r'[a-záéíóúñç]+', text.lower(), flags = re.UNICODE)
     
-    words = list(filter(lambda x: x not in STOP_WORDS, text))
+    words = list(filter(lambda x: x not in STOP_WORDS and len(x) > 2, text))
     
     double_tags = list(zip(*[words[i:] for i in range(2)]))
 
