@@ -30,7 +30,7 @@ class Database(object):
 
 
     def update_topic(mongo_db, topic, theme, saved_topics):
-        print("Topics saved", saved_topics)
+        print("Topics saved so far", saved_topics)
         if topic not in saved_topics:
             updateResult = mongo_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'tweets': 1}})
             return (updateResult.modified_count == 1)
@@ -49,19 +49,17 @@ class Database(object):
                 # Calculate only two words topics, if the two word topic exists in the DB, count and move on
                 if Database.update_topic(mongo_db, t, theme, saved_topics):
                     new_topics.append(t)
-                    print("Double word:", new_topics)
                 else:
                     # If it does not exist, split the topic, if one or both exists count.
                     words = t.split()
                     for w in words:
                         if Database.update_topic(mongo_db, w, theme, saved_topics):
                             new_topics.append(w)
-                            print("New word:", new_topics)
                     
                     # If none of them exist, save the three of them.
                     if not new_topics:
                         new_topics = [t] + words
-                        mongo_db.insert_many([{'name': t, 'theme': theme, 'tweets': 1} for t in new_topics])
+                        mongo_db.insert_many([{'name': nt, 'theme': theme, 'tweets': 1} for nt in new_topics])
 
                 # Return only the topics saved
                 saved_topics += new_topics
