@@ -130,7 +130,8 @@ class Database(object):
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, {'_id': 0 },
                              sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-
+        
+        news = map(Database.update_topics, list(news))
         
         return list(news)
 
@@ -138,9 +139,11 @@ class Database(object):
     def select_topic_news(topic, page):
         mongo_db = Database.DATABASE['news']
         
-        news = mongo_db.find({'topics': topic},
+        news = mongo_db.find({'topics': topic}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
+        news = map(Database.update_topics, list(news))
+        
         return list(news)
 
 
@@ -167,10 +170,10 @@ class Database(object):
     def select_tweets(new, page):
         mongo_db = Database.DATABASE['tweets']
 
-        news = mongo_db.find({'new': new},
-                             sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+        tweets = mongo_db.find({'new': new},
+                                sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        return list(news)
+        return list(tweets)
     
 
     def num_news(paper, theme):
@@ -187,6 +190,7 @@ class Database(object):
             return None
         else:
             return new['published']
+
 
     def num_tweets(new):
         mongo_db = Database.DATABASE['tweets']
