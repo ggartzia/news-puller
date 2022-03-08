@@ -30,9 +30,9 @@ class Database(object):
 
 
     def update_topic(mongo_db, topic, theme, saved_topics):
-        print("Topics saved so far", saved_topics)
         if topic not in saved_topics:
             updateResult = mongo_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'tweets': 1}})
+            print(topic, updateResult.raw_result)
             return (updateResult.modified_count == 1)
         return True
 
@@ -64,6 +64,7 @@ class Database(object):
                 # Return only the topics saved
                 saved_topics += new_topics
 
+            saved_topics = list(dict.fromkeys(saved_topics))
         except Exception as e:
             logger.error('There was an error while trying to save topics: %s', e)
         print("End topics", saved_topics)
