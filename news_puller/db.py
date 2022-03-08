@@ -32,7 +32,7 @@ class Database(object):
     def update_topic(mongo_db, topic, theme, saved_topics):
         if topic not in saved_topics:
             updateResult = mongo_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'tweets': 1}})
-            print(topic, updateResult.raw_result)
+            print(topic, updateResult.modified_count, updateResult.matched_count, updateResult.raw_result['updatedExisting'])
             return (updateResult.modified_count == 1)
         return True
 
