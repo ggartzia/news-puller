@@ -13,7 +13,7 @@ class Database(object):
     
     URI = 'mongodb+srv://%s:%s@newscluster.3saws.mongodb.net/news?retryWrites=true&w=majority' % (cfg.MONGO_USERNAME, cfg.MONGO_PASSWORD)
     DATABASE = None
-    PAGE_SIZE = 12
+    PAGE_SIZE = 6
 
     def initialize():
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
