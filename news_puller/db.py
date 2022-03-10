@@ -158,11 +158,11 @@ class Database(object):
         return list(news) 
 
 
-    def select_topics(theme, limit):
+    def select_topics(theme, page):
         mongo_db = Database.DATABASE['topics']
         
-        topics = mongo_db.find({'theme': theme}, {'_id': 0 },
-                               sort=[('usage', pymongo.DESCENDING)]).limit(limit)
+        topics = mongo_db.find({'theme': theme}, {'_id': 0},
+                               sort=[('usage', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(2 * Database.PAGE_SIZE)
 
         return list(topics)
 
@@ -175,6 +175,15 @@ class Database(object):
 
         return list(tweets)
     
+
+    def select_users(page):
+        mongo_db = Database.DATABASE['users']
+
+        users = mongo_db.find({},
+                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+
+        return list(users)
+
 
     def num_news(paper, theme):
         mongo_db = Database.DATABASE['news']
