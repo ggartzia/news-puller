@@ -162,7 +162,7 @@ class Database(object):
         mongo_db = Database.DATABASE['topics']
         
         topics = mongo_db.find({'theme': theme}, {'_id': 0},
-                               sort=[('usage', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(2 * Database.PAGE_SIZE)
+                               sort=[('usage', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(4 * Database.PAGE_SIZE)
 
         return list(topics)
 
@@ -180,7 +180,7 @@ class Database(object):
         mongo_db = Database.DATABASE['users']
 
         users = mongo_db.find({},
-                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE * 2)
+                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(3 * Database.PAGE_SIZE)
 
         return list(users)
 
