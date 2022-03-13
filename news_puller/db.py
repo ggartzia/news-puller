@@ -180,7 +180,7 @@ class Database(object):
         mongo_db = Database.DATABASE['users']
 
         users = mongo_db.find({},
-                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE * 2)
 
         return list(users)
 
