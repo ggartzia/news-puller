@@ -102,6 +102,14 @@ def fetch_users(page):
     return jsonify(users)
 
 
+@app.route('/get/tweets/<id>', methods=['GET'])
+@cross_origin()
+def get_all_tweets(id):
+    tweets = Database.select_all_tweets(id)
+
+    return jsonify(tweets)
+
+
 @app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_tweets(id, page):

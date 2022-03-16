@@ -94,17 +94,19 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
+            new = Database.update_topics(new, 10)
+
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
             
         return new
 
 
-    def update_topics(new):
+    def update_topics(new, limit=3):
         mongo_db = Database.DATABASE['topics']
         topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
                                {'_id': 0},
-                               sort=[('usage', pymongo.DESCENDING)]).limit(5)
+                               sort=[('usage', pymongo.DESCENDING)]).limit(limit)
         
         new['topics'] = list(topics)
         
@@ -165,6 +167,15 @@ class Database(object):
                                sort=[('usage', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(4 * Database.PAGE_SIZE)
 
         return list(topics)
+
+
+    def select_all_tweets(new):
+        mongo_db = Database.DATABASE['tweets']
+
+        tweets = mongo_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
+                                sort=[('created_at', pymongo.DESCENDING)])
+
+        return list(tweets)
 
 
     def select_tweets(new, page):
