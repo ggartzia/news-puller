@@ -1,12 +1,10 @@
 from sklearn.metrics.pairwise import euclidean_distances
 
 
-def calculate_similarity(new, data_array):
-  print('****** Text Similarity::start ******')
+def calculate_similarity(new, data):
   similarity_collection = []
   
-  for idx in data_array:
-    compare_to = data_array[idx]
+  for compare_to in data:
     distance = euclidean_distances(new['topics'], compare_to['topics'])[0][0]
 
     if distance < 4:
