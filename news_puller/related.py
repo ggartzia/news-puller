@@ -4,6 +4,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 
 def calculate_similarity(new, data):
   similarity_collection = []
+  vectorizer = CountVectorizer()
   
   for compare_to in data:
     corpus = []

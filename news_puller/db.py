@@ -95,7 +95,9 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
-            new = Database.update_topics(new, 10)
+            
+            if new:
+                new = Database.update_topics(new, 10)
 
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
