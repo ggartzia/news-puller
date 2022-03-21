@@ -21,3 +21,4 @@ numpy
 DateTime
 tweepy
 APScheduler
+scikit-learn
