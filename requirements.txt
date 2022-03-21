@@ -12,7 +12,6 @@ Jinja2
 MarkupSafe
 pymongo
 python-dotenv
-nltk
 feedparser
 requests
 urllib3

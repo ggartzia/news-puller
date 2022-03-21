@@ -1,5 +1,6 @@
 import re
 import news_puller.config as cfg
+from news_puller.related import get_related
 from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
@@ -149,13 +150,12 @@ class Database(object):
         return list(news)
 
 
-    def select_related_news(id, page):
+    def select_related_news(id):
         mongo_db = Database.DATABASE['news']
         main_new = Database.search_new(id)
 
         if main_new:
-            news = mongo_db.find({'topics': {'$all': main_new['topics']}},
-                                 sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+            news = []
 
         return list(news) 
 
