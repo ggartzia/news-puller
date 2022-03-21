@@ -150,7 +150,7 @@ class Database(object):
         return list(news)
 
 
-    def select_related_news(id, page):
+    def select_related_news(id):
         mongo_db = Database.DATABASE['news']
         main_new = Database.search_new(id)
 
