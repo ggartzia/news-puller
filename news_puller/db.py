@@ -155,7 +155,7 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            news = get_related(main_new)
+            news = [] #get_related(main_new)
 
         return list(news) 
 
