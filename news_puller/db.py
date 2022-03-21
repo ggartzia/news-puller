@@ -1,6 +1,6 @@
 import re
 import news_puller.config as cfg
-import news_puller.related as rltd
+#from news_puller.related import get_related
 from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
@@ -114,7 +114,7 @@ class Database(object):
         return new
 
 
-    def select_last_news(hour, theme, page, limit = Database.PAGE_SIZE):
+    def select_last_news(hour, theme, page, limit=Database.PAGE_SIZE, topics=3):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
@@ -122,7 +122,7 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(limit)
 
-        news = map(Database.update_topics, list(news))
+        news = map(lambda n: Database.update_topics(n, topics), list(news))
 
         return list(news)
 
@@ -155,7 +155,7 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            news = rltd.get_related(main_new)
+            news = get_related(main_new)
 
         return list(news) 
 
