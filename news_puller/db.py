@@ -1,6 +1,6 @@
 import re
 import news_puller.config as cfg
-from news_puller.related import get_related
+from news_puller.related import calculate_similarity
 from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
@@ -155,7 +155,9 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            news = get_related(main_new)
+            to_compare = Database.select_last_news(48, main_new['theme'], 0, 500)
+
+            news = calculate_similarity(main_new, to_compare)
 
         return list(news) 
 
