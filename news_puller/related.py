@@ -11,6 +11,7 @@ class SimilarityThread (threading.Thread):
    self.data_array = data_array
    self.totalSize = totalSize
    self.startIndex = startIndex
+   self.similarity_collection = []
 
 
    def run(self):
@@ -22,7 +23,7 @@ def calculateDistance(new1, new2):
 
 
 def calculateSimilarity( new, data_array, from, to ):
-  similarity_collection = {}
+  similarity_collection = []
   
   for idx in range(from, to):
     compare_to = data_array[idx]
@@ -31,13 +32,14 @@ def calculateSimilarity( new, data_array, from, to ):
 
     if distance < 4:
       print("Distance ====> %d " % distance)
-      similarity_collection[compare_to['id']] = distance
+      compare_to['distance'] = distance
+      similarity_collection.append(compare_to)
 
   return similarity_collection
 
 
 def processTextSimilarity(new, data_array):
-  similarity_collection = {}
+  similarity_collection = []
   
   num_cores = multiprocessing.cpu_count()
   print(":::num cores ==> %d " % num_cores)
@@ -56,16 +58,16 @@ def processTextSimilarity(new, data_array):
   # Wait for all threads to complete
   for t in threads:
     t.join()
-    similarity_collection.update(t.similarity_collection)
+    similarity_collection += t.similarity_collection
   
-  sort_by_distance = sorted(similarity_collection.items(), key=lambda x: x[1], reverse=True)
+  sort_by_distance = sorted(similarity_collection, key=lambda d: d['distance']) 
   
   return sort_by_distance[:16]
 
 
 def get_related(new):
   print('****** Text Similarity::start ******')
-  data_array = Database.select_last_news(48, new['theme'], 0)
+  data_array = Database.select_last_news(48, new['theme'], 0, 500)
 
   article_similarity = processTextSimilarity(new, data_array)
 
