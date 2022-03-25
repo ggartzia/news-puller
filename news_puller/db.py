@@ -121,7 +121,8 @@ class Database(object):
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
-                              'theme': theme, {'_id': 0 },
+                              'theme': theme},
+                             {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         news = map(Database.update_topics, list(news))
@@ -133,7 +134,8 @@ class Database(object):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
-        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}}, {'_id': 0 },
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
+                             {'_id': 0 },
                              sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
         
         news = map(Database.update_topics, list(news))
@@ -144,7 +146,8 @@ class Database(object):
     def select_topic_news(topic, page):
         mongo_db = Database.DATABASE['news']
         
-        news = mongo_db.find({'topics': topic}, {'_id': 0 },
+        news = mongo_db.find({'topics': topic},
+                             {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         news = map(Database.update_topics, list(news))
