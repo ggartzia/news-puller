@@ -1,6 +1,6 @@
 import re
 import news_puller.config as cfg
-#from news_puller.related import get_related
+from news_puller.related import calculate_similarity
 from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
@@ -95,7 +95,9 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
-            new = Database.update_topics(new, 10)
+            
+            if new:
+                new = Database.update_topics(new, 10)
 
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
@@ -114,13 +116,13 @@ class Database(object):
         return new
 
 
-    def select_last_news(hour, theme, page, limit=Database.PAGE_SIZE, topics=3):
+    def select_last_news(hour, theme, page, lmt=6):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
                               'theme' : theme}, {'_id': 0 },
-                             sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(limit)
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * lmt).limit(lmt)
 
         news = map(lambda n: Database.update_topics(n, topics), list(news))
 
@@ -155,7 +157,8 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            news = [] #get_related(main_new)
+            to_compare = Database.select_last_news(48, main_new['theme'], 0, 500)
+            news = calculate_similarity(main_new, to_compare)
 
         return list(news) 
 

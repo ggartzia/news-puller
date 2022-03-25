@@ -1,35 +1,26 @@
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import euclidean_distances
-from news_puller.db import Database
-
-def calculateDistance(new1, new2):
-  text1 = ' '.join(new1['topics'])
-  text2 = ' '.join(new2['topics'])
-  return euclidean_distances(text1, text2)[0][0]
 
 
-def calculateSimilarity( new, data_array):
+def calculate_similarity(new, data):
   similarity_collection = []
+  vectorizer = CountVectorizer()
   
-  for idx in data_array:
-    compare_to = data_array[idx]
-    distance = calculateDistance(new, compare_to)
+  for compare_to in data:
+    corpus = []
+    corpus.append(' '.join(new['topics']))
+    corpus.append(' '.join(compare_to['topics']))
+    features = vectorizer.fit_transform(corpus).todense()
+
+    distance = euclidean_distances(features[0],features[1])[0][0]
 
     if distance < 4:
       print("Distance ====> %d " % distance)
       compare_to['distance'] = distance
       similarity_collection.append(compare_to)
 
-  return similarity_collection
-
- 
-def get_related(new):
-  print('****** Text Similarity::start ******')
-  data_array = Database.select_last_news(48, new['theme'], 0, 500)
-
-  similarity_collection = calculateSimilarity(new, data_array)
-  
   sort_by_distance = sorted(similarity_collection, key=lambda d: d['distance']) 
-  
-   print('****** Text Similarity::Ending ******')
-   
+
+  print('****** Text Similarity::Ending ******')
+
   return sort_by_distance[:16]
