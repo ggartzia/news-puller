@@ -124,9 +124,9 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * lmt).limit(lmt)
 
-        news = map(lambda n: Database.update_topics(n, 10), list(news))
+        news = [Database.update_topics(n, 10) for n in list(news)]
 
-        return list(news)
+        return news
 
 
     def select_trending_news(hour, page):
