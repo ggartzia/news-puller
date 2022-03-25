@@ -116,17 +116,17 @@ class Database(object):
         return new
 
 
-    def select_last_news(hour, theme, page, lmt=6):
+    def select_last_news(hour, theme, page):
         last_hour_date_time = datetime.now() - timedelta(hours = hour)
 
         mongo_db = Database.DATABASE['news']
         news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)},
-                              'theme' : theme}, {'_id': 0 },
-                             sort=[('published', pymongo.DESCENDING)]).skip(page * lmt).limit(lmt)
+                              'theme': theme, {'_id': 0 },
+                             sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        news = [Database.update_topics(n, 10) for n in list(news)]
+        news = map(Database.update_topics, list(news))
 
-        return news
+        return list(news)
 
 
     def select_trending_news(hour, page):
@@ -157,7 +157,13 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            to_compare = Database.select_last_news(48, main_new['theme'], 0, 500)
+            to_compare = mongo_db.find({'theme': main_new['theme'],
+                                        '_id': {'$ne': main_new['_id']}
+                                        'topics': {'$ne': None}},
+                                       sort=[('published', pymongo.DESCENDING)]).limit(300)
+
+            to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
+            
             news = calculate_similarity(main_new, to_compare)
 
         return list(news) 
