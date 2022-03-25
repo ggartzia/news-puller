@@ -48,15 +48,15 @@ def get_description(new):
 
     if 'dc_abstract' in new:
         description = new['dc_abstract']
-    
-    elif 'content' in new:
-        description = new['content'][0]['value']
         
     elif 'summary' in new:
         description = new['summary']
 
     elif 'description' in new:
       description = new['description']
+    
+    elif 'media_description' in new:
+      description = new['media_description']
     
     # Remove html tags from description
     return clean_html(description)
