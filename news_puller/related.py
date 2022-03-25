@@ -24,4 +24,3 @@ def calculate_similarity(new, data):
   print('****** Text Similarity::Ending ******')
 
   return sort_by_distance[:16]
-

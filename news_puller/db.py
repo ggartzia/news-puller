@@ -124,7 +124,7 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * lmt).limit(lmt)
 
-        news = map(Database.update_topics, list(news))
+        news = map(lambda n: Database.update_topics(n, topics), list(news))
 
         return list(news)
 
@@ -158,7 +158,6 @@ class Database(object):
 
         if main_new:
             to_compare = Database.select_last_news(48, main_new['theme'], 0, 500)
-
             news = calculate_similarity(main_new, to_compare)
 
         return list(news) 
