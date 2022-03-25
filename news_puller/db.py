@@ -124,7 +124,7 @@ class Database(object):
                               'theme' : theme}, {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * lmt).limit(lmt)
 
-        news = map(lambda n: Database.update_topics(n, topics), list(news))
+        news = map(lambda n: Database.update_topics(n, 10), list(news))
 
         return list(news)
 
