@@ -2,7 +2,9 @@ from sklearn.metrics.pairwise import euclidean_distances
 from news_puller.db import Database
 
 def calculateDistance(new1, new2):
-  return euclidean_distances(new1['topics'], new2['topics'])[0][0]
+  text1 = ' '.join(new1['topics'])
+  text2 = ' '.join(new2['topics'])
+  return euclidean_distances(text1, text2)[0][0]
 
 
 def calculateSimilarity( new, data_array):
