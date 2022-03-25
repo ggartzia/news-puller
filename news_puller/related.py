@@ -8,8 +8,8 @@ def calculate_similarity(new, data):
   
   for compare_to in data:
     corpus = []
-    corpus.append(new['title'])
-    corpus.append(compare_to['title'])
+    corpus.append(' '.join(new['topics']))
+    corpus.append(' '.join(compare_to['topics']))
     features = vectorizer.fit_transform(corpus).todense()
 
     distance = euclidean_distances(features[0],features[1])[0][0]
