@@ -157,7 +157,7 @@ class Database(object):
 
         if main_new:
             to_compare = mongo_db.find({'theme': main_new['theme'],
-                                        '_id': {'$ne': main_new['_id']}
+                                        '_id': {'$ne': main_new['_id']},
                                         'topics': {'$in': main_new['topics']}},
                                        sort=[('published', pymongo.DESCENDING)]).limit(300)
 
