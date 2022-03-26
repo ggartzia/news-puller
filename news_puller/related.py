@@ -24,6 +24,6 @@ def calculate_similarity(new, data):
       compare_to['distance'] = distance
       similarity_collection.append(compare_to)
 
-  #sort_by_distance = sorted(similarity_collection, key=lambda d: d['distance']) 
+  sort_by_distance = sorted(similarity_collection, key=lambda d: d['distance']) 
 
   return similarity_collection[:16]

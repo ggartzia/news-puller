@@ -107,11 +107,9 @@ class Database(object):
 
     def update_topics(new, limit=3):
         mongo_db = Database.DATABASE['topics']
-        print("TOPICS!!!!!!! ", new['topics'])
         topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
                                {'_id': 0},
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
-        print("TOPICS!!!!!!! ", topics)
         new['topics'] = list(topics)
         
         return new
@@ -165,11 +163,11 @@ class Database(object):
                                         '_id': {'$ne': main_new['_id']}},
                                        sort=[('published', pymongo.DESCENDING)]).limit(300)
 
-            to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
+            #to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
             
-            news = calculate_similarity(main_new, to_compare)
+            #news = calculate_similarity(main_new, to_compare)
 
-        return list(news) 
+        return list(to_compare) 
 
 
     def select_topics(theme, page):
