@@ -25,8 +25,8 @@ with open(STOP_WORDS_DIR, 'rb') as language_file:
 
 
 def select_image(new):
-    print("Hellooo??", new)
     thumb_image = ''
+
     if 'media_thumbnail' in new:
         thumb_image = new['media_thumbnail'][0]['url']
     
@@ -35,6 +35,12 @@ def select_image(new):
  
     elif 'enclosure' in new:
         thumb_image = new['enclosure'][0]['url']
+
+    elif 'links' in new:
+        print("Hellooo??", new['links'])
+        images = list(filter(lambda l: l['rel'] = 'enclosure', new['links']))
+        print("Hellooo??", images)
+        thumb_image = images[0]['href']
 
     return thumb_image
 
