@@ -161,8 +161,7 @@ class Database(object):
 
         if main_new:
             to_compare = mongo_db.find({'theme': main_new['theme'],
-                                        '_id': {'$ne': main_new['_id']},
-                                        'topics': {'$ne': None}},
+                                        '_id': {'$ne': main_new['_id']}},
                                        sort=[('published', pymongo.DESCENDING)]).limit(300)
 
             to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
