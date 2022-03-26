@@ -107,10 +107,11 @@ class Database(object):
 
     def update_topics(new, limit=3):
         mongo_db = Database.DATABASE['topics']
+        print("TOPICS!!!!!!! ", new['topics'])
         topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
                                {'_id': 0},
                                sort=[('usage', pymongo.DESCENDING)]).limit(limit)
-        
+        print("TOPICS!!!!!!! ", topics)
         new['topics'] = list(topics)
         
         return new
