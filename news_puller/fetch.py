@@ -33,6 +33,7 @@ def select_image(new):
         thumb_image = new['media_content'][0]['url']
  
     elif 'enclosure' in new:
+        print("Hellooo??", new)
         thumb_image = new['enclosure'][0]['url']
 
     return thumb_image

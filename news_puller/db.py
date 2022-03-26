@@ -95,9 +95,6 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
-            
-            if new:
-                new = Database.update_topics(new, 10)
 
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
@@ -160,12 +157,13 @@ class Database(object):
 
         if main_new:
             to_compare = mongo_db.find({'theme': main_new['theme'],
-                                        '_id': {'$ne': main_new['_id']}},
+                                        '_id': {'$ne': main_new['_id']}
+                                        'topics': {'$in': main_new['topics']}},
                                        sort=[('published', pymongo.DESCENDING)]).limit(300)
 
-            #to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
+            to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
             
-            #news = calculate_similarity(main_new, to_compare)
+            news = calculate_similarity(main_new, to_compare)
 
         return list(to_compare) 
 
