@@ -220,20 +220,7 @@ class Database(object):
                }
             ])
 
- #       pipeline = [{'$lookup':
- #                       {'from' : 'user',
- #                        'localField' : 'user',
- #                        'foreignField' : '_id',
- #                        'as' : 'cellmodels'}},
- #                    {'$unwind': '$cellmodels'},
- #                    {'$match': {'new': new}},
- #                    {'$project': {'authors':1, 'cellmodels.celltypes':1}}
- #                    ]
- #       mongo_db.aggregate();
- #       tweets = mongo_db.find({'new': new},
- #                               sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-
-        return list(tweets).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+        return list(tweets)[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
     
 
     def select_users(page):
