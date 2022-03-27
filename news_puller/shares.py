@@ -1,7 +1,7 @@
 import news_puller.config as cfg
 from news_puller.db import Database
 import tweepy
-import datetime
+from datetime import datetime
 from logging import getLogger, DEBUG
 
 
