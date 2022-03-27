@@ -211,9 +211,11 @@ class Database(object):
                },
                {
                   '$project': {'fromItems': 0}
+               },
+               {
+                  'short': {'created_at', pymongo.DESCENDING}
                }
-            ],
-            sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+            ]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
 
  #       pipeline = [{'$lookup':
