@@ -206,20 +206,20 @@ class Database(object):
                      'as': 'from'
                   }
                },
-               {
-                  '$unwind': '$from'
-               },
-               {
-                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$from', 0]}, '$$ROOT']}}
-               },
-               {
-                  '$project': {'from': 0}
-               },
+#               {
+#                  '$unwind': '$from'
+#               },
+#               {
+#                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$from', 0]}, '$$ROOT']}}
+#               },
+#               {
+#                  '$project': {'from': 0}
+#               },
                {
                   '$sort': {'created_at': pymongo.DESCENDING}
                }
             ])
-
+        print(list(tweets))
         return list(tweets)[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
     
 
