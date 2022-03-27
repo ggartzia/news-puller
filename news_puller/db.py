@@ -202,7 +202,7 @@ class Database(object):
                   '$lookup': {
                      'from': 'user',
                      'localField': 'user',
-                     'foreignField': '_id',
+                     'foreignField': 'id',
                      'as': 'from'
                   }
                },
@@ -220,6 +220,7 @@ class Database(object):
                }
             ])
         print(list(tweets))
+        print(tweets.pretty())
         return list(tweets)[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
     
 
