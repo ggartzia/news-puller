@@ -1,7 +1,6 @@
 import news_puller.config as cfg
 from news_puller.db import Database
 import tweepy
-from datetime import datetime
 from logging import getLogger, DEBUG
 
 
@@ -35,7 +34,7 @@ def tweepy_shares(new):
             
             # Add tweet on a list and return the list
             tweet_list.append({'_id': twt['id'],
-                               'created_at': datetime.strptime(twt['created_at'], '%d/%m/%Y %H:%M:%S'),
+                               'created_at': twt['created_at'],
                                'text': twt['text'],
                                'new': new['id'],
                                'user': twt['user']['id']})
