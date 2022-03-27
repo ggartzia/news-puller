@@ -196,24 +196,27 @@ class Database(object):
 
         tweets = mongo_db.aggregate([
                {
+                  '$match': {'new': new}
+               },
+               {
                   '$lookup': {
                      'from': 'user',
                      'localField': 'user',
                      'foreignField': '_id',
-                     'as': 'fromItems'
+                     'as': 'from'
                   }
                },
                {
-                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$fromItems', 0]}, "$$ROOT"]}}
+                  '$unwind': '$from'
                },
                {
-                  '$match': {'new': new}
+                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$from', 0]}, '$$ROOT']}}
                },
                {
-                  '$project': {'fromItems': 0}
+                  '$project': {'from': 0}
                },
                {
-                  'short': {'created_at', pymongo.DESCENDING}
+                  '$sort': {'created_at': pymongo.DESCENDING}
                }
             ]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
