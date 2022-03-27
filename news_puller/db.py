@@ -199,24 +199,24 @@ class Database(object):
                   '$match': {'new': new}
                },
                {
-                  '$unwind': 'user'
+                  '$unwind': '$user'
                },
                {
                   '$lookup': {
                      'from': 'user',
                      'localField': 'user',
                      'foreignField': 'id',
-                     'as': 'from'
+                     'as': 'items'
                   }
                },
 #               {
-#                  '$unwind': '$from'
+#                  '$unwind': '$items'
 #               },
 #               {
-#                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$from', 0]}, '$$ROOT']}}
+#                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$items', 0]}, '$$ROOT']}}
 #               },
 #               {
-#                  '$project': {'from': 0}
+#                  '$project': {'items': 0}
 #               },
                {
                   '$sort': {'created_at': pymongo.DESCENDING}
