@@ -218,8 +218,7 @@ class Database(object):
                {
                   '$sort': {'created_at': pymongo.DESCENDING}
                }
-            ]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-
+            ])
 
  #       pipeline = [{'$lookup':
  #                       {'from' : 'user',
@@ -234,7 +233,7 @@ class Database(object):
  #       tweets = mongo_db.find({'new': new},
  #                               sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-        return list(tweets)
+        return list(tweets).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
     
 
     def select_users(page):
