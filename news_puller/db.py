@@ -194,8 +194,40 @@ class Database(object):
     def select_tweets(new, page):
         mongo_db = Database.DATABASE['tweets']
 
-        tweets = mongo_db.find({'new': new},
-                                sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+        tweets = mongo_db.aggregate([
+               {
+                  '$lookup': {
+                     'from': 'user',
+                     'localField': 'user',
+                     'foreignField': '_id',
+                     'as': 'fromItems'
+                  }
+               },
+               {
+                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$fromItems', 0]}, "$$ROOT"]}}
+               },
+               {
+                  '$match': {'new': new}
+               },
+               {
+                  '$project': {'fromItems': 0}
+               }
+            ],
+            sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+
+
+ #       pipeline = [{'$lookup':
+ #                       {'from' : 'user',
+ #                        'localField' : 'user',
+ #                        'foreignField' : '_id',
+ #                        'as' : 'cellmodels'}},
+ #                    {'$unwind': '$cellmodels'},
+ #                    {'$match': {'new': new}},
+ #                    {'$project': {'authors':1, 'cellmodels.celltypes':1}}
+ #                    ]
+ #       mongo_db.aggregate();
+ #       tweets = mongo_db.find({'new': new},
+ #                               sort=[('created_at', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         return list(tweets)
     
