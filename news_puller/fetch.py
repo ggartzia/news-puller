@@ -37,9 +37,7 @@ def select_image(new):
         thumb_image = new['enclosure'][0]['url']
 
     elif 'links' in new:
-        print("Hellooo??", new['links'])
         images = list(filter(lambda l: l['rel'] == 'enclosure', new['links']))
-        print("Hellooo??", images)
         thumb_image = images[0]['href']
 
     return thumb_image
