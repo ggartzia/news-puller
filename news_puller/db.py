@@ -199,6 +199,9 @@ class Database(object):
                   '$match': {'new': new}
                },
                {
+                  '$unwind': 'user'
+               },
+               {
                   '$lookup': {
                      'from': 'user',
                      'localField': 'user',
@@ -220,7 +223,6 @@ class Database(object):
                }
             ])
         print(list(tweets))
-        print(tweets.pretty())
         return list(tweets)[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
     
 
