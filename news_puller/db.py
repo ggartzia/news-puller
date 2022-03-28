@@ -102,11 +102,11 @@ class Database(object):
         return new
 
 
-    def update_topics(new, limit=3):
+    def update_topics(new, limit=3, sort=pymongo.DESCENDING):
         mongo_db = Database.DATABASE['topics']
         topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
                                {'_id': 0},
-                               sort=[('usage', pymongo.DESCENDING)]).limit(limit)
+                               sort=[('usage', sort)]).limit(limit)
         new['topics'] = list(topics)
         
         return new
@@ -158,7 +158,8 @@ class Database(object):
         main_new = Database.search_new(id)
 
         if main_new:
-            main_new = Database.update_topics(main_new, 10)
+            # Search for less common topics
+            main_new = Database.update_topics(main_new, 10, pymongo.ASCENDING)
             topics = [t.get("name") for t in main_new['topics']]
 
             to_compare = mongo_db.find({'theme': main_new['theme'],
@@ -166,7 +167,7 @@ class Database(object):
                                         'topics': {'$in': topics}},
                                        sort=[('published', pymongo.DESCENDING)]).limit(300)
 
-            to_compare = [Database.update_topics(n, 10) for n in list(to_compare)]
+            to_compare = [Database.update_topics(n, 10, pymongo.ASCENDING) for n in list(to_compare)]
             
             news = calculate_similarity(main_new, to_compare)
 
