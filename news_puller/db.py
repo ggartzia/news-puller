@@ -63,6 +63,10 @@ class Database(object):
                 # Return only the topics saved
                 saved_topics += new_topics
 
+                # Save only the first 10 or 12 topics
+                if len(save_topics) > 10:
+                    break
+
             saved_topics = list(dict.fromkeys(saved_topics))
         except Exception as e:
             logger.error('There was an error while trying to save topics: %s', e)
