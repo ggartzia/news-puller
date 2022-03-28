@@ -14,7 +14,7 @@ class Database(object):
     
     URI = 'mongodb+srv://%s:%s@newscluster.3saws.mongodb.net/news?retryWrites=true&w=majority' % (cfg.MONGO_USERNAME, cfg.MONGO_PASSWORD)
     DATABASE = None
-    PAGE_SIZE = 6
+    PAGE_SIZE = 8
 
     def initialize():
         client = pymongo.MongoClient(Database.URI)  # establish connection with database
@@ -217,8 +217,11 @@ class Database(object):
                   '$sort': {'created_at': pymongo.DESCENDING}
                }
             ]))
-
-        return tweets[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
+        
+        tweetsFrom = page * Database.PAGE_SIZE
+        tweetsTo = tweetsFrom + Database.PAGE_SIZE
+        
+        return tweets[tweetsFrom:tweetsTo]
     
 
     def select_users(page):
