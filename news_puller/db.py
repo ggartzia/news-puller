@@ -194,36 +194,30 @@ class Database(object):
     def select_tweets(new, page):
         mongo_db = Database.DATABASE['tweets']
 
-        tweets = mongo_db.aggregate([
+        tweets = list(mongo_db.aggregate([
                {
                   '$match': {'new': new}
                },
                {
-                  '$unwind': '$user'
-               },
-               {
                   '$lookup': {
-                     'from': 'user',
+                     'from': 'users',
                      'localField': 'user',
                      'foreignField': 'id',
                      'as': 'items'
                   }
                },
-#               {
-#                  '$unwind': '$items'
-#               },
-#               {
-#                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$items', 0]}, '$$ROOT']}}
-#               },
-#               {
-#                  '$project': {'items': 0}
-#               },
+               {
+                  '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$items', 0]}, '$$ROOT']}}
+               },
+               {
+                  '$project': {'items': 0, 'user': 0}
+               },
                {
                   '$sort': {'created_at': pymongo.DESCENDING}
                }
-            ])
-        print(list(tweets))
-        return list(tweets)[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
+            ]))
+
+        return tweets[page * Database.PAGE_SIZE:Database.PAGE_SIZE]
     
 
     def select_users(page):
