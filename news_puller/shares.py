@@ -33,7 +33,7 @@ def tweepy_shares(new):
                                 'image': twt['user']['profile_image_url_https']})
             
             # Add tweet on a list and return the list
-            tweet_list.append({'_id': twt['id_str'],
+            tweet_list.append({'_id': int(twt['id_str']),
                                'created_at': twt['created_at'],
                                'text': twt['text'],
                                'new': new['id'],
