@@ -21,7 +21,7 @@ def tweepy_shares(new):
     try:
         tweets = tweepy.Cursor(api.search_tweets,
                                q='url:' + new['fullUrl'],
-                               since_id=new.get('lastTweet', 0) + 1).items(100)
+                               since_id=new.get('lastTweet', '0')).items(100)
 
         for tweet in tweets:
             twt = tweet._json
@@ -33,7 +33,7 @@ def tweepy_shares(new):
                                 'image': twt['user']['profile_image_url_https']})
             
             # Add tweet on a list and return the list
-            tweet_list.append({'_id': int(twt['id_str']),
+            tweet_list.append({'_id': twt['id_str'],
                                'created_at': twt['created_at'],
                                'text': twt['text'],
                                'new': new['id'],
