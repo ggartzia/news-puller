@@ -9,11 +9,6 @@ def news_update(media):
     response = requests.get(api_url)
 
 
-def twitter_update(theme, period):
-    api_url = cfg.HOST_URL + 'fetch/' + theme + '/tweetCount/' + str(period)
-    response = requests.get(api_url)
-
-
 scheduler = BackgroundScheduler()
 
 scheduler.add_job(lambda: news_update('diezminutos'), CronTrigger(minute='0', timezone='UTC'))
