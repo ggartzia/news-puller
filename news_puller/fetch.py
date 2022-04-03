@@ -112,17 +112,20 @@ def filter_feed(theme, paper, news):
                            'paper': paper,
                            'theme': theme,
                            'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                           'topics': get_tags(title, description, theme)
+                           'topics': get_tags(title, description, theme),
+                           'tweetCount': 0
                           }
 
                 if not twitter_exceded:
                     tweet_list = tweepy_shares(new)
 
                     if (tweet_list == -1):
+                        print('twitter_exceded')
                         twitter_exceded = True
-                    elif tweet_list:
+                    elif (len(tweet_list) > 0):
+                        print('lastTweet', len(tweet_list))
                         new['lastTweet'] = tweet_list[0]['_id']
-                        new['tweetCount'] = new.get('tweetCount', 0) + len(tweet_list)
+                        new['tweetCount'] += len(tweet_list)
 
                 new['image'] = select_image(item)
 

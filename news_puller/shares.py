@@ -17,9 +17,9 @@ api = tweepy.API(auth)
 def tweepy_shares(new):
     tweet_list= []
     users = []
-    nextTweet = int(new.get('lastTweet', 0)) + 1
-    
+
     try:
+        nextTweet = int(new.get('lastTweet', 0)) + 1
         tweets = tweepy.Cursor(api.search_tweets,
                                q='url:' + new['fullUrl'],
                                since_id=nextTweet).items(100)
