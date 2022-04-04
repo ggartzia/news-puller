@@ -122,13 +122,8 @@ def filter_feed(theme, paper, news):
                     if (tweet_list == -1):
                         twitter_exceded = True
                     elif (len(tweet_list) > 0):
-                        print("BEFORE ORDERING:", tweet_list[0]['_id'], tweet_list[-1]['_id'])
-                        tweet_list = sorted(tweet_list, key=lambda t: t['_id'])
-                        print("AFTER ORDERING:", tweet_list[0]['_id'], tweet_list[-1]['_id'])
                         new['lastTweet'] = tweet_list[0]['_id']
-                        print("iNCREASE TWEETS", new['tweetCount'], len(tweet_list))
                         new['tweetCount'] += len(tweet_list)
-                        print("uPDATED", new['tweetCount'])
 
                 new['image'] = select_image(item)
 
