@@ -120,10 +120,8 @@ def filter_feed(theme, paper, news):
                     tweet_list = tweepy_shares(new)
 
                     if (tweet_list == -1):
-                        print('twitter_exceded')
                         twitter_exceded = True
                     elif (len(tweet_list) > 0):
-                        print('lastTweet', len(tweet_list))
                         new['lastTweet'] = tweet_list[0]['_id']
                         new['tweetCount'] += len(tweet_list)
 
