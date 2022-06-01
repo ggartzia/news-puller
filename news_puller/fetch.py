@@ -86,7 +86,11 @@ def split_tags(text):
 
 
 def get_tags(title, description, theme):
-    tags = split_tags(title) + split_tags(description)
+    tags = split_tags(title)
+
+    if len(tags) < 6:
+        tags = split_tags(description)
+
     tags = Database.save_topics(tags, theme)
 
     return tags

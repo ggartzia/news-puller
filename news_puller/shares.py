@@ -22,7 +22,6 @@ def tweepy_shares(new):
 
     try:
         nextTweet = int(new.get('lastTweet', 0)) + 1
-        print("Next tweet will be: ", nextTweet)
         tweets = tweepy.Cursor(api.search_tweets,
                                q='url:' + new['fullUrl'],
                                since_id=nextTweet).items(100)

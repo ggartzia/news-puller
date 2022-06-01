@@ -181,9 +181,10 @@ class Database(object):
 
     def select_topics(theme, page):
         mongo_db = Database.DATABASE['topics']
-        
+        size = 4 * Database.PAGE_SIZE
+
         topics = mongo_db.find({'theme': theme}, {'_id': 0},
-                               sort=[('usage', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(4 * Database.PAGE_SIZE)
+                               sort=[('usage', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
         return list(topics)
 
@@ -231,9 +232,10 @@ class Database(object):
 
     def select_users(page):
         mongo_db = Database.DATABASE['users']
+        size = 3 * Database.PAGE_SIZE
 
         users = mongo_db.find({},
-                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(3 * Database.PAGE_SIZE)
+                              sort=[('tweets', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
         return list(users)
 

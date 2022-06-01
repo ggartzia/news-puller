@@ -19,6 +19,9 @@ ampleamos
 ante
 anterior
 antes
+anual
+año
+años
 apenas
 aproximadamente
 aquel
@@ -71,6 +74,7 @@ cualquier
 cuando
 cuanto
 cuatro
+cuarto
 cuenta
 cómo
 da
@@ -88,6 +92,9 @@ demás
 dentro
 desde
 después
+día
+días
+diario
 dice
 dicen
 dicho
@@ -311,6 +318,8 @@ mediante
 mejor
 mencionó
 menos
+mes
+meses
 mi
 mientras
 mio
@@ -391,6 +400,7 @@ porque
 posible
 primer
 primera
+primeras
 primero
 primeros
 principalmente
@@ -430,7 +440,9 @@ seamos
 sean
 seas
 segunda
+segundas
 segundo
+segundos
 según
 seis
 ser
@@ -446,6 +458,8 @@ seríamos
 serían
 serías
 seáis
+semana
+semanas
 señaló
 si
 sido
@@ -513,6 +527,9 @@ teníamos
 tenían
 tenías
 tercera
+terceras
+tercero
+terceros
 ti
 tiempo
 tiene
