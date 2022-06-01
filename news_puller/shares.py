@@ -1,15 +1,17 @@
-import news_puller.config as cfg
+import os
+from dotenv import load_dotenv
 from news_puller.db import Database
 import tweepy
 from logging import getLogger, DEBUG
 
 
+load_dotenv()
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
-auth = tweepy.OAuthHandler(cfg.TW_CONSUMER_KEY, cfg.TW_CONSUMER_SECRET)
-auth.set_access_token(cfg.TW_ACCESS_TOKEN, cfg.TW_ACCESS_TOKEN_SECRET)
+auth = tweepy.OAuthHandler(os.getenv('TW_CONSUMER_KEY'), os.getenv('TW_CONSUMER_SECRET'))
+auth.set_access_token(os.getenv('TW_ACCESS_TOKEN'), os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
 api = tweepy.API(auth)
 

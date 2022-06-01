@@ -5,8 +5,6 @@ from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
 from news_puller.db import Database
-import news_puller.scheduler
-
 
 start_time = int(time())
 
@@ -119,4 +117,3 @@ def get_tweets(id, page):
     tweets = Database.select_tweets(id, page)
 
     return jsonify(tweets)
-

@@ -1,18 +1,19 @@
+import os
 import re
-import news_puller.config as cfg
+from dotenv import load_dotenv
 from news_puller.related import calculate_similarity
 from datetime import datetime, timedelta
 from logging import getLogger, DEBUG
 import pymongo
 
-
+load_dotenv()
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
 class Database(object):
     
-    URI = 'mongodb+srv://%s:%s@newscluster.3saws.mongodb.net/news?retryWrites=true&w=majority' % (cfg.MONGO_USERNAME, cfg.MONGO_PASSWORD)
+    URI = 'mongodb+srv://%s:%s@newscluster.3saws.mongodb.net/news?retryWrites=true&w=majority' % (os.getenv('MONGO_USERNAME'), os.getenv('MONGO_PASSWORD'))
     DATABASE = None
     PAGE_SIZE = 12
 

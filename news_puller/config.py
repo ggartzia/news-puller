@@ -1,4 +1,3 @@
-HOST_URL = 'https://news-puller.herokuapp.com/'
 PAPER_LIST = {
     'elpais': {
       'paper': 'elpais',
@@ -85,12 +84,3 @@ PAPER_LIST = {
       'theme': 'corazon'
     }
 }
-
-MONGO_USERNAME = 'ggartzia'
-MONGO_PASSWORD = '2cvmAjSFeyb4Pu4m'
-
-TW_CONSUMER_KEY = '2fg7N4KJRfAhHVqlPeGNDnl3M'
-TW_CONSUMER_SECRET = '6qpUaowQbnzaKJ91qSshhuixW0JqUasCVaG5n8g7Iju2JuHMy7'
-TW_ACCESS_TOKEN = '2176417916-HMOxb8mBYu0juMpCqMA4WXlNVXN1TYM221Q6sl6'
-TW_ACCESS_TOKEN_SECRET = 'xF6Dx57Bn3WQP2wtJeDGYLm9pBpCJSP5CDy5fXANeq7HB'
-
