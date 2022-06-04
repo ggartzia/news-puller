@@ -144,10 +144,23 @@ class Database(object):
         return list(news)
 
 
-    def select_topic_news(topic, page):
+    def select_trending_news(hour, page):
+        last_hour_date_time = datetime.now() - timedelta(hours = hour)
+
+        mongo_db = Database.DATABASE['news']
+        news = mongo_db.find({'published': {'$gte': str(last_hour_date_time)}},
+                             {'_id': 0 },
+                             sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+        
+        news = map(Database.update_topics, list(news))
+        
+        return list(news)
+
+
+    def select_media_news(media, page):
         mongo_db = Database.DATABASE['news']
         
-        news = mongo_db.find({'topics': topic},
+        news = mongo_db.find({'paper': media},
                              {'_id': 0 },
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
@@ -238,6 +251,15 @@ class Database(object):
                               sort=[('tweets', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
         return list(users)
+
+
+    def select_user_tweets(user, page):
+        mongo_db = Database.DATABASE['tweets']
+
+        tweets = mongo_db.find({'user': user}, {'_id': 0, 'new': 0, 'user': 0},
+                               sort=[('created_at', pymongo.DESCENDING)])
+
+        return list(tweets)
 
 
     def num_news(paper, theme):

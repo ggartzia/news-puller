@@ -27,18 +27,22 @@ with open(STOP_WORDS_DIR, 'rb') as language_file:
 def select_image(new):
     thumb_image = ''
 
-    if 'media_thumbnail' in new:
-        thumb_image = new['media_thumbnail'][0]['url']
-    
-    elif 'media_content' in new:
-        thumb_image = new['media_content'][0]['url']
- 
-    elif 'enclosure' in new:
-        thumb_image = new['enclosure'][0]['url']
+    try:  
+        if 'media_thumbnail' in new:
+            thumb_image = new['media_thumbnail'][0]['url']
+        
+        elif 'media_content' in new:
+            thumb_image = new['media_content'][0]['url']
+     
+        elif 'enclosure' in new:
+            thumb_image = new['enclosure'][0]['url']
 
-    elif 'links' in new:
-        images = list(filter(lambda l: l['rel'] == 'enclosure', new['links']))
-        thumb_image = images[0]['href']
+        elif 'links' in new:
+            images = list(filter(lambda l: l['rel'] == 'enclosure', new['links']))
+            thumb_image = images[0]['href']
+
+    except Exception as e:
+        logger.error('Failed getting an image for article %s. Error: %s', new['link'], e)
 
     return thumb_image
 
