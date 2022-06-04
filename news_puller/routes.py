@@ -97,7 +97,7 @@ def fetch_media(theme):
 
 @app.route('/get/media/<media>/news/page/<page>', methods=['GET'])
 @cross_origin()
-def fetch_media(media, page):
+def fetch_media_news(media, page):
     news = select_media_news(media, page)
 
     return jsonify(news)
@@ -111,12 +111,12 @@ def fetch_users(page):
     return jsonify(users)
 
 
-@app.route('/get/tweets/<id>', methods=['GET'])
-@cross_origin()
-def get_all_tweets(id):
-    tweets = Database.select_all_tweets(id)
+#@app.route('/get/tweets/<id>', methods=['GET'])
+#@cross_origin()
+#def get_all_tweets(id):
+#    tweets = Database.select_all_tweets(id)
 
-    return jsonify(tweets)
+#    return jsonify(tweets)
 
 
 @app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])

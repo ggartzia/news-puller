@@ -202,13 +202,13 @@ class Database(object):
         return list(topics)
 
 
-    def select_all_tweets(new):
-        mongo_db = Database.DATABASE['tweets']
+#    def select_all_tweets(new):
+#        mongo_db = Database.DATABASE['tweets']
 
-        tweets = mongo_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
-                                sort=[('created_at', pymongo.DESCENDING)])
+#        tweets = mongo_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
+#                                sort=[('created_at', pymongo.DESCENDING)])
 
-        return list(tweets)
+#        return list(tweets)
 
 
     def select_tweets(new, page):
