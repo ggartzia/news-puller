@@ -31,10 +31,13 @@ def search_new(id):
     
     try:
         new = news_db.find_one({'_id': id})
-        new['total'] = count_new_tweets(id)
+
+        if new is not None:
+            new['total'] = count_new_tweets(id)
+        
 
     except Exception as e:
-        logger.error('There was an error fetching the data: %s', e)
+        logger.error('There was an error fetching new: %s. %s', id, e)
         
     return new
 

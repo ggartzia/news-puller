@@ -24,10 +24,12 @@ def search_user(id):
 
     try:
         user = user_db.find_one({'_id': id})
-        user['total'] = count_user_tweets(id)
+
+        if user is not None:
+            user['total'] = count_user_tweets(id)
 
     except Exception as e:
-        logger.error('There was an error fetching the data: %s', e)
+        logger.error('There was an error fetching user: %s. %s', id,  e)
 
     return user
 
