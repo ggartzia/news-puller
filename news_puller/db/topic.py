@@ -23,13 +23,13 @@ def save_topics(topics, theme):
             new_topics = []
 
             # Calculate only two words topics, if the two word topic exists in the DB, count and move on
-            if Database.update_topic(t, theme, saved_topics):
+            if update_topic(t, theme, saved_topics):
                 new_topics.append(t)
             else:
                 # If it does not exist, split the topic, if one or both exists count.
                 words = t.split()
                 for w in words:
-                    if Database.update_topic(w, theme, saved_topics):
+                    if update_topic(w, theme, saved_topics):
                         new_topics.append(w)
                 
                 # If none of them exist, save the three of them.

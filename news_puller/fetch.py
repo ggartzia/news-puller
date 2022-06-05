@@ -88,13 +88,19 @@ def split_tags(text):
 def get_top_n_words(corpus):
     words = []
     try:
-        print(str(STOP_WORDS[:5]))
+        print('Garaziiiiiii 1 ')
         vec = CountVectorizer(stop_words=STOP_WORDS).fit(corpus)
+        print('Garaziiiiiii 2 ')
         bag_of_words = vec.transform(corpus)
-        sum_words = bag_of_words.sum(axis=0) 
+        print('Garaziiiiiii 3 ')
+        sum_words = bag_of_words.sum(axis=0)
+        print('Garaziiiiiii 4 ')
         words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
+        print('Garaziiiiiii 5 ')
         words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
+        print('Garaziiiiiii 6 ')
         words = words_freq[:5]
+        print('Garaziiiiiii 7 ')
     except Exception as e:
         logger.error('Failed counting words in article. Error: %s', e)
 
@@ -108,7 +114,7 @@ def get_tags(title, description, theme):
 
     prueba = get_top_n_words(split_tags(title + ' ' + description))
 
-    print('Garaziiiiiii count words ', str(prueba))
+    print('Garaziiiiiii count words %s', prueba)
 
     tags = save_topics(tags, theme)
 
@@ -117,16 +123,15 @@ def get_tags(title, description, theme):
 
 def filter_feed(theme, paper, news):
     twitter_exceded = False
-    print('Garaziiiiiii %s', len(news))
+
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
         try:
             if bool(item) :
-                print('Garaziiiiiii 0 ')
                 link = item['link']
                 id = create_unique_id(link)
                 new = search_new(id)
-                print('Garaziiiiiii 1 ')
+
                 if new is None:
                     title = clean_html(item['title'])
                     description = get_description(item)
@@ -141,7 +146,6 @@ def filter_feed(theme, paper, news):
                            'tweetCount': 0
                           }
 
-                print('Garaziiiiiii 2 : %s', new)
                 if not twitter_exceded:
                     tweet_list = tweepy_shares(new)
 
@@ -151,9 +155,8 @@ def filter_feed(theme, paper, news):
                         new['lastTweet'] = tweet_list[0]['_id']
                         new['tweetCount'] += len(tweet_list)
 
-                print('Garaziiiiiii 3')
                 new['image'] = select_image(item)
-                print('Garaziiiiiii 4')
+
                 save_new(new)
 
         except Exception as e:
