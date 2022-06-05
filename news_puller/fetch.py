@@ -4,6 +4,7 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
+from nltk.corpus import stopwords
 from base64 import b64encode
 import html
 import time
@@ -15,15 +16,7 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
-
-CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-STOP_WORDS_DIR = os.path.join(CURRENT_DIR, 'spanish.txt')
-STOP_WORDS = []
-
-with open(STOP_WORDS_DIR, 'rb') as language_file:
-    STOP_WORDS = [line.decode('utf-8').strip()
-                  for line in language_file.readlines()]
-
+STOP_WORDS = [word.decode('utf-8') for word in stopwords.words('spanish')]
 
 def select_image(new):
     thumb_image = ''
