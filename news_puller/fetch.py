@@ -5,7 +5,7 @@ from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from news_puller.tfidf import get_topics
-from base64 import b64encode
+import math
 import html
 import time
 import re
@@ -64,11 +64,8 @@ def get_description(new):
     return clean_html(description)
 
 
-def create_unique_id(url):
-    message_bytes = url.encode()
-    base64_bytes = b64encode(message_bytes)
-    
-    return base64_bytes.decode()
+def (url):
+    return int.from_bytes(url.encode(), 'little')
 
 
 def filter_feed(theme, paper, news):
@@ -77,7 +74,7 @@ def filter_feed(theme, paper, news):
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
         try:
-            if bool(item) :
+            if bool(item) :create_unique_id
                 link = item['link']
                 id = create_unique_id(link)
                 new = search_new(id)

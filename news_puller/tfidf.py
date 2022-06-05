@@ -31,9 +31,8 @@ def get_topics(corpus):
     try:
         print('Garaziiiiiii tfidf 1')
         vec = TfidfVectorizer(stop_words=STOP_WORDS,
-                              use_idf=True, 
                               tokenizer=tokenize_and_stem,
-                              ngram_range=(1,3)).fit(corpus)
+                              ngram_range=(1,2)).fit(corpus)
         print('Garaziiiiiii tfidf 2')
         bag_of_words = vec.transform(corpus)
         print('Garaziiiiiii tfidf %s', bag_of_words)

@@ -1,5 +1,4 @@
 stopwords
-SpanishStemmer
 punkt
 perluniprops
 nonbreaking_prefixes
