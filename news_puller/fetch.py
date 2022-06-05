@@ -19,7 +19,6 @@ logger.setLevel(DEBUG)
 NUM_NEWS_PARSE = 50
 
 STOP_WORDS = set(stopwords.words('spanish'))
-print(str(stopwords[:5]))
 
 def select_image(new):
     thumb_image = ''
@@ -87,12 +86,19 @@ def split_tags(text):
 
 
 def get_top_n_words(corpus):
-    vec = CountVectorizer(stop_words=STOP_WORDS).fit(corpus)
-    bag_of_words = vec.transform(corpus)
-    sum_words = bag_of_words.sum(axis=0) 
-    words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
-    words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
-    return words_freq[:5]
+    words = []
+    try:
+        print(str(STOP_WORDS[:5]))
+        vec = CountVectorizer(stop_words=STOP_WORDS).fit(corpus)
+        bag_of_words = vec.transform(corpus)
+        sum_words = bag_of_words.sum(axis=0) 
+        words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
+        words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
+        words = words_freq[:5]
+    except Exception as e:
+        logger.error('Failed getting an image for article %s. Error: %s', new['link'], e)
+
+    return words
 
 def get_tags(title, description, theme):
     tags = split_tags(title)
