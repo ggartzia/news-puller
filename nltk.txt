@@ -1,2 +1,4 @@
 stopwords
 snowball
+perluniprops
+nonbreaking_prefixes
