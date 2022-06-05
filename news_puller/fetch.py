@@ -18,7 +18,7 @@ logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
 
-STOP_WORDS = stopwords.words('spanish')
+STOP_WORDS = set(stopwords.words('spanish'))
 print(str(stopwords[:5]))
 
 def select_image(new):
