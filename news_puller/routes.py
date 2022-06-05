@@ -13,8 +13,6 @@ import news_puller.db.tweet as db_tweets
 
 start_time = int(time())
 
-Database.initialize()
-
 app = Flask(__name__)
 cors = CORS(app)
 Gzip(app)
