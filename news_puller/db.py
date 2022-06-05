@@ -107,7 +107,6 @@ class Database(object):
         return new
 
 
-
     def search_user(id):
         user = None
 
@@ -169,6 +168,25 @@ class Database(object):
         news = map(Database.update_topics, list(news))
         
         return list(news)
+
+
+    def search_media(id):
+        mongo_db = Database.DATABASE['media']
+        return mongo_db.find_one({'_id': id})
+
+
+    def select_all_media():
+        mongo_db = Database.DATABASE['media']
+        media = mongo_db.find({})
+
+        return list(media)
+
+
+    def select_theme_media(theme):
+        mongo_db = Database.DATABASE['media']
+        media = mongo_db.find({'theme': theme})
+
+        return list(media)
 
 
     def select_media_news(media, page):

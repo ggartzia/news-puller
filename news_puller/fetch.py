@@ -1,4 +1,3 @@
-import news_puller.config as cfg
 import feedparser
 from logging import getLogger, DEBUG
 from news_puller.db import Database
@@ -145,7 +144,7 @@ def filter_feed(theme, paper, news):
 
 def get_news(paper):
     try:
-        media = cfg.PAPER_LIST[paper]
+        media = Database.search_media(paper)
         paper_news = feedparser.parse(media['feed'])
 
         if paper_news.status == 200:

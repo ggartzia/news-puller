@@ -1,15 +1,15 @@
 import os
 import requests
-import news_puller.config as cfg
 from dotenv import load_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from news_puller.db import Database
 
 load_dotenv()
 
 scheduler = BackgroundScheduler()
 
-media = cfg.PAPER_LIST.values()
+media = Database.select_all_media()
 minute = round(60 / len(media))
 start_at = 0
 

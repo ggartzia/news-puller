@@ -98,7 +98,7 @@ def fetch_media(theme):
 @app.route('/get/media/<media>/news/page/<page>', methods=['GET'])
 @cross_origin()
 def fetch_media_news(media, page):
-    news = select_media_news(media, page)
+    news = Database.select_media_news(media, page)
 
     return jsonify(news)
 
