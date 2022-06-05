@@ -107,6 +107,20 @@ class Database(object):
         return new
 
 
+
+    def search_user(id):
+        user = None
+
+        try:
+            mongo_db = Database.DATABASE['users']
+            user = mongo_db.find_one({'_id': id})
+
+        except Exception as e:
+            logger.error('There was an error fetching the data: %s', e)
+
+        return user
+
+
     def update_topics(new, limit=3):
         mongo_db = Database.DATABASE['topics']
         topics = mongo_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
@@ -200,15 +214,6 @@ class Database(object):
                                sort=[('usage', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
         return list(topics)
-
-
-#    def select_all_tweets(new):
-#        mongo_db = Database.DATABASE['tweets']
-
-#        tweets = mongo_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
-#                                sort=[('created_at', pymongo.DESCENDING)])
-
-#        return list(tweets)
 
 
     def select_tweets(new, page):
