@@ -6,7 +6,6 @@ from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
 from nltk.corpus import stopwords
-from nltk import download
 from sklearn.feature_extraction.text import CountVectorizer
 import html
 import time
@@ -19,8 +18,8 @@ logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
 
-download('stopwords')
-STOP_WORDS = [word.decode('utf-8') for word in stopwords.words('spanish')]
+STOP_WORDS = stopwords.words('spanish')
+print(str(stopwords[:5]))
 
 def select_image(new):
     thumb_image = ''
