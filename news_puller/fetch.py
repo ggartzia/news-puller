@@ -96,7 +96,7 @@ def get_top_n_words(corpus):
         words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
         words = words_freq[:5]
     except Exception as e:
-        logger.error('Failed getting an image for article %s. Error: %s', new['link'], e)
+        logger.error('Failed counting words in article. Error: %s', e)
 
     return words
 
@@ -161,7 +161,6 @@ def filter_feed(theme, paper, news):
 def get_news(paper):
     try:
         media = search_media(paper)
-        print('Garazi ' + str(media))
         paper_news = feedparser.parse(media['feed'])
 
         if paper_news.status == 200:
