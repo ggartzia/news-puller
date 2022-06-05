@@ -4,6 +4,9 @@ from news_puller.database import Database
 
 tweet_db = Database.DATABASE['tweets']
 
+logger = getLogger('werkzeug')
+logger.setLevel(DEBUG)
+
 def save_tweets(tweets):
     try:
         if tweets:

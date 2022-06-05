@@ -8,6 +8,10 @@ from news_puller.db.topic import update_topics
 
 news_db = Database.DATABASE['news']
 
+logger = getLogger('werkzeug')
+logger.setLevel(DEBUG)
+
+
 def num_news(paper, theme):
     return news_db.count_documents({'paper': paper, 'theme': theme})
 
@@ -116,3 +120,13 @@ def select_media_news(media, page):
     return {'total': total,
             'page': page,
             'items': list(news)}
+
+
+def select_topic_news(topic, page):
+    news = news_db.find({'topics': topic},
+                        {'_id': 0 },
+                        sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+
+    news = map(update_topics, list(news))
+    
+    return list(news)

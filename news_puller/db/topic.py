@@ -4,6 +4,10 @@ from news_puller.database import Database
 
 topic_db = Database.DATABASE['topics']
 
+logger = getLogger('werkzeug')
+logger.setLevel(DEBUG)
+
+
 def update_topic(topic, theme, saved_topics):
     if topic not in saved_topics:
         updateResult = topic_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'usage': 1}})

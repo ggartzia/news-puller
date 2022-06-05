@@ -7,6 +7,7 @@ from logging import getLogger, DEBUG
 
 
 load_dotenv()
+
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
