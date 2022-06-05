@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
-from news_puller.db import Database
+from news_puller.db.user import save_user
+from news_puller.db.tweet import save_tweets
 import tweepy
 from logging import getLogger, DEBUG
 
@@ -30,10 +31,10 @@ def tweepy_shares(new):
             twt = tweet._json
 
             # Save user individually to upsert
-            Database.save_user({'id': twt['user']['id'],
-                                'name': twt['user']['name'],
-                                'screen_name': twt['user']['screen_name'],
-                                'image': twt['user']['profile_image_url_https']})
+            save_user({'id': twt['user']['id'],
+                       'name': twt['user']['name'],
+                       'screen_name': twt['user']['screen_name'],
+                       'image': twt['user']['profile_image_url_https']})
             
             # Add tweet on a list and return the list
             tweet_list.append({'_id': twt['id_str'],
@@ -42,7 +43,7 @@ def tweepy_shares(new):
                                'new': new['id'],
                                'user': twt['user']['id']})
 
-        Database.save_tweets(tweet_list)
+        save_tweets(tweet_list)
         
         return tweet_list
     

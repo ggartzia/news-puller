@@ -1,6 +1,8 @@
 import feedparser
 from logging import getLogger, DEBUG
-from news_puller.db import Database
+from news_puller.db.new import search_new, save_new
+from news_puller.db.media import search_media
+from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
 import html
@@ -94,7 +96,7 @@ def get_tags(title, description, theme):
     if len(tags) < 6:
         tags = split_tags(description)
 
-    tags = Database.save_topics(tags, theme)
+    tags = save_topics(tags, theme)
 
     return tags
 
@@ -107,7 +109,7 @@ def filter_feed(theme, paper, news):
             if bool(item) :
                 link = item['link']
                 id = create_unique_id(link)
-                new = Database.search_new(id)
+                new = search_new(id)
 
                 if (new is None):
                     title = clean_html(item['title'])
@@ -134,7 +136,7 @@ def filter_feed(theme, paper, news):
 
                 new['image'] = select_image(item)
 
-                Database.save_new(new)
+                save_new(new)
 
         except Exception as e:
             logger.error('Something happened with new: %s. %s', item['link'], e)
@@ -143,9 +145,9 @@ def filter_feed(theme, paper, news):
 
 
 def get_news(paper):
-    print('Hola que tal ')
     try:
-        media = Database.search_media(paper)
+        media = search_media(paper)
+        print('Garazi ' + str(media))
         paper_news = feedparser.parse(media['feed'])
 
         if paper_news.status == 200:

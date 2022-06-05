@@ -1,4 +1,5 @@
-from news_puller.db import Database
+from news_puller.db.new import num_news, last_new
+from news_puller.db.media import select_theme_media
 from logging import getLogger, DEBUG
 
 logger = getLogger('werkzeug')
@@ -8,11 +9,11 @@ def get_media(theme):
     total = []
 
     try:
-        media = Database.select_theme_media(theme)
+        media = select_theme_media(theme)
 
         for plist in media:
-            plist['numeroNoticias'] = Database.num_news(plist['paper'], theme)
-            plist['actualizacion'] = Database.last_new(plist['paper'], theme)
+            plist['numeroNoticias'] = num_news(plist['paper'], theme)
+            plist['actualizacion'] = last_new(plist['paper'], theme)
 
             total.append(plist)
 

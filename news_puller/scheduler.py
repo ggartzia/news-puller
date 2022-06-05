@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from news_puller.db import Database
+from news_puller.db.media import select_all_media
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ def news_update(paper):
 
 scheduler = BackgroundScheduler()
 
-media = Database.select_all_media()
+media = select_all_media()
 minute = round(60 / len(media))
 start_at = 0
 

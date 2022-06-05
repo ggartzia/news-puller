@@ -4,7 +4,11 @@ from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
-from news_puller.db import Database
+import news_puller.db.new as db_news
+import news_puller.db.media as db_media
+import news_puller.db.topic as db_topics
+import news_puller.db.user as db_users
+import news_puller.db.tweet as db_tweets
 
 start_time = int(time())
 
@@ -12,7 +16,6 @@ app = Flask(__name__)
 cors = CORS(app)
 Gzip(app)
 
-Database.initialize()
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -34,7 +37,7 @@ def fetch_news(media):
 @app.route('/get/<theme>/<int:since>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_last_news(theme, since, page):
-    news = Database.select_last_news(since, theme, page)
+    news = db_news.select_last_news(since, theme, page)
 
     return jsonify(news)
 
@@ -42,7 +45,7 @@ def get_last_news(theme, since, page):
 @app.route('/get/trending/<int:since>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_trending_news(since, page):
-    news = Database.select_trending_news(since, page)
+    news = db_news.select_trending_news(since, page)
 
     return jsonify(news)
 
@@ -50,7 +53,7 @@ def get_trending_news(since, page):
 @app.route('/get/news/<topic>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_topic_news(topic, page):
-    news = Database.select_topic_news(topic, page)
+    news = db_news.select_topic_news(topic, page)
 
     return jsonify(news)
 
@@ -58,10 +61,10 @@ def get_topic_news(topic, page):
 @app.route('/get/new/<id>', methods=['GET'])
 @cross_origin()
 def get_new(id):
-    new = Database.search_new(id)
+    new = db_news.search_new(id)
 
     if new:
-        new = Database.update_topics(new, 10)
+        new = db_topics.update_topics(new, 10)
 
     return jsonify(new)
 
@@ -69,7 +72,7 @@ def get_new(id):
 @app.route('/get/related/<id>', methods=['GET'])
 @cross_origin()
 def get_related_news(id):
-    news = Database.select_related_news(id)
+    news = db_news.select_related_news(id)
 
     return jsonify(news)
 
@@ -77,7 +80,7 @@ def get_related_news(id):
 @app.route('/get/topics/<theme>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_topics(theme, page):
-    topics = Database.select_topics(theme, page)
+    topics = db_topics.select_topics(theme, page)
 
     return jsonify(topics)
 
@@ -93,7 +96,7 @@ def fetch_media(theme):
 @app.route('/get/media/<media>/news/page/<int:page>', methods=['GET'])
 @cross_origin()
 def fetch_media_news(media, page):
-    news = Database.select_media_news(media, page)
+    news = db_news.select_media_news(media, page)
 
     return jsonify(news)
 
@@ -101,7 +104,7 @@ def fetch_media_news(media, page):
 @app.route('/get/user/<int:id>', methods=['GET'])
 @cross_origin()
 def get_user(id):
-    user = Database.search_user(id)
+    user = db_users.search_user(id)
 
     return jsonify(user)
 
@@ -109,7 +112,7 @@ def get_user(id):
 @app.route('/get/users/page/<int:page>', methods=['GET'])
 @cross_origin()
 def fetch_users(page):
-    users = Database.select_users(page)
+    users = db_users.select_users(page)
 
     return jsonify(users)
 
@@ -117,7 +120,7 @@ def fetch_users(page):
 @app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def get_tweets(id, page):
-    tweets = Database.select_tweets(id, page)
+    tweets = db_tweets.select_tweets(id, page)
 
     return jsonify(tweets)
 
@@ -125,6 +128,6 @@ def get_tweets(id, page):
 @app.route('/get/tweets/user/<int:user>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def fetch_user_tweets(user, page):
-    tweets = Database.select_user_tweets(user, page)
+    tweets = db_tweets.select_user_tweets(user, page)
 
     return jsonify(tweets)
