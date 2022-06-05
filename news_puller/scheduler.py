@@ -14,7 +14,8 @@ def news_update(paper):
 scheduler = BackgroundScheduler()
 
 media = cfg.PAPER_LIST.values()
-print('This is the media::: ' + media)
+print('This is the media::: ' + str(len(media)))
+print('This is the media::: ' + str(media))
 minute = round(60 / len(media))
 print('Run every..... ' + minute)
 start_at = 0
