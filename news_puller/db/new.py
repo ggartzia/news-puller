@@ -85,7 +85,7 @@ def select_trending_news(hour, page):
 def select_related_news(id):
     to_compare = []
 
-    main_new = Database.search_new(id)
+    main_new = search_new(id)
 
     if main_new:
         # Search for less common topics

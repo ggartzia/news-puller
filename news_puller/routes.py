@@ -4,6 +4,7 @@ from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
+from news_puller.database import Database
 import news_puller.db.new as db_news
 import news_puller.db.media as db_media
 import news_puller.db.topic as db_topics
@@ -11,6 +12,8 @@ import news_puller.db.user as db_users
 import news_puller.db.tweet as db_tweets
 
 start_time = int(time())
+
+Database.initialize()
 
 app = Flask(__name__)
 cors = CORS(app)
