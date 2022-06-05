@@ -143,6 +143,7 @@ def filter_feed(theme, paper, news):
 
 
 def get_news(paper):
+    print('Hola que tal ')
     try:
         media = Database.search_media(paper)
         paper_news = feedparser.parse(media['feed'])

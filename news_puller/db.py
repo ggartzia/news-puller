@@ -177,9 +177,10 @@ class Database(object):
 
 
     def search_media(id):
+        print('Garazi ' + id)
         mongo_db = Database.DATABASE['media']
         media = mongo_db.find_one({'_id': id})
-
+        print('Garazi ' + media)
         return media
 
 
@@ -208,7 +209,9 @@ class Database(object):
 
         total = mongo_db.count_documents({'paper': media})
         
-        return {'total' : total, 'page': page, 'items': list(news)}
+        return {'total': total,
+                'page': page,
+                'items': list(news)}
 
 
     def select_related_news(id):

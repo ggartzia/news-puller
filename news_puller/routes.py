@@ -14,15 +14,10 @@ Gzip(app)
 
 Database.initialize()
 
-@app.route('/_health/pool', methods=['GET'])
-def health_pool():
-    return 'OK'
-
-
-@app.route('/_health/check', methods=['GET'])
+@app.route('/', methods=['GET'])
 def health_check():
     response = {
-        'overallStatus': 0,
+        'overallStatus': 'OK',
         'version': 1,
         'startTime': start_time
     }
@@ -95,7 +90,7 @@ def fetch_media(theme):
     return jsonify(media)
 
 
-@app.route('/get/media/<media>/news/page/<page>', methods=['GET'])
+@app.route('/get/media/<media>/news/page/<int:page>', methods=['GET'])
 @cross_origin()
 def fetch_media_news(media, page):
     news = Database.select_media_news(media, page)
