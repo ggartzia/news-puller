@@ -14,15 +14,13 @@ def news_update(paper):
 scheduler = BackgroundScheduler()
 
 media = cfg.PAPER_LIST.values()
-print('This is the media::: ' + str(len(media)))
-print('This is the media::: ' + str(media))
 minute = round(60 / len(media))
-print('Run every..... ' + minute)
+print('Run every..... ' + str(minute))
 start_at = 0
 
 for plist in media:
-    print('Create scheduler for:::' + plist['paper'] + 'in minute:: ' + start_at)
-    scheduler.add_job(lambda: news_update(plist['paper']), CronTrigger(minute=str(start_at), timezone='UTC'))
+    print('Create scheduler for:::' + str(plist['paper']) + 'in minute:: ' + str(start_at))
+    scheduler.add_job(lambda: news_update(plist['paper']), CronTrigger(minute=start_at, timezone='UTC'))
     start_at += minute
 
 scheduler.start()
