@@ -1,4 +1,5 @@
 stopwords
-snowball
+stem
+punkt
 perluniprops
 nonbreaking_prefixes
