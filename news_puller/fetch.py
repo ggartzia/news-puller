@@ -64,7 +64,7 @@ def get_description(new):
     return clean_html(description)
 
 
-def (url):
+def create_unique_id(url):
     return int.from_bytes(url.encode(), 'little')
 
 
