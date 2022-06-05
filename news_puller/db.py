@@ -101,6 +101,9 @@ class Database(object):
             mongo_db = Database.DATABASE['news']
             new = mongo_db.find_one({'_id': id})
 
+            mongo_db = Database.DATABASE['tweets']
+            new['total'] = mongo_db.count_documents({'new': id})
+
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
             
@@ -113,6 +116,9 @@ class Database(object):
         try:
             mongo_db = Database.DATABASE['users']
             user = mongo_db.find_one({'_id': id})
+
+            mongo_db = Database.DATABASE['tweets']
+            user['total'] = mongo_db.count_documents({'user': id})
 
         except Exception as e:
             logger.error('There was an error fetching the data: %s', e)
@@ -172,7 +178,9 @@ class Database(object):
 
     def search_media(id):
         mongo_db = Database.DATABASE['media']
-        return mongo_db.find_one({'_id': id})
+        media = mongo_db.find_one({'_id': id})
+
+        return media
 
 
     def select_all_media():
@@ -197,8 +205,10 @@ class Database(object):
                              sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
         news = map(Database.update_topics, list(news))
+
+        total = mongo_db.count_documents({'paper': media})
         
-        return list(news)
+        return {'total' : total, 'page': page, 'items': list(news)}
 
 
     def select_related_news(id):
@@ -300,8 +310,3 @@ class Database(object):
         else:
             return new['published']
 
-
-    def num_tweets(new):
-        mongo_db = Database.DATABASE['tweets']
-        
-        return mongo_db.count_documents({'new': new})
