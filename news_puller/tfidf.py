@@ -1,5 +1,4 @@
 from logging import getLogger, DEBUG
-from nltk import sent_tokenize, word_tokenize
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SpanishStemmer
@@ -15,7 +14,7 @@ STEMMER = SpanishStemmer()
 
 
 def tokenize_and_stem(text):
-    print('OMG Stemmer')
+    print('OMG Stemmer %s', text)
     toktok = ToktokTokenizer()
     filtered_tokens = []
     # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
