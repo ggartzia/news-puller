@@ -126,7 +126,7 @@ def filter_feed(theme, paper, news):
                 link = item['link']
                 id = create_unique_id(link)
                 new = search_new(id)
-print('Garaziiiiiii 1 ')
+                print('Garaziiiiiii 1 ')
                 if new is None:
                     title = clean_html(item['title'])
                     description = get_description(item)
@@ -141,7 +141,7 @@ print('Garaziiiiiii 1 ')
                            'tweetCount': 0
                           }
 
-print('Garaziiiiiii 2 : %s', new)
+                print('Garaziiiiiii 2 : %s', new)
                 if not twitter_exceded:
                     tweet_list = tweepy_shares(new)
 
@@ -151,9 +151,9 @@ print('Garaziiiiiii 2 : %s', new)
                         new['lastTweet'] = tweet_list[0]['_id']
                         new['tweetCount'] += len(tweet_list)
 
-print('Garaziiiiiii 3')
+                print('Garaziiiiiii 3')
                 new['image'] = select_image(item)
-print('Garaziiiiiii 4')
+                print('Garaziiiiiii 4')
                 save_new(new)
 
         except Exception as e:
