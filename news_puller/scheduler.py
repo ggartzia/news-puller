@@ -14,17 +14,13 @@ minute = round(60 / len(media))
 start_at = 0
 
 
-def news_update(paper):
-    api_url = os.getenv('HOST_URL') + 'fetch/' + paper
-    response = requests.get(api_url)
-
-
-def create_job(paper):
-    scheduler.add_job(lambda: news_update(paper), CronTrigger(minute=start_at, timezone='UTC'))
+#job_list = []
+for plist in media:
+    api_url = os.getenv('HOST_URL') + 'fetch/' + plist['paper']
+    #job_list.append(lambda job=job: scheduler.add_job(lambda: requests.get(api_url), CronTrigger(minute=start_at, timezone='UTC')))
+    scheduler.add_job(lambda job=job: requests.get(api_url), CronTrigger(minute=start_at, timezone='UTC'))
     start_at += minute
-    
 
-funcs = [lambda: create_job(plist['paper']) for plist in media]
-for f in funcs: f()
+#for j in job_list: j()
 
 scheduler.start()
