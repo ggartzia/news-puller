@@ -4,12 +4,10 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
+from news_puller.tfidf import get_topics
 from base64 import b64encode
-from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
 import html
 import time
-import os
 import re
 
 
@@ -18,7 +16,6 @@ logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
 
-STOP_WORDS = set(stopwords.words('spanish'))
 
 def select_image(new):
     thumb_image = ''
@@ -74,51 +71,6 @@ def create_unique_id(url):
     return base64_bytes.decode()
 
 
-def split_tags(text):
-    #remove punctuation and split into seperate words
-    text = re.findall(r'[a-záéíóúñç]+', text.lower(), flags = re.UNICODE)
-    
-    words = list(filter(lambda x: x not in STOP_WORDS and len(x) > 2, text))
-    
-    double_tags = list(zip(*[words[i:] for i in range(2)]))
-
-    return list(map(lambda l: ' '.join(l), double_tags))
-
-
-def get_top_n_words(corpus):
-    words = []
-    try:
-        print('Garaziiiiiii count words 1')
-        vec = TfidfVectorizer(stop_words=STOP_WORDS, ngram_range=(1,3)).fit(corpus)
-        print('Garaziiiiiii count words 2')
-        bag_of_words = vec.transform(corpus)
-        print('Garaziiiiiii count words %s', bag_of_words)
-        sum_words = bag_of_words.sum(axis=0)
-        print('Garaziiiiiii count words %s', sum_words)
-        words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
-        words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
-        print('Garaziiiiiii count words %s', words_freq)
-        words = words_freq[:10]
-    except Exception as e:
-        logger.error('Failed counting words in article. Error: %s', e)
-
-    return words
-
-def get_tags(title, description, theme):
-    tags = split_tags(title)
-
-    if len(tags) < 6:
-        tags = split_tags(description)
-
-    prueba = get_top_n_words([title + ' ' + description])
-
-    print('Garaziiiiiii count words %s', prueba)
-
-    tags = save_topics(tags, theme)
-
-    return tags
-
-
 def filter_feed(theme, paper, news):
     twitter_exceded = False
 
@@ -140,7 +92,7 @@ def filter_feed(theme, paper, news):
                            'paper': paper,
                            'theme': theme,
                            'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                           'topics': get_tags(title, description, theme),
+                           'topics': get_topics([title + ' ' + description]),
                            'tweetCount': 0
                           }
 
