@@ -117,15 +117,17 @@ def get_tags(title, description, theme):
 
 def filter_feed(theme, paper, news):
     twitter_exceded = False
+    print('Garaziiiiiii %s', len(news))
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
         try:
             if bool(item) :
+                print('Garaziiiiiii 0 ')
                 link = item['link']
                 id = create_unique_id(link)
                 new = search_new(id)
-
-                if (new is None):
+print('Garaziiiiiii 1 ')
+                if new is None:
                     title = clean_html(item['title'])
                     description = get_description(item)
                     new = {'id': id,
@@ -139,6 +141,7 @@ def filter_feed(theme, paper, news):
                            'tweetCount': 0
                           }
 
+print('Garaziiiiiii 2 : %s', new)
                 if not twitter_exceded:
                     tweet_list = tweepy_shares(new)
 
@@ -148,8 +151,9 @@ def filter_feed(theme, paper, news):
                         new['lastTweet'] = tweet_list[0]['_id']
                         new['tweetCount'] += len(tweet_list)
 
+print('Garaziiiiiii 3')
                 new['image'] = select_image(item)
-
+print('Garaziiiiiii 4')
                 save_new(new)
 
         except Exception as e:
