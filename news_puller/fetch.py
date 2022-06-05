@@ -5,7 +5,9 @@ from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
-import nltk
+from nltk.corpus import stopwords
+from nltk import download
+from sklearn.feature_extraction.text import CountVectorizer
 import html
 import time
 import os
@@ -16,7 +18,8 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
-stopwords = nltk.download('stopwords')
+
+download('stopwords')
 STOP_WORDS = [word.decode('utf-8') for word in stopwords.words('spanish')]
 
 def select_image(new):
@@ -84,11 +87,23 @@ def split_tags(text):
     return list(map(lambda l: ' '.join(l), double_tags))
 
 
+def get_top_n_words(corpus):
+    vec = CountVectorizer(stop_words=STOP_WORDS).fit(corpus)
+    bag_of_words = vec.transform(corpus)
+    sum_words = bag_of_words.sum(axis=0) 
+    words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
+    words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
+    return words_freq[:5]
+
 def get_tags(title, description, theme):
     tags = split_tags(title)
 
     if len(tags) < 6:
         tags = split_tags(description)
+
+    prueba = get_top_n_words(split_tags(title + ' ' + description))
+
+    print('Garaziiiiiii count words ', str(prueba))
 
     tags = save_topics(tags, theme)
 
