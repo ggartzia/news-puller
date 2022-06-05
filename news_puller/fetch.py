@@ -6,7 +6,7 @@ from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from base64 import b64encode
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 import html
 import time
 import os
@@ -88,19 +88,17 @@ def split_tags(text):
 def get_top_n_words(corpus):
     words = []
     try:
-        print('Garaziiiiiii 1 ')
-        vec = CountVectorizer(stop_words=STOP_WORDS).fit(corpus)
-        print('Garaziiiiiii 2 ')
+        print('Garaziiiiiii count words 1')
+        vec = TfidfVectorizer(stop_words=STOP_WORDS, ngram_range=(1,3)).fit(corpus)
+        print('Garaziiiiiii count words 2')
         bag_of_words = vec.transform(corpus)
-        print('Garaziiiiiii 3 ')
+        print('Garaziiiiiii count words %s', bag_of_words)
         sum_words = bag_of_words.sum(axis=0)
-        print('Garaziiiiiii 4 ')
-        words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
-        print('Garaziiiiiii 5 ')
+        print('Garaziiiiiii count words %s', sum_words)
+        words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
         words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
-        print('Garaziiiiiii 6 ')
-        words = words_freq[:5]
-        print('Garaziiiiiii 7 ')
+        print('Garaziiiiiii count words %s', words_freq)
+        words = words_freq[:10]
     except Exception as e:
         logger.error('Failed counting words in article. Error: %s', e)
 
@@ -112,7 +110,7 @@ def get_tags(title, description, theme):
     if len(tags) < 6:
         tags = split_tags(description)
 
-    prueba = get_top_n_words(split_tags(title + ' ' + description))
+    prueba = get_top_n_words([title + ' ' + description])
 
     print('Garaziiiiiii count words %s', prueba)
 
