@@ -4,8 +4,8 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
-from nltk.corpus import stopwords
 from base64 import b64encode
+import nltk
 import html
 import time
 import os
@@ -16,6 +16,7 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 50
+stopwords = nltk.download('stopwords')
 STOP_WORDS = [word.decode('utf-8') for word in stopwords.words('spanish')]
 
 def select_image(new):
