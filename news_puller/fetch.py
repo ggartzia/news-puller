@@ -74,7 +74,7 @@ def filter_feed(theme, paper, news):
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
         try:
-            if bool(item) :create_unique_id
+            if bool(item):
                 link = item['link']
                 id = create_unique_id(link)
                 new = search_new(id)
