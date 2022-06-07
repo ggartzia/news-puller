@@ -14,7 +14,7 @@ import re
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
-NUM_NEWS_PARSE = 50
+NUM_NEWS_PARSE = 25
 
 
 def select_image(new):
@@ -70,7 +70,7 @@ def create_unique_id(url):
 
 
 def filter_feed(theme, paper, news):
-    twitter_exceded = True
+    twitter_exceded = False
 
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
