@@ -26,8 +26,11 @@ class FetchStatus(tweepy.Stream):
 
     def on_data(self, data):
         print("Garaziii data: %s", data)
-        data = json.dumps(data)
-        print(data)
+        my_json = data.decode('utf8').replace("'", '"')
+        print(my_json)
+        data = json.loads(my_json)
+        s = json.dumps(data, indent=4, sort_keys=True)
+        print(s)
 
     def on_error(self, status):
         print(status)

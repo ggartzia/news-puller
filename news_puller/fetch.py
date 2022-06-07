@@ -32,7 +32,8 @@ def select_image(new):
 
         elif 'links' in new:
             images = list(filter(lambda l: l['rel'] == 'enclosure', new['links']))
-            thumb_image = images[0]['href']
+            if len(images) > 0:
+                thumb_image = images[0]['href']
 
     except Exception as e:
         logger.error('Failed getting an image for article %s. Error: %s', new['link'], e)
