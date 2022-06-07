@@ -20,6 +20,15 @@ def save_tweets(tweets):
         logger.error('There was an error while trying to save tweets: %s', e)
 
 
+def save_tweet(tweet):
+    try:
+        tweet_db.insert_one(tweet)
+        
+    except Exception as e:
+        logger.error('There was an error while trying to save tweets: %s', e)
+
+
+
 def count_new_tweets(new):
     return tweet_db.count_documents({'new': new})
 

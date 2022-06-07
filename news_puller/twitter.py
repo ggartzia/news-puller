@@ -3,9 +3,11 @@ import tweepy
 import json
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
-from news_puller.db.tweet import search_tweet
+from news_puller.db.media import select_all_media
+from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.user import save_user
 from news_puller.db.comment import save_comment
+from news_puller.db.new import search_new
 
 
 load_dotenv()
@@ -13,9 +15,10 @@ load_dotenv()
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
-# media = select_all_media()
+media = select_all_media()
+follow = [m['twitter_id'] for m in media]
+ print("followwwww ----->>> %s", follow)
 
-follow = ['121183700', '14436030', '74453123']
 
 def save(comment, original):
     original = search_tweet(tweet['in_reply_to_status_id_str'])

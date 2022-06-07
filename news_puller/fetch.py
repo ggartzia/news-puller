@@ -3,7 +3,6 @@ from logging import getLogger, DEBUG
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
-from news_puller.shares import news_shares
 from news_puller.tfidf import get_topics
 import hashlib
 import html
@@ -70,7 +69,6 @@ def create_unique_id(url):
 
 
 def filter_feed(theme, paper, news):
-    twitter_exceded = False
 
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:
@@ -92,23 +90,12 @@ def filter_feed(theme, paper, news):
                            'theme': theme,
                            'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
                            'topics': topics,
-                           'tweetCount': 0
+                           'tweetCount': 0,
+                           'image': select_image(item)
                           }
 
                     save_topics(topics, theme)
-
-                if not twitter_exceded:
-                    tweet_list = news_shares(new)
-
-                    if (tweet_list == -1):
-                        twitter_exceded = True
-                    elif (len(tweet_list) > 0):
-                        new['lastTweet'] = tweet_list[0]['_id']
-                        new['tweetCount'] += len(tweet_list)
-
-                new['image'] = select_image(item)
-
-                save_new(new)
+                    save_new(new)
 
         except Exception as e:
             logger.error('Something happened with new: %s. %s', item['link'], e)
