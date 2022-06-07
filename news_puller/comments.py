@@ -18,22 +18,17 @@ follow = ["121183700", "14436030", "74453123"]
 class FetchStatus(tweepy.Stream):
 
     def on_data(self, data):
-        tweet = data.decode('utf8')
+        tweet = data.decode('utf8').replace("'", '"')
         comment = {key: tweet[key] for key in ["created_at", "id", "text", "user", "retweeted_status", "user_mentions"]}
         #The media?
         #The new?
         #Save user?
         save_comment(comment)
 
-    def on_tweet(self, tweet):
-        print("-------->>>> %s", tweet.id)
-        print(tweet)
-
     def on_error(self, status):
         print(status)
         logger.error('Something happened fetching tweets: %s', status)
 
-print("Garaziii !!!!!!!!: START")
 
 stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
                      os.getenv('TW_CONSUMER_SECRET'),
@@ -41,5 +36,3 @@ stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'),
                      os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
 stream.filter(follow=follow, languages=['es'])
-
-print("Garaziii !!!!!!!!: DONE")
