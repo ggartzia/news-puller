@@ -70,7 +70,7 @@ def create_unique_id(url):
 
 
 def filter_feed(theme, paper, news):
-    twitter_exceded = False
+    twitter_exceded = True
 
     # Parse only a given number of news to avoid TimeOut Exception
     for item in news[:NUM_NEWS_PARSE]:

@@ -18,6 +18,15 @@ follow = ['121183700', '14436030', '74453123']
 
 class FetchStatus(tweepy.Stream):
 
+    def on_connection_error(self):
+        print("on_connection_error")
+        self.disconnect()
+
+    def on_status(self, status):
+        print("status: %s", status)
+        tweet = json.loads(status.decode('utf8'))
+        print("status: %s", tweet)
+
     def on_tweet(self, data):
         try:
             tweet = json.loads(data.decode('utf8'))
