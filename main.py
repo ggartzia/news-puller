@@ -1,5 +1,4 @@
 from news_puller.routes import app
-import news_puller.scheduler
 import news_puller.comments
 
 
