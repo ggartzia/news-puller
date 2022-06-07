@@ -11,11 +11,8 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
-# Customize tweepy.SteamListener
 class MyStreamListener(tweepy.Stream):
-    """
-    Twitter listener, collects streaming tweets and output to a file
-    """
+
     def __init__(self, api=None):
         super(MyStreamListener, self).__init__()
 
@@ -43,8 +40,8 @@ follow = ["121183700", "14436030", "74453123"]
 # Create you Stream object with authentication
 auth = tweepy.OAuthHandler(os.getenv('TW_CONSUMER_KEY'), os.getenv('TW_CONSUMER_SECRET'))
 auth.set_access_token(os.getenv('TW_ACCESS_TOKEN'), os.getenv('TW_ACCESS_TOKEN_SECRET'))
-# Initialize Stream listener
-l = MyStreamListener(i)
+
+l = MyStreamListener()
 
 stream = tweepy.Stream(auth, l)
 stream.filter(follow=follow, is_async=True)
