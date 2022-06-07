@@ -20,27 +20,21 @@ class FetchStatus(tweepy.Stream):
 
     def on_data(self, data):
         try:
-            print(data)
-            
             tweet = json.loads(data.decode('utf8'))
-            print(tweet)
-            print(data._json)
             comment = {"_id": tweet["id_str"],
                        "created_at": tweet["created_at"],
                        "text": tweet["text"],
                        "user": tweet['user']['id'],
-                       "retweeted_status": tweet["retweeted_status"], 
-                       "user_mentions": tweet["user_mentions"]}
+                       "new": tweet["retweeted_status"], 
+                       "media": tweet["user_mentions"]}
 
             print(comment)
+            save_comment(comment)
             save_user({'id': tweet['user']['id'],
                        'name': tweet['user']['name'],
                        'screen_name': tweet['user']['screen_name'],
                        'image': tweet['user']['profile_image_url_https']})
 
-            #The media?
-            #The new?
-            save_comment(comment)
 
         except Exception as e:
             logger.error('Something happened fetching tweets: %s', e)
