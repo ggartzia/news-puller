@@ -1,6 +1,8 @@
 from logging import getLogger, DEBUG
 import pymongo
 from news_puller.database import Database
+from news_puller.db.tweet import search_new
+from news_puller.db.user import search_user
 
 tweet_db = Database.DATABASE['tweets']
 
@@ -17,10 +19,12 @@ def save_tweets(tweets):
         logger.error('There was an error while trying to save tweets: %s', e)
 
 
-def select_tweets(new, page):
+def select_tweets(id, page):
+    new = search_new(id)
+
     tweets = list(tweet_db.aggregate([
            {
-              '$match': {'new': new}
+              '$match': {'new': id}
            },
            {
               '$lookup': {
@@ -44,7 +48,9 @@ def select_tweets(new, page):
     tweetsFrom = page * Database.PAGE_SIZE
     tweetsTo = tweetsFrom + Database.PAGE_SIZE
 
-    return tweets[tweetsFrom:tweetsTo]
+    return {'new': new,
+            'total': new.total,
+            'items': tweets[tweetsFrom:tweetsTo]}
 
 
 def select_user_tweets(user, page):
@@ -52,7 +58,9 @@ def select_user_tweets(user, page):
                            {'_id': 0, 'new': 0, 'user': 0},
                            sort=[('created_at', pymongo.DESCENDING)])
 
-    return list(tweets)
+    return {'user': search_user(user),
+            'total': count_user_tweets(user),
+            'items': list(tweets)}
 
 
 def count_new_tweets(new):

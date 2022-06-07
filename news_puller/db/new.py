@@ -54,19 +54,26 @@ def save_new(new):
 
 def select_last_news(hour, theme, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
+    query = {'published': {'$gte': str(last_hour_date_time)}, 'theme': theme}
 
-    news = news_db.find({'published': {'$gte': str(last_hour_date_time)},
-                          'theme': theme},
-                         {'_id': 0 },
-                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+    total = news_db.count_documents(query)
+
+    news = news_db.find(query,
+                        {'_id': 0 },
+                        sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     news = map(update_topics, list(news))
 
-    return list(news)
+    return {'hour': hour,
+            'total': total,
+            'page': page + 1,
+            'items': list(news)}
 
 
 def select_trending_news(hour, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
+
+    total = news_db.count_documents({'published': {'$gte': str(last_hour_date_time)}})
 
     news = news_db.find({'published': {'$gte': str(last_hour_date_time)}},
                          {'_id': 0 },
@@ -74,23 +81,15 @@ def select_trending_news(hour, page):
     
     news = map(update_topics, list(news))
     
-    return list(news)
-
-
-def select_trending_news(hour, page):
-    last_hour_date_time = datetime.now() - timedelta(hours = hour)
-
-    news = news_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                         {'_id': 0 },
-                         sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-    
-    news = map(update_topics, list(news))
-    
-    return list(news)
+    return {'hour': hour,
+            'total': total,
+            'page': page + 1,
+            'items': list(news)}
 
 
 def select_related_news(id):
     to_compare = []
+    total = 300
 
     main_new = search_new(id)
 
@@ -102,13 +101,15 @@ def select_related_news(id):
         to_compare = news_db.find({'theme': main_new['theme'],
                                    '_id': {'$ne': main_new['_id']},
                                    'topics': {'$in': topics}},
-                                  sort=[('published', pymongo.DESCENDING)]).limit(300)
+                                  sort=[('published', pymongo.DESCENDING)]).limit(total)
 
         to_compare = [update_topics(n, 12) for n in list(to_compare)]
         
         news = calculate_similarity(main_new, to_compare)
 
-    return list(to_compare) 
+    return {'mainNew': main_new,
+            'total': total,
+            'items': list(news)}
 
 
 def select_media_news(media, page):
@@ -120,8 +121,9 @@ def select_media_news(media, page):
 
     total = news_db.count_documents({'paper': media})
     
-    return {'total': total,
-            'page': page,
+    return {'media': media,
+            'total': total,
+            'page': page + 1,
             'items': list(news)}
 
 

@@ -1,7 +1,6 @@
 from logging import getLogger, DEBUG
 import pymongo
 from news_puller.database import Database
-from news_puller.db.tweet import count_user_tweets
 
 user_db = Database.DATABASE['users']
 
@@ -24,9 +23,6 @@ def search_user(id):
 
     try:
         user = user_db.find_one({'_id': id})
-
-        if user is not None:
-            user['total'] = count_user_tweets(id)
 
     except Exception as e:
         logger.error('There was an error fetching user: %s. %s', id,  e)
