@@ -41,6 +41,6 @@ stream = tweepy.Stream(consumer_key=os.getenv('TW_CONSUMER_KEY'),
                        consumer_secret=os.getenv('TW_CONSUMER_SECRET'),
                        access_token=os.getenv('TW_ACCESS_TOKEN'),
                        access_token_secret=os.getenv('TW_ACCESS_TOKEN_SECRET'),
-                       MyStreamListener())
+                       listener=MyStreamListener())
 
 stream.filter(follow=follow, is_async=True)
