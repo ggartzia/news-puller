@@ -36,7 +36,7 @@ class MyStreamListener(tweepy.Stream):
         logger.error('Something happened fetching tweets: %s', status)
 
 
-media = select_all_media()
+# media = select_all_media()
 
 follow = ["121183700", "14436030", "74453123"]
 
