@@ -21,5 +21,4 @@ def get_topics(corpus):
     except Exception as e:
         logger.error('Failed counting words in article. Error: %s', e)
 
-    print('Garaziiiiiii DONE %s', words)
     return words

@@ -5,7 +5,7 @@ from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.shares import tweepy_shares
 from news_puller.tfidf import get_topics
-import math
+import hashlib
 import html
 import time
 import re
@@ -65,7 +65,7 @@ def get_description(new):
 
 
 def create_unique_id(url):
-    return int.from_bytes(url.encode(), 'little')
+    return hashlib.sha256(str(url).encode('utf-8')).hexdigest()
 
 
 def filter_feed(theme, paper, news):
