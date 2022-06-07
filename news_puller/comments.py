@@ -1,5 +1,6 @@
 import os
 import tweepy
+import json
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
 
@@ -17,10 +18,16 @@ class FetchStatus(tweepy.Stream):
 
     def on_status(self, status):
         print("Garaziii data: %s", status)
+        my_json = status.decode('utf8').replace("'", '"')
+        print(my_json)
+        data = json.loads(my_json)
+        s = json.dumps(data, indent=4, sort_keys=True)
+        print(s)
 
     def on_data(self, data):
-        tweet = data._json
-        print("Garaziii data: %s", tweet)
+        print("Garaziii data: %s", data)
+        data = json.dumps(data)
+        print(data)
 
     def on_error(self, status):
         print(status)
