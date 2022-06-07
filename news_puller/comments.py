@@ -37,11 +37,10 @@ class MyStreamListener(tweepy.Stream):
 
 follow = ["121183700", "14436030", "74453123"]
 
-# Create you Stream object with authentication
-auth = tweepy.OAuthHandler(os.getenv('TW_CONSUMER_KEY'), os.getenv('TW_CONSUMER_SECRET'))
-auth.set_access_token(os.getenv('TW_ACCESS_TOKEN'), os.getenv('TW_ACCESS_TOKEN_SECRET'))
+stream = tweepy.Stream(consumer_key=os.getenv('TW_CONSUMER_KEY'), 
+                       consumer_secret=os.getenv('TW_CONSUMER_SECRET'),
+                       access_token=os.getenv('TW_ACCESS_TOKEN'),
+                       access_token_secret=os.getenv('TW_ACCESS_TOKEN_SECRET'),
+                       MyStreamListener())
 
-l = MyStreamListener()
-
-stream = tweepy.Stream(auth, l)
 stream.filter(follow=follow, is_async=True)
