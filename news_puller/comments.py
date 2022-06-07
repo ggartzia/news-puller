@@ -17,6 +17,33 @@ logger.setLevel(DEBUG)
 
 follow = ['121183700', '14436030', '74453123']
 
+def save(comment, original):
+    original = search_tweet(tweet['in_reply_to_status_id_str'])
+
+    if original:
+      save_comment({'_id': tweet['id_str'],
+                    'created_at': tweet['created_at'],
+                    'text': tweet['text'],
+                    'user': tweet['user']['id'],
+                    'reply_to': original['id'],
+                    'new': original['new']})
+
+    else:
+      print("----->>> %s", tweet['media'])
+      url = tweet['media'][0]
+      new = search_new(create_unique_id(url))
+      save_tweet({'_id': tweet['id_str'],
+                  'created_at': tweet['created_at'],
+                  'text': tweet['text'],
+                  'new': new['id'],
+                  'user': tweet['user']['id']})
+
+    save_user({'id': tweet['user']['id'],
+               'name': tweet['user']['name'],
+               'screen_name': tweet['user']['screen_name'],
+               'image': tweet['user']['profile_image_url_https']})
+
+
 class FetchStatus(tweepy.Stream):
 
     def on_connection_error(self):
@@ -28,21 +55,11 @@ class FetchStatus(tweepy.Stream):
             tweet = status._json
 
             if (tweet['in_reply_to_user_id_str'] in follow):
-              tweet_id = tweet['in_reply_to_status_id_str']
-              tw = search_tweet(tweet_id)
+              
 
-              if tw:
-                save_comment({'_id': tweet['id_str'],
-                              'created_at': tweet['created_at'],
-                              'text': tweet['text'],
-                              'user': tweet['user']['id'],
-                              'reply_to': tweet_id,
-                              'new': tw['new']})
+              save(tweet, tw)
+            else if (tweet['user']['id'] in follow):
 
-                save_user({'id': tweet['user']['id'],
-                           'name': tweet['user']['name'],
-                           'screen_name': tweet['user']['screen_name'],
-                           'image': tweet['user']['profile_image_url_https']})
 
 
         except Exception as e:
