@@ -3,6 +3,7 @@ import tweepy
 import json
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
+from news_puller.db.comment import save_comment
 
 
 load_dotenv()
@@ -19,8 +20,10 @@ class FetchStatus(tweepy.Stream):
     def on_data(self, data):
         tweet = data.decode('utf8')
         comment = {key: tweet[key] for key in ["created_at", "id", "text", "user", "retweeted_status", "user_mentions"]}
-
-        print("Garaziii %s", comment)
+        #The media?
+        #The new?
+        #Save user?
+        save_comment(comment)
 
     def on_tweet(self, tweet):
         print("-------->>>> %s", tweet.id)
