@@ -114,6 +114,5 @@ def get_tweets(id, page):
 @cross_origin()
 def fetch_user_tweets(user, page):
     tweets = db_tweets.select_user_tweets(user, page)
-    user = 
 
     return jsonify(tweets)
