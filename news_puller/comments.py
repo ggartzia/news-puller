@@ -3,6 +3,7 @@ import tweepy
 import json
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
+from news_puller.db.tweet import search_tweet
 from news_puller.db.user import save_user
 from news_puller.db.comment import save_comment
 
@@ -25,20 +26,22 @@ class FetchStatus(tweepy.Stream):
     def on_status(self, status):
         try:
             tweet = status._json
-            print(tweet)
-            comment = {'_id': tweet['id_str'],
-                       'created_at': tweet['created_at'],
-                       'text': tweet['text'],
-                       'user': tweet['user']['id'],
-                       'new': tweet['retweeted_status'], 
-                       'media': tweet['user_mentions']}
 
-            print(comment)
-            save_comment(comment)
-            save_user({'id': tweet['user']['id'],
-                       'name': tweet['user']['name'],
-                       'screen_name': tweet['user']['screen_name'],
-                       'image': tweet['user']['profile_image_url_https']})
+            if (tweet['in_reply_to_user_id_str'] in follow):
+              tweet_id = tweet['in_reply_to_status_id_str']
+              tw = search_tweet(tweet_id)
+
+              if tw:
+                save_comment({'_id': tweet['id_str'],
+                              'created_at': tweet['created_at'],
+                              'text': tweet['text'],
+                              'user': tweet['user']['id'],
+                              'reply_to': tw})
+
+                save_user({'id': tweet['user']['id'],
+                           'name': tweet['user']['name'],
+                           'screen_name': tweet['user']['screen_name'],
+                           'image': tweet['user']['profile_image_url_https']})
 
 
         except Exception as e:

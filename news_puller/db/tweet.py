@@ -28,6 +28,18 @@ def count_user_tweets(user):
     return tweet_db.count_documents({'user': user})
 
 
+def search_tweet(id):
+    tweet = None
+
+    try:
+        tweet = tweet_db.find_one({'_id': id})
+
+    except Exception as e:
+        logger.error('There was an error fetching tweet: %s. %s', id,  e)
+
+    return tweet
+
+
 def select_tweets(id, page):
     tweets = list(tweet_db.aggregate([
            {
