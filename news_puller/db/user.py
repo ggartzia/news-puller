@@ -33,7 +33,10 @@ def search_user(id):
 def select_users(page):
     size = 3 * Database.PAGE_SIZE
 
+    total = user_db.count_documents({})
+
     users = user_db.find({},
                          sort=[('tweets', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
-    return list(users)
+    return {'total': total,
+            'items': list(users)}

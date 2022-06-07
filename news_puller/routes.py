@@ -59,14 +59,6 @@ def get_topic_news(topic, page):
     return jsonify(news)
 
 
-@app.route('/get/new/<id>', methods=['GET'])
-@cross_origin()
-def get_new(id):
-    new = db_news.search_new(id)
-
-    return jsonify(new)
-
-
 @app.route('/get/related/<id>', methods=['GET'])
 @cross_origin()
 def get_related_news(id):
@@ -97,14 +89,6 @@ def fetch_media_news(media, page):
     news = db_news.select_media_news(media, page)
 
     return jsonify(news)
-
-
-@app.route('/get/user/<int:id>', methods=['GET'])
-@cross_origin()
-def get_user(id):
-    user = db_users.search_user(id)
-
-    return jsonify(user)
 
 
 @app.route('/get/users/page/<int:page>', methods=['GET'])

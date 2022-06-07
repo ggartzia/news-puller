@@ -64,9 +64,7 @@ def select_last_news(hour, theme, page):
 
     news = map(update_topics, list(news))
 
-    return {'hour': hour,
-            'total': total,
-            'page': page + 1,
+    return {'total': total,
             'items': list(news)}
 
 
@@ -81,9 +79,7 @@ def select_trending_news(hour, page):
     
     news = map(update_topics, list(news))
     
-    return {'hour': hour,
-            'total': total,
-            'page': page + 1,
+    return {'total': total,
             'items': list(news)}
 
 
@@ -107,7 +103,7 @@ def select_related_news(id):
         
         news = calculate_similarity(main_new, to_compare)
 
-    return {'mainNew': main_new,
+    return {'new': main_new,
             'total': total,
             'items': list(news)}
 
@@ -121,9 +117,7 @@ def select_media_news(media, page):
 
     total = news_db.count_documents({'paper': media})
     
-    return {'media': media,
-            'total': total,
-            'page': page + 1,
+    return {'total': total,
             'items': list(news)}
 
 
@@ -132,6 +126,9 @@ def select_topic_news(topic, page):
                         {'_id': 0 },
                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
+    total = news_db.count_documents({'topics': topic})
+    
     news = map(update_topics, list(news))
     
-    return list(news)
+    return {'total': total,
+            'items': list(news)}

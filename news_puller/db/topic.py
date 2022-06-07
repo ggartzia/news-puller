@@ -16,10 +16,13 @@ def save_topics(topics, theme):
 def select_topics(theme, page):
     size = 4 * Database.PAGE_SIZE
 
+    total = topic_db.count_documents({'theme': theme})
+    
     topics = topic_db.find({'theme': theme}, {'_id': 0},
                            sort=[('usage', pymongo.DESCENDING)]).skip(page * size).limit(size)
 
-    return list(topics)
+    return {'total': total,
+            'items': list(topics)}
 
 
 def update_topics(new, limit=3):
