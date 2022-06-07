@@ -3,7 +3,7 @@ from logging import getLogger, DEBUG
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
-from news_puller.shares import tweepy_shares
+from news_puller.shares import news_shares
 from news_puller.tfidf import get_topics
 import hashlib
 import html
@@ -96,7 +96,7 @@ def filter_feed(theme, paper, news):
                     save_topics(topics, theme)
 
                 if not twitter_exceded:
-                    tweet_list = tweepy_shares(new)
+                    tweet_list = news_shares(new)
 
                     if (tweet_list == -1):
                         twitter_exceded = True

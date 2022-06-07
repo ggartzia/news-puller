@@ -18,7 +18,7 @@ auth.set_access_token(os.getenv('TW_ACCESS_TOKEN'), os.getenv('TW_ACCESS_TOKEN_S
 api = tweepy.API(auth)
 
 
-def tweepy_shares(new):
+def news_shares(new):
     tweet_list= []
     users = []
 

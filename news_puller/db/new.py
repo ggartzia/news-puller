@@ -105,7 +105,7 @@ def select_related_news(id):
 
     return {'new': main_new,
             'total': total,
-            'items': list(to_compare)
+            'items': list(to_compare),
             'cosine': list(news)}
 
 
