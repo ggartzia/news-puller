@@ -27,9 +27,9 @@ class FetchStatus(tweepy.Stream):
         logger.error('Something happened fetching tweets: %s', status)
 
 
-printer = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
-                      os.getenv('TW_CONSUMER_SECRET'),
-                      os.getenv('TW_ACCESS_TOKEN'),
-                      os.getenv('TW_ACCESS_TOKEN_SECRET'))
+stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
+                     os.getenv('TW_CONSUMER_SECRET'),
+                     os.getenv('TW_ACCESS_TOKEN'),
+                     os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
 stream.filter(follow=follow, is_async=True)
