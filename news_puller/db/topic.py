@@ -10,7 +10,8 @@ logger.setLevel(DEBUG)
 
 def save_topics(topics, theme):
     for topic in topics:
-        topic_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'usage': 1}})
+        topic_db.update_one({'name': topic, 'theme': theme}, {'$inc': {'usage': 1}},
+                            upsert=True)
 
 
 def select_topics(theme, page):
