@@ -36,7 +36,8 @@ class FetchStatus(tweepy.Stream):
                               'created_at': tweet['created_at'],
                               'text': tweet['text'],
                               'user': tweet['user']['id'],
-                              'reply_to': tw})
+                              'reply_to': tweet_id
+                              'new': tw['new']})
 
                 save_user({'id': tweet['user']['id'],
                            'name': tweet['user']['name'],
