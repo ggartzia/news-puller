@@ -105,7 +105,8 @@ def select_related_news(id):
 
     return {'new': main_new,
             'total': total,
-            'items': list(news)}
+            'items': list(to_compare)
+            'cosine': list(news)}
 
 
 def select_media_news(media, page):
@@ -127,7 +128,7 @@ def select_topic_news(topic, page):
                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     total = news_db.count_documents({'topics': topic})
-    
+
     news = map(update_topics, list(news))
     
     return {'total': total,

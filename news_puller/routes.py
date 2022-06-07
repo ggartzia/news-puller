@@ -103,13 +103,17 @@ def fetch_users(page):
 @cross_origin()
 def get_tweets(id, page):
     tweets = db_tweets.select_tweets(id, page)
+    new = db_news.search_new(id)
 
-    return jsonify(tweets)
+    return jsonify({'new': new,
+                    'total': new.total,
+                    'items': tweets})
 
 
 @app.route('/get/tweets/user/<int:user>/page/<int:page>', methods=['GET'])
 @cross_origin()
 def fetch_user_tweets(user, page):
     tweets = db_tweets.select_user_tweets(user, page)
+    user = 
 
     return jsonify(tweets)
