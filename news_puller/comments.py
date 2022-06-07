@@ -32,4 +32,4 @@ stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'),
                      os.getenv('TW_ACCESS_TOKEN'),
                      os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
-stream.filter(follow=follow, is_async=True)
+stream.filter(follow=follow)
