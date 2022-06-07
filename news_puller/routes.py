@@ -64,9 +64,6 @@ def get_topic_news(topic, page):
 def get_new(id):
     new = db_news.search_new(id)
 
-    if new:
-        new = db_topics.update_topics(new, 10)
-
     return jsonify(new)
 
 

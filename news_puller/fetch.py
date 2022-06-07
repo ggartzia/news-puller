@@ -82,6 +82,7 @@ def filter_feed(theme, paper, news):
                 if new is None:
                     title = clean_html(item['title'])
                     description = get_description(item)
+                    topics = get_topics([title + ' ' + description])
                     new = {'id': id,
                            'fullUrl': link,
                            'title': title,
@@ -89,9 +90,10 @@ def filter_feed(theme, paper, news):
                            'paper': paper,
                            'theme': theme,
                            'published': time.strftime("%Y-%m-%d %H:%M:%S", item['published_parsed']),
-                           'topics': get_topics([title + ' ' + description]),
+                           'topics': topics,
                            'tweetCount': 0
                           }
+                    save_topics(topics, theme)
 
                 if not twitter_exceded:
                     tweet_list = tweepy_shares(new)
