@@ -14,19 +14,20 @@ logger.setLevel(DEBUG)
 
 # media = select_all_media()
 
-follow = ["121183700", "14436030", "74453123"]
+follow = ['121183700', '14436030', '74453123']
 
 class FetchStatus(tweepy.Stream):
 
-    def on_data(self, data):
+    def on_tweet(self, data):
         try:
             tweet = json.loads(data.decode('utf8'))
-            comment = {"_id": tweet["id_str"],
-                       "created_at": tweet["created_at"],
-                       "text": tweet["text"],
-                       "user": tweet['user']['id'],
-                       "new": tweet["retweeted_status"], 
-                       "media": tweet["user_mentions"]}
+            print(tweet)
+            comment = {'_id': tweet['id_str'],
+                       'created_at': tweet['created_at'],
+                       'text': tweet['text'],
+                       'user': tweet['user']['id'],
+                       'new': tweet['retweeted_status'], 
+                       'media': tweet['user_mentions']}
 
             print(comment)
             save_comment(comment)
@@ -38,10 +39,6 @@ class FetchStatus(tweepy.Stream):
 
         except Exception as e:
             logger.error('Something happened fetching tweets: %s', e)
-
-    def on_error(self, status):
-        print(status)
-        logger.error('Something happened fetching tweets: %s', status)
 
 
 stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
