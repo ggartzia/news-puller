@@ -93,6 +93,7 @@ def filter_feed(theme, paper, news):
                            'topics': topics,
                            'tweetCount': 0
                           }
+                    print("---------------------------->>>>> Save topics: %s", topics)
                     save_topics(topics, theme)
 
                 if not twitter_exceded:

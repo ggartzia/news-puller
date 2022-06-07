@@ -26,6 +26,7 @@ class FetchStatus(tweepy.Stream):
         print(status)
         logger.error('Something happened fetching tweets: %s', status)
 
+print("Garaziii !!!!!!!!: START")
 
 stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
                      os.getenv('TW_CONSUMER_SECRET'),
@@ -33,3 +34,5 @@ stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'),
                      os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
 stream.filter(follow=follow)
+
+print("Garaziii !!!!!!!!: DONE")
