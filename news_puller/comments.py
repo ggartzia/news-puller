@@ -17,15 +17,13 @@ follow = ["121183700", "14436030", "74453123"]
 class FetchStatus(tweepy.Stream):
 
     def on_data(self, data):
-        print("Garaziii data: %s", data)
-        my_json = data.decode('utf8').replace("'", '"')
-        print(my_json)
-        data = json.loads(my_json)
-        s = json.dumps(data, indent=4, sort_keys=True)
-        print(s)
+        tweet = data.decode('utf8')
+        comment = {key: tweet[key] for key in ["created_at", "id", "text", "user", "retweeted_status", "user_mentions"]}
+
+        print("Garaziii %s", comment)
 
     def on_tweet(self, tweet):
-        print(tweet.id)
+        print("-------->>>> %s", tweet.id)
         print(tweet)
 
     def on_error(self, status):
