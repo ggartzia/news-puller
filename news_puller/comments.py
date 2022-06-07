@@ -23,13 +23,8 @@ class FetchStatus(tweepy.Stream):
         self.disconnect()
 
     def on_status(self, status):
-        print("status: %s", status)
-        tweet = json.loads(status.decode('utf8'))
-        print("status: %s", tweet)
-
-    def on_tweet(self, data):
         try:
-            tweet = json.loads(data.decode('utf8'))
+            tweet = data._json
             print(tweet)
             comment = {'_id': tweet['id_str'],
                        'created_at': tweet['created_at'],

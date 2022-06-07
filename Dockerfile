@@ -11,4 +11,4 @@ RUN pip3 install -U -r requirements.txt
 
 EXPOSE 5000
 
-CMD gunicorn -w 4 main:app
+CMD gunicorn -w 1 main:app
