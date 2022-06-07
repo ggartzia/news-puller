@@ -16,14 +16,6 @@ follow = ["121183700", "14436030", "74453123"]
 
 class FetchStatus(tweepy.Stream):
 
-    def on_status(self, status):
-        print("Garaziii data: %s", status)
-        my_json = status.decode('utf8').replace("'", '"')
-        print(my_json)
-        data = json.loads(my_json)
-        s = json.dumps(data, indent=4, sort_keys=True)
-        print(s)
-
     def on_data(self, data):
         print("Garaziii data: %s", data)
         my_json = data.decode('utf8').replace("'", '"')
@@ -31,6 +23,10 @@ class FetchStatus(tweepy.Stream):
         data = json.loads(my_json)
         s = json.dumps(data, indent=4, sort_keys=True)
         print(s)
+
+    def on_tweet(self, tweet):
+        print(tweet.id)
+        print(tweet)
 
     def on_error(self, status):
         print(status)
@@ -43,6 +39,6 @@ stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'),
                      os.getenv('TW_ACCESS_TOKEN'),
                      os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
-stream.filter(follow=follow)
+stream.filter(follow=follow, languages=['es'])
 
 print("Garaziii !!!!!!!!: DONE")
