@@ -18,7 +18,7 @@ scheduler = BackgroundScheduler()
 media = select_all_media()
 
 for start_at in range(0, 59):
-    paper = media[job]['paper']
-    scheduler.add_job(lambda paper=paper: news_update(paper), CronTrigger(minute=(start_at % len(media)), timezone='UTC'))
+    paper = media[start_at % len(media)]['paper']
+    scheduler.add_job(lambda paper=paper: news_update(paper), CronTrigger(minute=start_at, timezone='UTC'))
 
 scheduler.start()
