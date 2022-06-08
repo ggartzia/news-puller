@@ -17,8 +17,7 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 media = select_all_media()
-follow = [m['twitter_id'] for m in media]
-print("followwwww ----->>> %s", follow)
+follow = [str(m['twitter_id']) for m in media]
 
 
 class FetchStatus(tweepy.Stream):
@@ -54,7 +53,7 @@ class FetchStatus(tweepy.Stream):
                 save_user(user)
 
             # Save tweet of the newspaper when sharing a new
-            elif (user['id'] in follow):
+            elif (str(user['id']) in follow):
               print("----->>> %s", tweet['media'])
               url = tweet['media'][0]
 
