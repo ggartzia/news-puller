@@ -18,7 +18,7 @@ logger.setLevel(DEBUG)
 
 media = select_all_media()
 follow = [str(m['twitter_id']) for m in media]
-
+print("This are media ids %s", follow)
 
 class FetchStatus(tweepy.Stream):
 
@@ -27,22 +27,25 @@ class FetchStatus(tweepy.Stream):
         self.disconnect()
 
     def on_status(self, status):
+        print("Hello!!")
         try:
             tweet = status._json
+            print("Hello!! 1")
             tweet = {'_id': tweet['id_str'],
                      'created_at': tweet['created_at'],
                      'text': tweet['text'],
                      'user': tweet['user']['id']}
-
+            print("Hello!! 2")
             user = {'id': tweet['user']['id'],
                     'name': tweet['user']['name'],
                     'screen_name': tweet['user']['screen_name'],
                     'image': tweet['user']['profile_image_url_https']}
-
+            print("Hello!! 3")
             ## Save comments on the newspaper tweets
             reply_to = tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
                 reply_to in follow):
+              print("Hello!! 4")
               original = search_tweet(reply_to)
 
               ## Only if the original comment is on a new
@@ -54,7 +57,7 @@ class FetchStatus(tweepy.Stream):
 
             # Save tweet of the newspaper when sharing a new
             elif (str(user['id']) in follow):
-              print("----->>> %s", tweet['media'])
+              print("----->>> %s", tweet)
               url = tweet['media'][0]
 
               tweet.update({'new': create_unique_id(url)})
