@@ -43,7 +43,6 @@ class FetchStatus(tweepy.Stream):
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
                 reply_to in follow):
-              print("Hello comment!! %s", tweet)
               original = search_tweet(reply_to)
 
               ## Only if the original comment is on a new
@@ -55,13 +54,13 @@ class FetchStatus(tweepy.Stream):
                 save_user(user)
 
             # Save tweet of the newspaper when sharing a new
-            elif (str(user['id']) in follow):
-              print("----->>> %s", full_tweet)
-              url = full_tweet['media'][0]
-
-              tweet.update({'new': create_unique_id(url)})
-              save_tweet(tweet)
-              save_user(user)
+            elif (full_tweet['entities'] in None and
+                  len(full_tweet['entities']['urls']) > 0):
+                url = full_tweet['entities']['urls'][0]
+                print("----->>> %s", url)
+                tweet.update({'new': create_unique_id(url['expanded_url'])})
+                save_tweet(tweet)
+                save_user(user)
 
         except Exception as e:
             logger.error('Something happened fetching tweets: %s', e)
