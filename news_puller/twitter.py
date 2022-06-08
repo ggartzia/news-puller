@@ -27,29 +27,28 @@ class FetchStatus(tweepy.Stream):
         self.disconnect()
 
     def on_status(self, status):
-        print("Hello!!")
         try:
-            tweet = status._json
-            print("Hello!! 1")
-            tweet = {'_id': tweet['id_str'],
-                     'created_at': tweet['created_at'],
-                     'text': tweet['text'],
-                     'user': tweet['user']['id']}
-            print("Hello!! 2")
-            user = {'id': tweet['user']['id'],
-                    'name': tweet['user']['name'],
-                    'screen_name': tweet['user']['screen_name'],
-                    'image': tweet['user']['profile_image_url_https']}
-            print("Hello!! 3")
+            full_tweet = status._json
+            tweet = {'_id': full_tweet['id_str'],
+                     'created_at': full_tweet['created_at'],
+                     'text': full_tweet['text'],
+                     'user': full_tweet['user']['id']}
+
+            user = {'id': full_tweet['user']['id'],
+                    'name': full_tweet['user']['name'],
+                    'screen_name': full_tweet['user']['screen_name'],
+                    'image': full_tweet['user']['profile_image_url_https']}
+
             ## Save comments on the newspaper tweets
-            reply_to = tweet['in_reply_to_user_id_str']
+            reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
                 reply_to in follow):
-              print("Hello!! 4")
+              print("Hello comment!! %s", tweet)
               original = search_tweet(reply_to)
 
               ## Only if the original comment is on a new
               if original is not None:
+                print("Hello tweet!! %s", original)
                 tweet.update({'reply_to': original['id'],
                               'new': original['new']})
                 save_comment(tweet)
@@ -57,8 +56,8 @@ class FetchStatus(tweepy.Stream):
 
             # Save tweet of the newspaper when sharing a new
             elif (str(user['id']) in follow):
-              print("----->>> %s", tweet)
-              url = tweet['media'][0]
+              print("----->>> %s", full_tweet)
+              url = full_tweet['media'][0]
 
               tweet.update({'new': create_unique_id(url)})
               save_tweet(tweet)

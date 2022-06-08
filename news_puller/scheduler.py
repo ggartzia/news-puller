@@ -18,12 +18,7 @@ scheduler = BackgroundScheduler()
 media = select_all_media()
 
 for start_at in range(0, 59):
-    print("Hello start at!! %s", start_at)
-    print("Hello calc list job index!! %s", start_at % len(media))
-    print("Hello paper is!! %s", media[start_at % len(media)])
-
     paper = media[start_at % len(media)]['paper']
-    print("Hello and the name is!! %s", paper)
     scheduler.add_job(lambda paper=paper: news_update(paper), CronTrigger(minute=start_at, timezone='UTC'))
 
 scheduler.start()
