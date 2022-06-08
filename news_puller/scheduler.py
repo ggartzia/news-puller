@@ -19,8 +19,9 @@ media = select_all_media()
 job = 0
 
 for start_at in range(0, 60):
-	paper = media[job]['paper']
+    paper = media[job]['paper']
     scheduler.add_job(lambda paper=paper: news_update(paper), CronTrigger(minute=start_at, timezone='UTC'))
-    job = 0 if job == len(media) else job++
+
+    job = 0 if (job == len(media)) else job++
 
 scheduler.start()
