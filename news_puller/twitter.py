@@ -54,7 +54,7 @@ class FetchStatus(tweepy.Stream):
                 save_user(user)
 
             # Save tweet of the newspaper when sharing a new
-            else if (user['id'] in follow):
+            elif (user['id'] in follow):
               print("----->>> %s", tweet['media'])
               url = tweet['media'][0]
 
