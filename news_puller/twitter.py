@@ -46,8 +46,7 @@ class FetchStatus(tweepy.Stream):
 
               ## Only if the original comment is on a new
               if original is not None:
-                print("Hello tweet!! %s", original)
-                tweet.update({'reply_to': original['id'],
+                tweet.update({'reply_to': original['_id'],
                               'new': original['new']})
                 save_comment(tweet)
                 save_user(user)
