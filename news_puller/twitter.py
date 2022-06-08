@@ -9,6 +9,7 @@ from news_puller.db.user import save_user
 from news_puller.db.comment import save_comment
 from news_puller.db.new import search_new
 from news_puller.utils import create_unique_id
+from news_puller.tfidf import rate_feeling
 
 
 load_dotenv()
@@ -47,8 +48,11 @@ class FetchStatus(tweepy.Stream):
               ## Only if the original comment is on a new
               if original is not None:
                 tweet.update({'reply_to': original['_id'],
-                              'new': original['new']})
-                save_comment(tweet)
+                              'new': original['new'],
+                              ## Analizar sentimiento del comentario
+                              'rating': rate_feeling(tweet['text'])})
+
+                save_tweet(tweet)
                 save_user(user)
 
             # Save tweet of the newspaper when sharing a new

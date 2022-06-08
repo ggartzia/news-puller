@@ -52,6 +52,13 @@ def save_new(new):
         logger.error('There was an error while trying to save new: %s, %s', new, e)
 
 
+def enrich_new(new, limit=3):
+    new = update_topics(new, limit)
+    new['total'] = count_new_tweets(new['id'])
+
+    return new
+
+
 def select_last_news(hour, theme, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}, 'theme': theme}
@@ -62,7 +69,7 @@ def select_last_news(hour, theme, page):
                         {'_id': 0 },
                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-    news = map(update_topics, list(news))
+    news = map(enrich_new, list(news))
 
     return {'total': total,
             'items': list(news)}
@@ -77,7 +84,7 @@ def select_trending_news(hour, page):
                          {'_id': 0 },
                          sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
     
-    news = map(update_topics, list(news))
+    news = map(enrich_new, list(news))
     
     return {'total': total,
             'items': list(news)}
@@ -91,7 +98,7 @@ def select_related_news(id):
 
     if main_new:
         # Search for less common topics
-        main_new = update_topics(main_new, 12)
+        main_new = enrich_new(main_new, 12)
         topics = [t.get("name") for t in main_new['topics']]
 
         to_compare = news_db.find({'theme': main_new['theme'],
@@ -99,7 +106,7 @@ def select_related_news(id):
                                    'topics': {'$in': topics}},
                                   sort=[('published', pymongo.DESCENDING)]).limit(total)
 
-        to_compare = [update_topics(n, 12) for n in list(to_compare)]
+        to_compare = [enrich_new(n, 12) for n in list(to_compare)]
         
         news = calculate_similarity(main_new, to_compare)
 
@@ -114,7 +121,7 @@ def select_media_news(media, page):
                         {'_id': 0},
                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
-    news = map(update_topics, list(news))
+    news = map(enrich_new, list(news))
 
     total = news_db.count_documents({'paper': media})
     
@@ -129,7 +136,7 @@ def select_topic_news(topic, page):
 
     total = news_db.count_documents({'topics': topic})
 
-    news = map(update_topics, list(news))
+    news = map(enrich_new, list(news))
     
     return {'total': total,
             'items': list(news)}

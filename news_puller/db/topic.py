@@ -26,7 +26,7 @@ def select_topics(theme, page):
             'items': list(topics)}
 
 
-def update_topics(new, limit=3):
+def update_topics(new, limit):
     topics = topic_db.find({'name': {'$in': new['topics']}, 'theme': new['theme']},
                            {'_id': 0},
                            sort=[('usage', pymongo.DESCENDING)]).limit(limit)
