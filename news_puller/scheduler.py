@@ -16,11 +16,11 @@ def news_update(paper):
 scheduler = BackgroundScheduler()
 
 media = select_all_media()
-minute = round(60 / len(media))
-start_at = 0
+job = 0
 
-for plist in media:
-    scheduler.add_job(lambda plist=plist: news_update(plist['paper']), CronTrigger(minute=start_at, timezone='UTC'))
-    start_at += minute
+for start_at in range(0, 60):
+	paper = media[job]['paper']
+    scheduler.add_job(lambda paper=paper: news_update(paper), CronTrigger(minute=start_at, timezone='UTC'))
+    job = 0 if job == len(media) else job++
 
 scheduler.start()
