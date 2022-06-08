@@ -18,7 +18,6 @@ logger.setLevel(DEBUG)
 
 media = select_all_media()
 follow = [str(m['twitter_id']) for m in media]
-print("This are media ids %s", follow)
 
 class FetchStatus(tweepy.Stream):
 
@@ -43,7 +42,7 @@ class FetchStatus(tweepy.Stream):
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
                 reply_to in follow):
-              original = search_tweet(reply_to)
+              original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
               ## Only if the original comment is on a new
               if original is not None:
@@ -56,9 +55,10 @@ class FetchStatus(tweepy.Stream):
             # Save tweet of the newspaper when sharing a new
             elif (full_tweet['entities'] is not None and
                   len(full_tweet['entities']['urls']) > 0):
+
                 url = full_tweet['entities']['urls'][0]
-                print("----->>> %s", url)
                 tweet.update({'new': create_unique_id(url['expanded_url'])})
+
                 save_tweet(tweet)
                 save_user(user)
 
