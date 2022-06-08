@@ -54,7 +54,7 @@ class FetchStatus(tweepy.Stream):
                 save_user(user)
 
             # Save tweet of the newspaper when sharing a new
-            elif (full_tweet['entities'] in None and
+            elif (full_tweet['entities'] is not None and
                   len(full_tweet['entities']['urls']) > 0):
                 url = full_tweet['entities']['urls'][0]
                 print("----->>> %s", url)
