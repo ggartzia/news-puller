@@ -13,20 +13,22 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        print("start TfIdfAnalizer")
         self.STOP_WORDS = set(stopwords.words('spanish'))
         self.read_lexico_file()
 
 
     def get_topics(self, corpus, size=10):
         words = []
-        print("Graararaziii hemen dao arazoa ", corpus)
         try:
+            print("Graararaziii hemen dao arazoa1 %s", corpus)
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
+            print("Graararaziii hemen dao arazoa2 %s", bag_of_words)
             sum_words = bag_of_words.sum(axis=0)
+            print("Graararaziii hemen dao arazoa3 %s", sum_words)
             words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
+            print("Graararaziii hemen dao arazoa4 %s", words_freq)
             words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
             words = [w[0] for w in words_freq[:size]]
 
@@ -49,7 +51,7 @@ class TfIdfAnalizer(object):
 
         # rate emojis
         topics = self.get_topics(text, 20)
-        
+
         if len(topics) > 0:
             for word in topics:
                 rate += self.WORD_RATING.get(word, 0)

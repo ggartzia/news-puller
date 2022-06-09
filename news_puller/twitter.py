@@ -19,7 +19,6 @@ logger.setLevel(DEBUG)
 class TweetListener(object):
 
   def __init__(self):
-      print("start TweetListener")
       media = select_all_media()
       follow = [str(m['twitter_id']) for m in media]
 
