@@ -33,8 +33,8 @@ class TweetListener(object):
 
   class MediaActivity(tweepy.Stream):
 
-      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
-          super().__init__(self, consumer_key, consumer_secret, access_token, access_token_secret)
+      def __init__(self, **args):
+          super().__init__(**args)
           self.FOLLOW = []
           self.TFIDF = TfIdfAnalizer()
 
@@ -60,7 +60,7 @@ class TweetListener(object):
             ## Save comments on the newspaper tweets
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
-                reply_to in self.FOLLOW):
+                reply_to in FOLLOW):
               original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
               ## Only if the original comment is on a new
@@ -68,7 +68,7 @@ class TweetListener(object):
                 tweet.update({'reply_to': original['_id'],
                               'new': original['new'],
                               ## Analizar sentimiento del comentario
-                              'rating': self.TFIDF.rate_feeling(tweet['text'])})
+                              'rating': TFIDF.rate_feeling(tweet['text'])})
 
                 save_tweet(tweet)
                 save_user(user)
@@ -85,3 +85,4 @@ class TweetListener(object):
 
           except Exception as e:
               logger.error('Something happened fetching tweets: %s', e)
+
