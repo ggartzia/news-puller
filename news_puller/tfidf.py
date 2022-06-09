@@ -36,8 +36,11 @@ class TfIdfAnalizer(object):
 
 
     def read_lexico_file(self):
-        print("read file")
-        self.WORD_RATING = csv.DictReader(open('lexicon.csv'))
+        reader = csv.DictReader(open('lexicon.csv'))
+        
+        self.WORD_RATING = {}
+        for k, v in reader:
+            self.WORD_RATING[k] = v
 
 
     def count_polarity_words(self, text):
@@ -46,7 +49,7 @@ class TfIdfAnalizer(object):
         print("this is the tweet:: %s", text)
         topics = self.get_topics(text, 20)
         print("this are the topics:: %s", topics)
-        for ngram in topics:
+        for word in topics:
             rate += self.WORD_RATING.get(word, 0)
 
         return rate / len(topics)
