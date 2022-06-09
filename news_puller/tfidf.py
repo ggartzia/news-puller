@@ -15,7 +15,7 @@ class TfIdfAnalizer(object):
     def __init__(self):
         print("start TfIdfAnalizer")
         self.STOP_WORDS = set(stopwords.words('spanish'))
-        self.WORD_RATING = self.read_lexico_file()
+        self.read_lexico_file()
 
 
     def get_topics(self, corpus, size=10):
@@ -37,8 +37,7 @@ class TfIdfAnalizer(object):
 
     def read_lexico_file(self):
         print("read file")
-        with open('lexicon.csv', newline=';') as f:
-            return csv.DictReader(f, skipinitialspace=True)
+        self.WORD_RATING = csv.DictReader(open('lexicon.csv'))
 
 
     def count_polarity_words(self, text):

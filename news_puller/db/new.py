@@ -54,7 +54,7 @@ def save_new(new):
 
 def enrich_new(new, limit=3):
     new = update_topics(new, limit)
-    new['total'] = count_new_tweets(new['id'])
+    new['tweetCount'] = count_new_tweets(new['id'])
 
     return new
 
