@@ -16,32 +16,34 @@ load_dotenv()
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
-FOLLOW = None
-TFIDF = None
-
 class TweetListener(object):
 
   def __init__(self):
       print("start TweetListener")
       media = select_all_media()
-      FOLLOW = [str(m['twitter_id']) for m in media]
-      TFIDF = TfIdfAnalizer()
+      follow = [str(m['twitter_id']) for m in media]
 
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
                                   os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
-      stream.filter(follow=FOLLOW, languages=['es'])
+      stream.filter(follow=follow, languages=['es'])
 
 
   class MediaActivity(tweepy.Stream):
+
+      def __init__(self, **kargs):
+          super().__init__(**kargs)
+          self.TFIDF = TfIdfAnalizer()
+
 
       def on_connection_error(self):
           self.disconnect()
 
 
       def on_status(self, status):
+          print("this is self %s", self)
           try:
             full_tweet = status._json
             tweet = {'_id': full_tweet['id_str'],
@@ -57,7 +59,7 @@ class TweetListener(object):
             ## Save comments on the newspaper tweets
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
-                reply_to in FOLLOW):
+                reply_to in self.follow):
               original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
               ## Only if the original comment is on a new
@@ -65,7 +67,7 @@ class TweetListener(object):
                 tweet.update({'reply_to': original['_id'],
                               'new': original['new'],
                               ## Analizar sentimiento del comentario
-                              'rating': TFIDF.rate_feeling(tweet['text'])})
+                              'rating': self.TFIDF.rate_feeling(tweet['text'])})
 
                 save_tweet(tweet)
                 save_user(user)
