@@ -20,7 +20,7 @@ class TfIdfAnalizer(object):
 
     def get_topics(self, corpus, size=10):
         words = []
-        print("Graararaziii hemen dao arazoa ", text)
+        print("Graararaziii hemen dao arazoa ", corpus)
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   ngram_range=(1,2)).fit(corpus)
@@ -47,8 +47,9 @@ class TfIdfAnalizer(object):
     def count_polarity_words(self, text):
         rate = 0
 
-        # Eliminar menciones, links, rate emojis
+        # rate emojis
         topics = self.get_topics(text, 20)
+        
         if len(topics) > 0:
             for word in topics:
                 rate += self.WORD_RATING.get(word, 0)
