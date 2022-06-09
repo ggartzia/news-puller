@@ -78,10 +78,13 @@ class TweetListener(object):
                   len(full_tweet['entities']['urls']) > 0):
 
                 url = full_tweet['entities']['urls'][0]
-                tweet.update({'new': create_unique_id(url['expanded_url'])})
+                new_id = create_unique_id(url['expanded_url'])
+                
+                if search_new(new_id) is not None:
+                  tweet.update({'new': new_id})
 
-                save_tweet(tweet)
-                save_user(user)
+                  save_tweet(tweet)
+                  save_user(user)
 
           except Exception as e:
               logger.error('Something happened fetching tweets: %s', e)
