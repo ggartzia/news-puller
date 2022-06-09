@@ -20,62 +20,62 @@ logger.setLevel(DEBUG)
 class TwitterStream(object):
 
   def __init__(self):
-     print("start TwitterStream")
-    media = select_all_media()
-    self.FOLLOW = [str(m['twitter_id']) for m in media]
-    self.TFIDF = TfIdfAnalizer()
+      print("start TwitterStream")
+      media = select_all_media()
+      self.FOLLOW = [str(m['twitter_id']) for m in media]
+      self.TFIDF = TfIdfAnalizer()
 
-    stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
-                         os.getenv('TW_CONSUMER_SECRET'),
-                         os.getenv('TW_ACCESS_TOKEN'),
-                         os.getenv('TW_ACCESS_TOKEN_SECRET'))
+      stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
+                           os.getenv('TW_CONSUMER_SECRET'),
+                           os.getenv('TW_ACCESS_TOKEN'),
+                           os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
-    stream.filter(follow=self.FOLLOW, languages=['es'])
+      stream.filter(follow=self.FOLLOW, languages=['es'])
 
 
   class FetchStatus(tweepy.Stream):
 
-    def on_connection_error(self):
-        self.disconnect()
+      def on_connection_error(self):
+          self.disconnect()
 
-    def on_status(self, status):
-        try:
-          full_tweet = status._json
-          tweet = {'_id': full_tweet['id_str'],
-                   'created_at': full_tweet['created_at'],
-                   'text': full_tweet['text'],
-                   'user': full_tweet['user']['id']}
+      def on_status(self, status):
+          try:
+            full_tweet = status._json
+            tweet = {'_id': full_tweet['id_str'],
+                     'created_at': full_tweet['created_at'],
+                     'text': full_tweet['text'],
+                     'user': full_tweet['user']['id']}
 
-          user = {'id': full_tweet['user']['id'],
-                  'name': full_tweet['user']['name'],
-                  'screen_name': full_tweet['user']['screen_name'],
-                  'image': full_tweet['user']['profile_image_url_https']}
+            user = {'id': full_tweet['user']['id'],
+                    'name': full_tweet['user']['name'],
+                    'screen_name': full_tweet['user']['screen_name'],
+                    'image': full_tweet['user']['profile_image_url_https']}
 
-          ## Save comments on the newspaper tweets
-          reply_to = full_tweet['in_reply_to_user_id_str']
-          if (reply_to is not None and 
-              reply_to in self.FOLLOW):
-            original = search_tweet(str(full_tweet['in_reply_to_status_id']))
+            ## Save comments on the newspaper tweets
+            reply_to = full_tweet['in_reply_to_user_id_str']
+            if (reply_to is not None and 
+                reply_to in self.FOLLOW):
+              original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
-            ## Only if the original comment is on a new
-            if original is not None:
-              tweet.update({'reply_to': original['_id'],
-                            'new': original['new'],
-                            ## Analizar sentimiento del comentario
-                            'rating': self.TFIDF.rate_feeling(tweet['text'])})
+              ## Only if the original comment is on a new
+              if original is not None:
+                tweet.update({'reply_to': original['_id'],
+                              'new': original['new'],
+                              ## Analizar sentimiento del comentario
+                              'rating': self.TFIDF.rate_feeling(tweet['text'])})
 
-              save_tweet(tweet)
-              save_user(user)
+                save_tweet(tweet)
+                save_user(user)
 
-          # Save tweet of the newspaper when sharing a new
-          elif (full_tweet['entities'] is not None and
-                len(full_tweet['entities']['urls']) > 0):
+            # Save tweet of the newspaper when sharing a new
+            elif (full_tweet['entities'] is not None and
+                  len(full_tweet['entities']['urls']) > 0):
 
-              url = full_tweet['entities']['urls'][0]
-              tweet.update({'new': create_unique_id(url['expanded_url'])})
+                url = full_tweet['entities']['urls'][0]
+                tweet.update({'new': create_unique_id(url['expanded_url'])})
 
-              save_tweet(tweet)
-              save_user(user)
+                save_tweet(tweet)
+                save_user(user)
 
-        except Exception as e:
-            logger.error('Something happened fetching tweets: %s', e)
+          except Exception as e:
+              logger.error('Something happened fetching tweets: %s', e)
