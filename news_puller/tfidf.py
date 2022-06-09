@@ -43,8 +43,9 @@ class TfIdfAnalizer(object):
     def count_polarity_words(self, text):
         rate = 0
         text = clean_html(text)
+        print("this is the tweet:: %s", text)
         topics = self.get_topics(text, 20)
-
+        print("this are the topics:: %s", topics)
         for ngram in topics:
             rate += self.WORD_RATING.get(word, 0)
 
@@ -56,7 +57,7 @@ class TfIdfAnalizer(object):
 
         try:
             rate = self.count_polarity_words(text)
-            print("Texxttttt: %s. Rate: %s", text, rate)
+            print("Rate: %s", rate)
             
         except Exception as e:
             logger.error('There was an error analysing the text of the tweet: %s', e)
