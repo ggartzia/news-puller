@@ -25,15 +25,21 @@ class TwitterStream(object):
       self.FOLLOW = [str(m['twitter_id']) for m in media]
       self.TFIDF = TfIdfAnalizer()
 
-      stream = self.FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
-                                os.getenv('TW_CONSUMER_SECRET'),
-                                os.getenv('TW_ACCESS_TOKEN'),
-                                os.getenv('TW_ACCESS_TOKEN_SECRET'))
+      stream = self.TweetListener(os.getenv('TW_CONSUMER_KEY'), 
+                                  os.getenv('TW_CONSUMER_SECRET'),
+                                  os.getenv('TW_ACCESS_TOKEN'),
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
+                                  outerClass=self)
 
       stream.filter(follow=self.FOLLOW, languages=['es'])
 
 
-  class FetchStatus(tweepy.Stream):
+  class TweetListener(tweepy.Stream):
+
+    def __init__(self, **kwargs):
+        super(tweepy.Stream, self).__init__()
+        print("Start TweetListener %s", kwargs)
+        self.outerClass = kwargs.outerClass
 
       def on_connection_error(self):
           self.disconnect()
@@ -54,7 +60,7 @@ class TwitterStream(object):
             ## Save comments on the newspaper tweets
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
-                reply_to in self.FOLLOW):
+                reply_to in self.outerClass.FOLLOW):
               original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
               ## Only if the original comment is on a new
@@ -62,7 +68,7 @@ class TwitterStream(object):
                 tweet.update({'reply_to': original['_id'],
                               'new': original['new'],
                               ## Analizar sentimiento del comentario
-                              'rating': self.TFIDF.rate_feeling(tweet['text'])})
+                              'rating': self.outerClass.TFIDF.rate_feeling(tweet['text'])})
 
                 save_tweet(tweet)
                 save_user(user)
