@@ -26,15 +26,17 @@ class TweetListener(object):
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
-                                  os.getenv('TW_ACCESS_TOKEN_SECRET'))
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
+                                  follow)
 
       stream.filter(follow=follow, languages=['es'])
 
 
   class MediaActivity(tweepy.Stream):
 
-      def __init__(self, **kargs):
-          super().__init__(**kargs)
+      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, follow):
+          super().__init__(self, consumer_key, consumer_secret, access_token, access_token_secret)
+          self.FOLLOW = follow
           self.TFIDF = TfIdfAnalizer()
 
 
@@ -43,7 +45,6 @@ class TweetListener(object):
 
 
       def on_status(self, status):
-          print("this is self %s", self)
           try:
             full_tweet = status._json
             tweet = {'_id': full_tweet['id_str'],
@@ -59,7 +60,7 @@ class TweetListener(object):
             ## Save comments on the newspaper tweets
             reply_to = full_tweet['in_reply_to_user_id_str']
             if (reply_to is not None and 
-                reply_to in self.follow):
+                reply_to in self.FOLLOW):
               original = search_tweet(str(full_tweet['in_reply_to_status_id']))
 
               ## Only if the original comment is on a new
