@@ -26,17 +26,16 @@ class TweetListener(object):
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
-                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
-                                  follow)
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
       stream.filter(follow=follow, languages=['es'])
 
 
   class MediaActivity(tweepy.Stream):
 
-      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, follow):
+      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
           super().__init__(self, consumer_key, consumer_secret, access_token, access_token_secret)
-          self.FOLLOW = follow
+          self.FOLLOW = []
           self.TFIDF = TfIdfAnalizer()
 
 
@@ -45,6 +44,7 @@ class TweetListener(object):
 
 
       def on_status(self, status):
+          print("this is self, what is filter? %s", self)
           try:
             full_tweet = status._json
             tweet = {'_id': full_tweet['id_str'],
