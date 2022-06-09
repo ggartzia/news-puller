@@ -6,7 +6,6 @@ from logging import getLogger, DEBUG
 from news_puller.db.media import select_all_media
 from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.user import save_user
-from news_puller.db.comment import save_comment
 from news_puller.db.new import search_new
 from news_puller.utils import create_unique_id
 from news_puller.tfidf import TfIdfAnalizer
@@ -21,6 +20,7 @@ logger.setLevel(DEBUG)
 class TwitterStream(object):
 
   def __init__(self):
+     print("start TwitterStream")
     media = select_all_media()
     self.FOLLOW = [str(m['twitter_id']) for m in media]
     self.TFIDF = TfIdfAnalizer()

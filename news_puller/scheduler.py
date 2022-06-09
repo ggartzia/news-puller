@@ -11,6 +11,7 @@ load_dotenv()
 class Scheduler(object):
 
     def __init__(self):
+        print("start Scheduler")
         self.scheduler = BackgroundScheduler()
 
         self.start()
