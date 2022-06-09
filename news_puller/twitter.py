@@ -19,24 +19,23 @@ logger.setLevel(DEBUG)
 FOLLOW = None
 TFIDF = None
 
-class TwitterStream(object):
+class TweetListener(object):
 
   def __init__(self):
-      print("start TwitterStream")
+      print("start TweetListener")
       media = select_all_media()
       FOLLOW = [str(m['twitter_id']) for m in media]
       TFIDF = TfIdfAnalizer()
 
-      stream = self.TweetListener(os.getenv('TW_CONSUMER_KEY'), 
+      stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
-                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
-                                  outerClass=self)
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
       stream.filter(follow=FOLLOW, languages=['es'])
 
 
-  class TweetListener(tweepy.Stream):
+  class MediaActivity(tweepy.Stream):
 
       def on_connection_error(self):
           self.disconnect()
