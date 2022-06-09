@@ -36,13 +36,15 @@ class TwitterStream(object):
 
   class TweetListener(tweepy.Stream):
 
-    def __init__(self, **kwargs):
-        super(tweepy.Stream, self).__init__()
-        print("Start TweetListener %s", kwargs)
-        self.outerClass = kwargs.outerClass
+      def __init__(self, **kwargs):
+          super(tweepy.Stream, self).__init__()
+          print("Start TweetListener %s", kwargs)
+          self.outerClass = kwargs.outerClass
+
 
       def on_connection_error(self):
           self.disconnect()
+
 
       def on_status(self, status):
           try:
