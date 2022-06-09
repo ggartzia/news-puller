@@ -33,8 +33,8 @@ class TweetListener(object):
 
   class MediaActivity(tweepy.Stream):
 
-      def __init__(self, **args):
-          super().__init__(**args)
+      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
+          super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
           self.FOLLOW = []
           self.TFIDF = TfIdfAnalizer()
 
