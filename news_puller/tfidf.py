@@ -20,6 +20,7 @@ class TfIdfAnalizer(object):
 
     def get_topics(self, corpus, size=10):
         words = []
+        print("Graararaziii hemen dao arazoa ", text)
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   ngram_range=(1,2)).fit(corpus)
@@ -37,7 +38,7 @@ class TfIdfAnalizer(object):
 
     def read_lexico_file(self):
         reader = csv.DictReader(open('lexicon.csv'))
-        
+
         self.WORD_RATING = {}
         for k, v in reader:
             self.WORD_RATING[k] = v
@@ -45,22 +46,27 @@ class TfIdfAnalizer(object):
 
     def count_polarity_words(self, text):
         rate = 0
-        text = clean_html(text)
-        print("this is the tweet:: %s", text)
-        topics = self.get_topics(text, 20)
-        print("this are the topics:: %s", topics)
-        for word in topics:
-            rate += self.WORD_RATING.get(word, 0)
 
-        return rate / len(topics)
+        # Eliminar menciones, links, rate emojis
+        topics = self.get_topics(text, 20)
+        if len(topics) > 0:
+            for word in topics:
+                rate += self.WORD_RATING.get(word, 0)
+
+            rate = rate / len(topics)
+
+        return rate
 
 
     def rate_feeling(self, text):
         rate = 0
 
         try:
-            rate = self.count_polarity_words(text)
-            print("Rate: %s", rate)
+            text = clean_html(text)
+            processed_text = re.sub(r"(?:\@|http?\://|https?\://|www)\S+", "", text)
+            processed_text = " ".join(processed_text.split())
+
+            rate = self.count_polarity_words(processed_text)
             
         except Exception as e:
             logger.error('There was an error analysing the text of the tweet: %s', e)
