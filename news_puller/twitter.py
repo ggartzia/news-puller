@@ -25,10 +25,10 @@ class TwitterStream(object):
       self.FOLLOW = [str(m['twitter_id']) for m in media]
       self.TFIDF = TfIdfAnalizer()
 
-      stream = FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
-                           os.getenv('TW_CONSUMER_SECRET'),
-                           os.getenv('TW_ACCESS_TOKEN'),
-                           os.getenv('TW_ACCESS_TOKEN_SECRET'))
+      stream = self.FetchStatus(os.getenv('TW_CONSUMER_KEY'), 
+                                os.getenv('TW_CONSUMER_SECRET'),
+                                os.getenv('TW_ACCESS_TOKEN'),
+                                os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
       stream.filter(follow=self.FOLLOW, languages=['es'])
 
