@@ -2,7 +2,7 @@ from logging import getLogger, DEBUG
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
-from news_puller.tfidf import get_topics
+from news_puller.tfidf import TfIdfAnalizer
 import news_puller.utils as utils
 import feedparser
 
@@ -11,7 +11,7 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 NUM_NEWS_PARSE = 25
-
+TFIDF = TfIdfAnalizer()
 
 def select_image(new):
     thumb_image = ''
@@ -69,7 +69,7 @@ def filter_feed(theme, paper, news):
                 if new is None:
                     title = utils.clean_html(item['title'])
                     description = get_description(item)
-                    topics = get_topics([title + ' ' + description])
+                    topics = TFIDF.get_topics([title + ' ' + description])
                     new = {'id': id,
                            'fullUrl': link,
                            'title': title,

@@ -4,7 +4,8 @@ from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.fetch import get_news
 from news_puller.media import get_media
-from news_puller.database import Database
+from news_puller.twitter import TwitterStream
+from news_puller.scheduler import Scheduler
 import news_puller.db.new as db_news
 import news_puller.db.media as db_media
 import news_puller.db.topic as db_topics
@@ -16,6 +17,10 @@ start_time = int(time())
 app = Flask(__name__)
 cors = CORS(app)
 Gzip(app)
+
+# Start background jobs
+TwitterStream()
+Scheduler()
 
 
 @app.route('/', methods=['GET'])
