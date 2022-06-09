@@ -63,10 +63,7 @@ class TfIdfAnalizer(object):
 
         try:
             text = clean_html(text)
-            processed_text = re.sub(r"(?:\@|http?\://|https?\://|www)\S+", "", text)
-            processed_text = " ".join(processed_text.split())
-
-            rate = self.count_polarity_words(processed_text)
+            rate = self.count_polarity_words(text)
             
         except Exception as e:
             logger.error('There was an error analysing the text of the tweet: %s', e)
