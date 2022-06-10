@@ -28,7 +28,7 @@ class TweetListener(object):
                                   os.getenv('TW_ACCESS_TOKEN_SECRET'),
                                   follow)
 
-      stream.filter(follow=follow, languages=['es'])
+      stream.filter(follow=follow, languages=['es'], threaded=True)
 
 
   class MediaActivity(tweepy.Stream):
