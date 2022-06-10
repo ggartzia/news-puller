@@ -81,7 +81,7 @@ def select_tweets(id, page):
 
 def select_user_tweets(user, page):
     tweets = tweet_db.find({'user': user},
-                           {'_id': 0, 'new': 0, 'user': 0},
+                           {'new': 0, 'user': 0},
                            sort=[('created_at', pymongo.DESCENDING)])
 
     return {'user': search_user(user),

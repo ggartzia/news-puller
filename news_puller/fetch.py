@@ -14,18 +14,15 @@ logger.setLevel(DEBUG)
 class NewsListener(object):
 
     def __init__(self):
-        print("NewsListener")
         self.NUM_NEWS_PARSE = 25
         self.TFIDF = TfIdfAnalizer()
 
     def get_news(self, paper):
         try:
-            print("get_news", paper)
             media = search_media(paper)
             paper_news = feedparser.parse(media['feed'])
 
             if paper_news.status == 200:
-                print("all good", media['theme'], media['paper'])
                 self.filter_feed(media['theme'], media['paper'], paper_news['entries'])
             else:
                 logger.error('Some connection error', paper_news.status)
@@ -38,12 +35,10 @@ class NewsListener(object):
 
     def filter_feed(self, theme, paper, news):
         # Parse only a given number of news to avoid TimeOut Exception
-        print("filter_feed")
         for item in news[:self.NUM_NEWS_PARSE]:
             try:
                 if bool(item):
                     link = item['link']
-                    print("new: ", link)
                     id = utils.create_unique_id(link)
                     new = search_new(id)
 

@@ -66,7 +66,7 @@ def select_last_news(hour, theme, page):
     total = news_db.count_documents(query)
 
     news = news_db.find(query,
-                        {'_id': 0 },
+                        {'_id': 0},
                         sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     news = map(enrich_new, list(news))

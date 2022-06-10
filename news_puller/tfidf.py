@@ -17,7 +17,7 @@ class TfIdfAnalizer(object):
         self.read_lexico_file()
 
 
-    def get_topics(self, corpus, size=10):
+    def get_topics(self, corpus, size=6):
         words = []
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
