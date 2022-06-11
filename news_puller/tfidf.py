@@ -11,7 +11,11 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        self.NLP = spacy.load("es_core_news_sm")
+        try:
+            self.NLP = spacy.load("en_core_web_sm")
+        except: # If not present, we download
+            spacy.cli.download("en_core_web_sm")
+            self.NLP = spacy.load("en_core_web_sm")
 
 
     def get_topics(self, corpus, size=6):
