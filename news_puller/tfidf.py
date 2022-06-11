@@ -21,7 +21,7 @@ class TfIdfAnalizer(object):
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(tokenizer=self.tokenizer,
+            vec = TfidfVectorizer(tokenizer=self.tokenize_stem,
                                   ngram_range=(1,3)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -35,7 +35,7 @@ class TfIdfAnalizer(object):
         return words
 
 
-    def tokenizer(text):
+    def tokenize_stem(text, otro):
         tokens = []
         doc = NLP(text)
         print(doc.text)
