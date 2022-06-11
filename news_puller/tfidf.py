@@ -5,6 +5,8 @@ from sklearn.metrics import classification_report, accuracy_score
 from news_puller.utils import clean_html
 import stanza
 from spacy_stanza import StanzaLanguage
+from sentiment_analysis_spanish import sentiment_analysis
+
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
@@ -13,7 +15,6 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        self.read_lexico_file()
         snlp = stanza.Pipeline(lang="es")
         self.nlp = StanzaLanguage(snlp)
 
@@ -44,27 +45,18 @@ class TfIdfAnalizer(object):
         return words
 
 
-    def read_lexico_file(self):
-        reader = csv.DictReader(open('lexicon.csv'))
-
-        self.WORD_RATING = {}
-        for k, v in reader:
-            self.WORD_RATING[k] = v
-
-
     def count_polarity_words(self, text):
         rate = 0
 
-        # rate emojis
-        topics = self.get_topics([text], 20)
+        try:
+            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
+            print("rate ------->>>> %s", sentiment.sentiment(text))
+            rate = sentiment.sentiment(text)
 
-        if len(topics) > 0:
-            for word in topics:
-                rate += self.WORD_RATING.get(word, 0)
+        except Exception as e:
+            logger.error('There was an error running SentimentAnalysisSpanish %s', e)
 
-            rate = rate / len(topics)
-
-        return rate
+        return rate * 10
 
 
     def rate_feeling(self, text):

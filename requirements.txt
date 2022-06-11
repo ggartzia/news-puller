@@ -15,3 +15,6 @@ tweepy
 APScheduler
 scikit-learn
 stanza
+sentiment-analysis-spanish
+keras
+tensorflow
