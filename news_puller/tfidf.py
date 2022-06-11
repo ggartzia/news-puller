@@ -23,8 +23,7 @@ class TfIdfAnalizer(object):
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
-                                  tokenizer=self.tokenize_stem,
+            vec = TfidfVectorizer(tokenizer=self.tokenize_stem,
                                   ngram_range=(1,3)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -42,8 +41,9 @@ class TfIdfAnalizer(object):
         tokens = []
         doc = self.NLP(text)
         for token in doc:
-            tokens.append(token.lemma_)
-
+            if (token.text not in self.STOP_WORDS):
+                tokens.append(token.lemma_)
+        print("garaziiii---> %s", tokens)
         return tokens
 
 
