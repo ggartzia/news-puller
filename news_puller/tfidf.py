@@ -2,6 +2,7 @@ from logging import getLogger, DEBUG
 from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
+from nltk.corpus import stopwords
 import spacy
 
 logger = getLogger('werkzeug')
@@ -12,6 +13,7 @@ class TfIdfAnalizer(object):
 
     def __init__(self):
         try:
+            self.STOP_WORDS = set(stopwords.words('spanish'))
             self.NLP = spacy.load("en_core_web_sm")
         except: # If not present, we download
             spacy.cli.download("en_core_web_sm")
@@ -21,7 +23,8 @@ class TfIdfAnalizer(object):
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(tokenizer=self.tokenize_stem,
+            vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
+                                  tokenizer=self.tokenize_stem,
                                   ngram_range=(1,3)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -38,11 +41,8 @@ class TfIdfAnalizer(object):
     def tokenize_stem(self, text):
         tokens = []
         doc = self.NLP(text)
-        print(doc.text)
         for token in doc:
-            print(token.text, token.pos_, token.dep_)
-            print(token.lemma_)
-            tokens.append(token.text)
+            tokens.append(token.lemma_)
 
         return tokens
 
