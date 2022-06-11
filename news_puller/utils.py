@@ -12,7 +12,8 @@ def clean_html(text):
 
 
 def create_unique_id(url):
-    return hashlib.sha256(str(url).encode('utf-8')).hexdigest()
+	url = str(url).split('?')[0]
+    return hashlib.sha256(url.encode('utf-8')).hexdigest()
 
 
 def parse_date(date):
