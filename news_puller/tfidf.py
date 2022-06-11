@@ -3,8 +3,7 @@ from news_puller.utils import clean_html
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
-#from sentiment_analysis_spanish import sentiment_analysis
-
+import spacy
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
@@ -14,12 +13,14 @@ class TfIdfAnalizer(object):
 
     def __init__(self):
         self.STOP_WORDS = set(stopwords.words('spanish'))
+        self.NLP = spacy.load("es_core_news_sm")
 
 
     def get_topics(self, corpus, size=6):
         words = []
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
+                                  tokenizer=self.tokenizer,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -33,19 +34,20 @@ class TfIdfAnalizer(object):
         return words
 
 
+    def tokenizer(text):
+        tokens = []
+        doc = NLP(text)
+        print(doc.text)
+        for token in doc:
+            print(token.text, token.pos_, token.dep_)
+            print(token.lemma_)
+            tokens.append(token.text)
+
+        return tokens
+
+
     def count_polarity_words(self, text):
         rate = 0
-
-#        try:
-#            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
-#            print("rate ------->>>> %s", sentiment.sentiment(text))
-
-#            rate = sentiment.sentiment(text)
-
-#        except Exception as e:
-
-#            logger.error('There was an error running SentimentAnalysisSpanish %s', e)
-
         return rate * 10
 
 

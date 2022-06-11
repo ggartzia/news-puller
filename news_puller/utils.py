@@ -12,7 +12,7 @@ def clean_html(text):
 
 
 def create_unique_id(url):
-	url = str(url).split('?')[0]
+    url = str(url).split('?')[0]
     return hashlib.sha256(url.encode('utf-8')).hexdigest()
 
 
