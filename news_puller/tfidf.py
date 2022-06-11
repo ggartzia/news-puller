@@ -35,7 +35,7 @@ class TfIdfAnalizer(object):
         return words
 
 
-    def tokenize_stem(text, otro):
+    def tokenize_stem(self, text):
         tokens = []
         doc = self.NLP(text)
         print(doc.text)

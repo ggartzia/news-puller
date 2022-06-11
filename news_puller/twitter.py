@@ -78,7 +78,6 @@ class TweetListener(object):
                   len(full_tweet['entities']['urls']) > 0):
 
                 url = full_tweet['entities']['urls'][0]
-                print("expanded_url: %s", url['expanded_url'])
                 new_id = create_unique_id(url['expanded_url'])
                 
                 if search_new(new_id) is not None:
