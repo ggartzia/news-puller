@@ -76,6 +76,7 @@ class TweetListener(object):
             # Save tweet of the newspaper when sharing a new
             elif (full_tweet['entities'] is not None and
                   len(full_tweet['entities']['urls']) > 0):
+
                 print("expanded_url: %s", url['expanded_url'])
                 new_id = create_unique_id(url['expanded_url'])
                 

@@ -1,7 +1,5 @@
 import csv
-import nltk
 from logging import getLogger, DEBUG
-from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from news_puller.utils import clean_html
@@ -15,7 +13,6 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        self.STOP_WORDS = set(stopwords.words('spanish'))
         self.read_lexico_file()
         snlp = stanza.Pipeline(lang="es")
         self.nlp = StanzaLanguage(snlp)
@@ -33,8 +30,7 @@ class TfIdfAnalizer(object):
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
-                                  tokenizer=self.tokenize_and_stem,
+            vec = TfidfVectorizer(tokenizer=self.tokenize_and_stem,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
