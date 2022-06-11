@@ -13,6 +13,5 @@ numpy
 DateTime
 tweepy
 APScheduler
-nltk
 scikit-learn
 spacy
