@@ -22,3 +22,4 @@ DateTime
 tweepy
 APScheduler
 scikit-learn
+stanza
