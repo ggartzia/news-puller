@@ -1,9 +1,9 @@
 from logging import getLogger, DEBUG
+from news_puller.utils import clean_html
+from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
-from news_puller.utils import clean_html
-import stanza
-from spacy_stanza import StanzaLanguage
+from sentiment_analysis_spanish import sentiment_analysis
 
 
 logger = getLogger('werkzeug')
@@ -13,23 +13,13 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        snlp = stanza.Pipeline(lang="es")
-        self.nlp = StanzaLanguage(snlp)
-
-
-    def tokenize_and_stem(text):
-        stems = []
-        doc = self.nlp(text)
-        for token in doc:
-            print(token.lemma_)
-            stems.append(token.lemma_)
-        return stems
+        self.STOP_WORDS = set(stopwords.words('spanish'))
 
 
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(tokenizer=self.tokenize_and_stem,
+            vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -47,7 +37,9 @@ class TfIdfAnalizer(object):
         rate = 0
 
         try:
-            rate = 0
+            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
+            print("rate ------->>>> %s", sentiment.sentiment(text))
+            rate = sentiment.sentiment(text)
 
         except Exception as e:
             logger.error('There was an error running SentimentAnalysisSpanish %s', e)

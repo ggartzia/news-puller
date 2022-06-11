@@ -1,6 +1,8 @@
+dnspython
 Flask
 flask-gzip
 flask-cors
+Flask-PyMongo
 gunicorn
 pymongo
 python-dotenv
@@ -11,5 +13,8 @@ numpy
 DateTime
 tweepy
 APScheduler
+nltk
 scikit-learn
-stanza
+sentiment-analysis-spanish
+keras
+tensorflow
