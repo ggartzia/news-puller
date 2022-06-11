@@ -15,6 +15,3 @@ tweepy
 APScheduler
 nltk
 scikit-learn
-sentiment-analysis-spanish
-keras
-tensorflow
