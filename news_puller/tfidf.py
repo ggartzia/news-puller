@@ -1,6 +1,9 @@
 import csv
+import nltk
 from logging import getLogger, DEBUG
+from nltk import TweetTokenizer
 from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from news_puller.utils import clean_html
@@ -15,12 +18,27 @@ class TfIdfAnalizer(object):
     def __init__(self):
         self.STOP_WORDS = set(stopwords.words('spanish'))
         self.read_lexico_file()
+        self.stemmer = SnowballStemmer('spanish')
+        self.tokenizer = TweetTokenizer().tokenize
+
+
+    def tokenize_and_stem(text):
+        # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
+        tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+        filtered_tokens = []
+        # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
+        for token in tokens:
+            if re.search('[a-zA-Z]', token):
+                filtered_tokens.append(token)
+        stems = [self.stemmer.stem(t) for t in filtered_tokens]
+        return stems
 
 
     def get_topics(self, corpus, size=6):
         words = []
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
+                                  tokenizer=self.tokenize_and_stem,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)

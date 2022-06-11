@@ -18,16 +18,19 @@ class NewsListener(object):
         self.TFIDF = TfIdfAnalizer()
 
     def get_news(self, paper):
+        paper_news = None
+
         try:
             media = search_media(paper)
             paper_news = feedparser.parse(media['feed'])
 
-            if paper_news.status == 200:
+            if (paper_news is not None and paper_news.status == 200):
                 self.filter_feed(media['theme'], media['paper'], paper_news['entries'])
             else:
                 logger.error('Some connection error', paper_news.status)
 
         except Exception as e:
+            print("paper_news %s", paper_news)
             logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
 
         pass
