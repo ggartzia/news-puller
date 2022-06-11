@@ -8,6 +8,7 @@ WORKDIR /app
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -U -r requirements.txt
+RUN python3 -m spacy download en_core_web_sm
 
 EXPOSE 5000
 

@@ -18,7 +18,7 @@ class TfIdfAnalizer(object):
         words = []
         try:
             vec = TfidfVectorizer(tokenizer=self.tokenizer,
-                                  ngram_range=(1,2)).fit(corpus)
+                                  ngram_range=(1,3)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
             words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
