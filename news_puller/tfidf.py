@@ -1,11 +1,9 @@
-import csv
 from logging import getLogger, DEBUG
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from news_puller.utils import clean_html
 import stanza
 from spacy_stanza import StanzaLanguage
-from sentiment_analysis_spanish import sentiment_analysis
 
 
 logger = getLogger('werkzeug')
@@ -49,9 +47,7 @@ class TfIdfAnalizer(object):
         rate = 0
 
         try:
-            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
-            print("rate ------->>>> %s", sentiment.sentiment(text))
-            rate = sentiment.sentiment(text)
+            rate = 0
 
         except Exception as e:
             logger.error('There was an error running SentimentAnalysisSpanish %s', e)
