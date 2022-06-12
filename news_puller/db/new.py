@@ -80,21 +80,6 @@ def select_trending_news(hour, page):
 
     total = news_db.count_documents({'published': {'$gte': str(last_hour_date_time)}})
 
-    news = news_db.find({'published': {'$gte': str(last_hour_date_time)}},
-                         {'_id': 0 },
-                         sort=[('tweetCount', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
-    
-    news = map(enrich_new, list(news))
-    
-    return {'total': total,
-            'items': list(news)}
-
-
-def select_trending_news(hour, page):
-    last_hour_date_time = datetime.now() - timedelta(hours = hour)
-
-    total = news_db.count_documents({'published': {'$gte': str(last_hour_date_time)}})
-
     news = list(news_db.aggregate([
            {
               '$match': {'published': {'$gte': str(last_hour_date_time)}}
@@ -108,16 +93,16 @@ def select_trending_news(hour, page):
               }
            },
            {
-              '$group': {
-                '_id':'$tweets',
-                'tweetCount': {'$sum': 1}
+              '$project': {
+                'title':'$title',
+                'description': '$description',
+                'fullUrl':'$fullUrl',
+                'image': '$image',
+                'published': '$published',
+                'paper': '$paper',
+                'theme': '$theme',
+                'tweetCount': {'$size': '$tweets'}
               }
-           },
-           {
-              '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$tweets', 0]}, '$$ROOT']}}
-           },
-           {
-              '$project': {'tweetCount': 0}
            },
            {
               '$sort': {'tweetCount': pymongo.DESCENDING}
@@ -147,14 +132,11 @@ def select_related_news(id):
                                    'topics': {'$in': topics}},
                                   sort=[('published', pymongo.DESCENDING)]).limit(total)
 
-        to_compare = [enrich_new(n, 12) for n in list(to_compare)]
-        
         news = calculate_similarity(main_new, to_compare)
 
     return {'new': main_new,
             'total': total,
-            'items': list(to_compare),
-            'cosine': list(news)}
+            'items': list(news)}
 
 
 def select_media_news(media, page):

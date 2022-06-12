@@ -38,10 +38,16 @@ def search_tweet(id):
     return tweet
 
 
-def select_tweets(id, page):
+def select_tweets(id, user, page):
+    query = {}
+    if id is not None:
+      query = {'new': id}
+    elif user is not None:
+      query = {'user': user}
+
     tweets = list(tweet_db.aggregate([
            {
-              '$match': {'new': id}
+              '$match': query
            },
            {
               '$lookup': {
@@ -66,12 +72,3 @@ def select_tweets(id, page):
     tweetsTo = tweetsFrom + Database.PAGE_SIZE
 
     return tweets[tweetsFrom:tweetsTo]
-
-
-def select_user_tweets(user, page):
-    tweets = tweet_db.find({'user': user},
-                           sort=[('created_at', pymongo.DESCENDING)])
-
-    return {'user': search_user(user),
-            'total': count_user_tweets(user),
-            'items': list(tweets)}
