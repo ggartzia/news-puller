@@ -56,7 +56,6 @@ class NewsListener(object):
                                'theme': theme,
                                'published': utils.parse_date(item['published_parsed']),
                                'topics': topics,
-                               'tweetCount': 0,
                                'image': self.select_image(item)
                               }
 
