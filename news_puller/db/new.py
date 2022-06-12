@@ -52,7 +52,7 @@ def save_new(new):
 
 
 def aggregate_tweet_count(query, sort, page):
-    news = news_db.aggregate([
+    news = list(news_db.aggregate([
            {
               '$match': query
            },
@@ -78,7 +78,7 @@ def aggregate_tweet_count(query, sort, page):
            {
               '$sort': sort
            }
-        ])
+        ]))
 
     newsFrom = page * Database.PAGE_SIZE
     newsTo = newsFrom + Database.PAGE_SIZE
