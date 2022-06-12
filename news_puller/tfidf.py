@@ -2,6 +2,7 @@ from logging import getLogger, DEBUG
 from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
+from sentiment_analysis_spanish import sentiment_analysis
 from nltk.corpus import stopwords
 import spacy
 
@@ -23,8 +24,9 @@ class TfIdfAnalizer(object):
     def get_topics(self, corpus, size=6):
         words = []
         try:
-            vec = TfidfVectorizer(tokenizer=self.tokenize_stem,
-                                  ngram_range=(1,3)).fit(corpus)
+            vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
+                                  tokenizer=self.tokenize_stem,
+                                  ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
             words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
@@ -41,14 +43,20 @@ class TfIdfAnalizer(object):
         tokens = []
         doc = self.NLP(text)
         for token in doc:
-            if (token.text not in self.STOP_WORDS):
+            if re.search('[a-zA-Z]', token.text):
                 tokens.append(token.lemma_)
-        print("garaziiii---> %s", tokens)
         return tokens
 
 
     def count_polarity_words(self, text):
         rate = 0
+        try:
+            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
+            rate = sentiment.sentiment(text)
+            print(rate)
+        except Exception as e:
+            logger.error('Failed analysing sentiment of tweet. Error: %s', e)
+
         return rate * 10
 
 

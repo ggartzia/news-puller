@@ -16,3 +16,4 @@ APScheduler
 scikit-learn
 nltk
 spacy
+sentiment-analysis-spanish
