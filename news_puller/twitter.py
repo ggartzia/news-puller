@@ -1,6 +1,5 @@
 import os
 import tweepy
-import json
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
 from news_puller.db.media import select_all_media
@@ -25,19 +24,41 @@ class TweetListener(object):
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
-                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
-                                  follow)
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'))
 
       stream.filter(follow=follow, languages=['es'], threaded=True)
 
 
   class MediaActivity(tweepy.Stream):
 
-      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, follow):
+      def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
           super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
 
-          self.FOLLOW = follow
           self.TFIDF = TfIdfAnalizer()
+
+
+      def extract_tweet(full_tweet, new, reply=None):
+          tweet = {'_id': full_tweet['id_str'],
+                   'created_at': full_tweet['created_at'],
+                   'text': full_tweet['text'],
+                   'user': full_tweet['user']['id'],
+                   'new': new}
+
+          if reply is not None:
+              tweet.update({'reply_to': reply,
+                            ## Analizar sentimiento del comentario
+                            'rating':self.TFIDF.rate_feeling(tweet['text'])})
+
+          save_tweet(tweet)
+
+
+      def extract_user(twuser):
+          user = {'id': twuser['id'],
+                  'name': twuser['name'],
+                  'screen_name': twuser['screen_name'],
+                  'image': twuser['profile_image_url_https']}
+
+          save_user(user)
 
 
       def on_connection_error(self):
@@ -46,49 +67,25 @@ class TweetListener(object):
 
       def on_status(self, status):
           try:
-            full_tweet = status._json
-            tweet = {'_id': full_tweet['id_str'],
-                     'created_at': full_tweet['created_at'],
-                     'text': full_tweet['text'],
-                     'user': full_tweet['user']['id']}
-
-            user = {'id': full_tweet['user']['id'],
-                    'name': full_tweet['user']['name'],
-                    'screen_name': full_tweet['user']['screen_name'],
-                    'image': full_tweet['user']['profile_image_url_https']}
-
+            tweet = status._json
+            
             ## Save comments on the newspaper tweets
-            original = search_tweet(str(full_tweet['in_reply_to_status_id']))
+            original = search_tweet(str(tweet['in_reply_to_status_id']))
 
             if original is not None:
-              tweet.update({'reply_to': original['_id'],
-                            'new': original['new'],
-                            ## Analizar sentimiento del comentario
-                            'rating': self.TFIDF.rate_feeling(tweet['text'])})
+              self.extract_tweet(tweet, original['new'], original['_id'])
+              self.extract_user(tweet['user'])
 
-              save_tweet(tweet)
-              save_user(user)
+            # Save tweet of the newspaper when sharing a new
+            elif (tweet['entities'] is not None and
+                  len(tweet['entities']['urls']) > 0):
 
-            else:
-              saved = False
-              # Save tweet of the newspaper when sharing a new
-              if (full_tweet['entities'] is not None and
-                  len(full_tweet['entities']['urls']) > 0):
-
-                url = full_tweet['entities']['urls'][0]
-                new_id = create_unique_id(url['expanded_url'])
-                
-                if search_new(new_id) is not None:
-                  tweet.update({'new': new_id})
-
-                  save_tweet(tweet)
-                  save_user(user)
-                  saved = True
-
-
-              if not saved:
-                print("Tweet..... %s", full_tweet['entities'], )
+              url = tweet['entities']['urls'][0]
+              new_id = create_unique_id(url['expanded_url'])
+              
+              if search_new(new_id) is not None:
+                self.extract_tweet(tweet, new_id)
+                self.extract_user(tweet['user'])
 
           except Exception as e:
               logger.error('Something happened fetching tweets: %s', e)
-
