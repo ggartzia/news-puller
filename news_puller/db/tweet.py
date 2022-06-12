@@ -10,23 +10,12 @@ logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
 
 
-def save_tweets(tweets):
-    try:
-        if tweets:
-          tweet_db.insert_many(tweets,
-                               ordered = False)
-        
-    except Exception as e:
-        logger.error('There was an error while trying to save tweets: %s', e)
-
-
 def save_tweet(tweet):
     try:
         tweet_db.insert_one(tweet)
         
     except Exception as e:
         logger.error('There was an error while trying to save tweets: %s', e)
-
 
 
 def count_new_tweets(new):
@@ -81,7 +70,6 @@ def select_tweets(id, page):
 
 def select_user_tweets(user, page):
     tweets = tweet_db.find({'user': user},
-                           {'new': 0, 'user': 0},
                            sort=[('created_at', pymongo.DESCENDING)])
 
     return {'user': search_user(user),

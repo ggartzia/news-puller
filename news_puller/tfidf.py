@@ -43,6 +43,7 @@ class TfIdfAnalizer(object):
         tokens = []
         doc = self.NLP(text)
         for token in doc:
+            print(token.text, token.pos_)
             if token.pos_ in ('NOUN', 'PROPN'):
                 tokens.append(token.text)
             elif token.pos_ in ('ADJ', 'ADV', 'VERB'):

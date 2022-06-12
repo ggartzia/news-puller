@@ -30,7 +30,6 @@ class NewsListener(object):
                 logger.error('Some connection error', paper_news.status)
 
         except Exception as e:
-            print("paper_news %s", paper_news)
             logger.error('Failed to load USE model, USE API won\'t be available: %s', e)
 
         pass
