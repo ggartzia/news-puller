@@ -90,6 +90,47 @@ def select_trending_news(hour, page):
             'items': list(news)}
 
 
+def select_trending_news(hour, page):
+    last_hour_date_time = datetime.now() - timedelta(hours = hour)
+
+    total = news_db.count_documents({'published': {'$gte': str(last_hour_date_time)}})
+
+    news = list(news_db.aggregate([
+           {
+              '$match': {'published': {'$gte': str(last_hour_date_time)}}
+           },
+           {
+              '$lookup': {
+                 'from': 'tweets',
+                 'localField': 'id',
+                 'foreignField': 'new',
+                 'as': 'tweets'
+              }
+           },
+           {
+              '$group': {
+                '_id':'$tweets',
+                'tweetCount': {'$sum': 1}
+              }
+           },
+           {
+              '$replaceRoot': {'newRoot': {'$mergeObjects': [{'$arrayElemAt': ['$tweets', 0]}, '$$ROOT']}}
+           },
+           {
+              '$project': {'tweetCount': 0}
+           },
+           {
+              '$sort': {'tweetCount': pymongo.DESCENDING}
+           }
+        ]))
+
+    newsFrom = page * Database.PAGE_SIZE
+    newsTo = newsFrom + Database.PAGE_SIZE
+
+    return {'total': total,
+            'items': news[newsFrom:newsTo]}
+
+
 def select_related_news(id):
     to_compare = []
     total = 300

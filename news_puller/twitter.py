@@ -59,6 +59,7 @@ class TweetListener(object):
 
             ## Save comments on the newspaper tweets
             original = search_tweet(str(full_tweet['in_reply_to_status_id']))
+
             if original is not None:
               tweet.update({'reply_to': original['_id'],
                             'new': original['new'],
@@ -69,7 +70,7 @@ class TweetListener(object):
               save_user(user)
 
             else:
-              print("Tweet..... %s", full_tweet)
+              saved = False
               # Save tweet of the newspaper when sharing a new
               if (full_tweet['entities'] is not None and
                   len(full_tweet['entities']['urls']) > 0):
@@ -82,6 +83,11 @@ class TweetListener(object):
 
                   save_tweet(tweet)
                   save_user(user)
+                  saved = True
+
+
+              if not saved:
+                print("Tweet..... %s", full_tweet['entities'], )
 
           except Exception as e:
               logger.error('Something happened fetching tweets: %s', e)
