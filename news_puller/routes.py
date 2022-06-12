@@ -65,10 +65,10 @@ def get_topic_news(topic, page):
     return jsonify(news)
 
 
-@app.route('/get/related/<id>', methods=['GET'])
+@app.route('/get/related/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
-def get_related_news(id):
-    news = db_news.select_related_news(id)
+def get_related_news(id, page):
+    news = db_news.select_related_news(id, page)
 
     return jsonify(news)
 

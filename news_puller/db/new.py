@@ -78,9 +78,12 @@ def aggregate_tweet_count(query, sort, page):
            {
               '$sort': sort
            }
-        ]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+        ])
 
-    return list(news)
+    newsFrom = page * Database.PAGE_SIZE
+    newsTo = newsFrom + Database.PAGE_SIZE
+
+    return news[newsFrom:newsTo]
 
 
 def select_last_news(hour, theme, page):
@@ -97,39 +100,10 @@ def select_trending_news(hour, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}}
 
-    news = list(news_db.aggregate([
-           {
-              '$match': query
-           },
-           {
-              '$lookup': {
-                 'from': 'tweets',
-                 'localField': 'id',
-                 'foreignField': 'new',
-                 'as': 'tweets'
-              }
-           },
-           {
-              '$project': {
-                'title':'$title',
-                'fullUrl':'$fullUrl',
-                'image': '$image',
-                'published': '$published',
-                'paper': '$paper',
-                'topics': '$topics',
-                'tweetCount': {'$size': '$tweets'}
-              }
-           },
-           {
-              '$sort': {'tweetCount': pymongo.DESCENDING}
-           }
-        ]))
-
-    newsFrom = page * Database.PAGE_SIZE
-    newsTo = newsFrom + Database.PAGE_SIZE
+    news = aggregate_tweet_count(query, {'tweetCount': pymongo.DESCENDING}, page)
 
     return {'total': news_db.count_documents(query),
-            'items': news[newsFrom:newsTo]}
+            'items': news}
 
 
 def select_related_news(id, page):
