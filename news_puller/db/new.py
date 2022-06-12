@@ -66,6 +66,7 @@ def aggregate_tweet_count(query, sort, page):
            },
            {
               '$project': {
+                'id': '$id'
                 'title':'$title',
                 'fullUrl':'$fullUrl',
                 'image': '$image',
