@@ -1,3 +1,4 @@
+import re
 import spacy
 from logging import getLogger, DEBUG
 from news_puller.utils import clean_html
@@ -43,11 +44,11 @@ class TfIdfAnalizer(object):
         tokens = []
         doc = self.NLP(text)
         for token in doc:
-            print(token.text, token.pos_)
-            if token.pos_ in ('NOUN', 'PROPN'):
-                tokens.append(token.text)
-            elif token.pos_ in ('ADJ', 'ADV', 'VERB'):
-                tokens.append(token.lemma_)
+            if re.search('[a-zA-Z]', token.text) and token.text not in self.STOP_WORDS:
+                if token.pos_ in ('NOUN', 'PROPN'):
+                    tokens.append(token.text)
+                elif token.pos_ in ('ADJ', 'ADV', 'VERB'):
+                    tokens.append(token.lemma_)
 
         return tokens
 
