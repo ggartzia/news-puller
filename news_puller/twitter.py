@@ -58,23 +58,20 @@ class TweetListener(object):
                     'image': full_tweet['user']['profile_image_url_https']}
 
             ## Save comments on the newspaper tweets
-            reply_to = full_tweet['in_reply_to_user_id_str']
-            if (reply_to is not None and 
-                reply_to in self.FOLLOW):
-              original = search_tweet(str(full_tweet['in_reply_to_status_id']))
+            original = search_tweet(str(full_tweet['in_reply_to_status_id']))
+            if original is not None:
+              tweet.update({'reply_to': original['_id'],
+                            'new': original['new'],
+                            ## Analizar sentimiento del comentario
+                            'rating': self.TFIDF.rate_feeling(tweet['text'])})
 
-              ## Only if the original comment is on a new
-              if original is not None:
-                tweet.update({'reply_to': original['_id'],
-                              'new': original['new'],
-                              ## Analizar sentimiento del comentario
-                              'rating': self.TFIDF.rate_feeling(tweet['text'])})
+              save_tweet(tweet)
+              save_user(user)
 
-                save_tweet(tweet)
-                save_user(user)
-
-            # Save tweet of the newspaper when sharing a new
-            elif (full_tweet['entities'] is not None and
+            else:
+              print("Tweet..... %s", full_tweet)
+              # Save tweet of the newspaper when sharing a new
+              if (full_tweet['entities'] is not None and
                   len(full_tweet['entities']['urls']) > 0):
 
                 url = full_tweet['entities']['urls'][0]
