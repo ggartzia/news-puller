@@ -95,12 +95,11 @@ def select_trending_news(hour, page):
            {
               '$project': {
                 'title':'$title',
-                'description': '$description',
                 'fullUrl':'$fullUrl',
                 'image': '$image',
                 'published': '$published',
                 'paper': '$paper',
-                'theme': '$theme',
+                'topics': '$topics',
                 'tweetCount': {'$size': '$tweets'}
               }
            },
