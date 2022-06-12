@@ -37,7 +37,7 @@ class TweetListener(object):
           self.TFIDF = TfIdfAnalizer()
 
 
-      def extract_tweet(full_tweet, new, reply=None):
+      def extract_tweet(self, full_tweet, new, reply=None):
           tweet = {'_id': full_tweet['id_str'],
                    'created_at': full_tweet['created_at'],
                    'text': full_tweet['text'],
@@ -52,7 +52,7 @@ class TweetListener(object):
           save_tweet(tweet)
 
 
-      def extract_user(twuser):
+      def extract_user(self, twuser):
           user = {'id': twuser['id'],
                   'name': twuser['name'],
                   'screen_name': twuser['screen_name'],
