@@ -44,10 +44,8 @@ class TfIdfAnalizer(object):
         tokens = []
         doc = self.NLP(text)
         for token in doc:
-            if re.search('[a-zA-Z]', token.text) and 
-               token.text not in self.STOP_WORDS:
-                if token.pos_ in ('ADJ', 'ADV','NOUN', 'PROPN'):
-                    tokens.append(token.lemma_)
+            if token.pos_ in ('ADJ', 'ADV','NOUN', 'PROPN') and token.text not in self.STOP_WORDS:
+                tokens.append(token.lemma_)
 
         return tokens
 
