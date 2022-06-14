@@ -24,7 +24,7 @@ class TweetListener(object):
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
                                   os.getenv('TW_ACCESS_TOKEN'),
-                                  os.getenv('TW_ACCESS_TOKEN_SECRET')
+                                  os.getenv('TW_ACCESS_TOKEN_SECRET'),
                                   follow)
 
       stream.filter(follow=follow, languages=['es'], threaded=True)
@@ -35,7 +35,7 @@ class TweetListener(object):
       def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, follow):
           super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
 
-          self.FOLLOW = follow#['121183700', '14436030']
+          self.FOLLOW = follow #['121183700', '14436030']
           self.TFIDF = TfIdfAnalizer()
 
 
@@ -72,18 +72,19 @@ class TweetListener(object):
             tweet = status._json
             
             ## Save comments on the newspaper tweets
-            original = search_tweet(str(tweet['in_reply_to_status_id']))
+            #original = search_tweet(str(tweet['in_reply_to_status_id']))
 
             # Esto seria una contestacion a un tweet que tenemos guardado, podemos copiar el new
             # Ademas haremos un analisis de emociones y sentimientos
-            if original is not None:
-              self.extract_tweet(tweet, original['new'], original['_id'])
-              self.extract_user(tweet['user'])
+            #if original is not None:
+            #  self.extract_tweet(tweet, original['new'], original['_id'])
+            #  self.extract_user(tweet['user'])
 
             # Esto seria un tweet del periodico que puede estar compartiendo una noticia
             # Si no tenemos la noticia, podemos hacer un wed scraping usando la url y obtener asi el texto
             # Recoger con tf/idf los topicos de los que se habla 
-            elif (tweet['user']['id_str'] in self.FOLLOW):
+            #el
+            if (tweet['user']['id_str'] in self.FOLLOW):
               print("this is a tweet... %s", tweet)
               save_tweet(tweet)
               #url = tweet['entities']['urls'][0]

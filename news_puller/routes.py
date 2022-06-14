@@ -2,9 +2,7 @@ from time import time
 from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
-#from news_puller.scheduler import Scheduler
 from news_puller.twitter import TweetListener
-from news_puller.fetch import NewsListener
 from news_puller.media import get_media
 import news_puller.db.new as db_news
 import news_puller.db.media as db_media
@@ -19,10 +17,8 @@ cors = CORS(app)
 Gzip(app)
 
 # Start background jobs
-Scheduler()
 TweetListener()
 
-fetcher = NewsListener()
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -32,13 +28,6 @@ def health_check():
         'startTime': start_time
     }
     return jsonify(response)
-
-
-@app.route('/fetch/<media>', methods=['GET'])
-def fetch_news(media):
-    fetcher.get_news(media)
-
-    return 'OK'
 
 
 @app.route('/get/<theme>/<int:since>/page/<int:page>', methods=['GET'])

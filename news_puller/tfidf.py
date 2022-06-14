@@ -5,6 +5,7 @@ from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sentiment_analysis_spanish import sentiment_analysis
 from nltk.corpus import stopwords
+import snowballstemmer
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
@@ -13,12 +14,8 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        try:
-            self.STOP_WORDS = set(stopwords.words('spanish'))
-            self.NLP = spacy.load('en_core_web_sm')
-        except: # If not present, we download
-            spacy.cli.download('en_core_web_sm')
-            self.NLP = spacy.load('en_core_web_sm')
+        self.STOP_WORDS = set(stopwords.words('spanish'))
+        self.spanishStemmer = snowballstemmer.stemmer('spanish')
 
 
     def get_topics(self, corpus, size=6):
@@ -41,10 +38,9 @@ class TfIdfAnalizer(object):
 
     def tokenize_stem(self, text):
         tokens = []
-        doc = self.NLP(text)
-        for token in doc:
-            if token.pos_ in ('ADJ', 'ADV','NOUN', 'PROPN') and token.text not in self.STOP_WORDS:
-                tokens.append(token.lemma_)
+        for word in text.lower().split():
+            if word not in self.STOP_WORDS:
+                tokens.append(self.spanishStemmer.stemWord(word))
 
         return tokens
 
