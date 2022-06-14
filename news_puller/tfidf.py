@@ -3,7 +3,6 @@ import spacy
 from logging import getLogger, DEBUG
 from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, accuracy_score
 from sentiment_analysis_spanish import sentiment_analysis
 from nltk.corpus import stopwords
 

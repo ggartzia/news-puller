@@ -2,7 +2,7 @@ from time import time
 from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
-from news_puller.scheduler import Scheduler
+#from news_puller.scheduler import Scheduler
 from news_puller.twitter import TweetListener
 from news_puller.fetch import NewsListener
 from news_puller.media import get_media
