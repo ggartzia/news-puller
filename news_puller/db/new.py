@@ -43,9 +43,7 @@ def search_new(id):
 
 def save_new(new):
     try:
-        news_db.update_one({'_id': new['id']},
-        	               {'$set': new},
-        	               upsert=True)
+        news_db.insert_one({'_id': new['id']})
 
     except Exception as e:
         logger.error('There was an error while trying to save new: %s, %s', new, e)
