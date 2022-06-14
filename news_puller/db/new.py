@@ -15,7 +15,7 @@ def num_paper_news(paper):
     return news_db.count_documents({'paper': paper})
 
 
-def last_new(paper, theme):
+def last_new(paper):
     new = news_db.find_one({'paper' : paper},
     	                   sort=[('published', pymongo.DESCENDING)])
     
