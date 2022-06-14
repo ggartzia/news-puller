@@ -11,8 +11,7 @@ def clean_html(text):
     return processed_text
 
 
-def create_unique_id(url):
-    url = str(url).split('?')[0]
+def create_unique_id(url): 
     return hashlib.sha256(url.encode('utf-8')).hexdigest()
 
 

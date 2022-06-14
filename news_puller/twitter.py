@@ -75,14 +75,13 @@ class TweetListener(object):
             # Esto seria un tweet del periodico que puede estar compartiendo una noticia
             if (tweet['user']['id_str'] in self.FOLLOW):
               url = tweet['entities']['urls'][0]
-              new_id = create_unique_id(url['expanded_url'])
+              expanded_url = str(url['expanded_url']).split('?')[0]
+              new_id = create_unique_id(expanded_url)
               
-              if search_new(new_id) is None:
+              if search_new(new_id) is None and scrap_new(expanded_url):
                 # Si no tenemos la noticia, podemos hacer un wed scraping usando la url y obtener asi el texto
                 # Recoger con tf/idf los topicos de los que se habla
-                scrap_new(url)  
-
-              self.extract_tweet(tweet, new_id)
+                self.extract_tweet(tweet, new_id)
 
             ## Save comments on the newspaper tweets
             elif tweet['in_reply_to_status_id'] is not None:
