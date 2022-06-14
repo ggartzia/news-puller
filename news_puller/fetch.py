@@ -14,7 +14,6 @@ logger.setLevel(DEBUG)
 class NewsListener(object):
 
     def __init__(self):
-        self.NUM_NEWS_PARSE = 25
         self.TFIDF = TfIdfAnalizer()
 
     def get_news(self, paper):
@@ -37,7 +36,7 @@ class NewsListener(object):
 
     def filter_feed(self, theme, paper, news):
         # Parse only a given number of news to avoid TimeOut Exception
-        for item in news[:self.NUM_NEWS_PARSE]:
+        for item in news:
             try:
                 if bool(item):
                     link = item['link']
