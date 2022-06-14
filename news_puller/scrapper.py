@@ -49,8 +49,9 @@ class NewsScrapper(object):
                     save_new(new)
 
                     return new_id
-                except Exception as e:
-                    logger.error('There was an error parsing new url: %s. %s', url, e)
+            except Exception as e:
+                logger.error('There was an error parsing new url: %s. %s', url, e)
+
         else:
             return new_id
 
