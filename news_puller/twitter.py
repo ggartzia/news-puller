@@ -5,10 +5,7 @@ from logging import getLogger, DEBUG
 from news_puller.db.media import select_all_media
 from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.user import save_user
-from news_puller.db.new import search_new
-from news_puller.utils import create_unique_id
-from news_puller.scrapper import scrap_new
-from news_puller.tfidf import TfIdfAnalizer
+from news_puller.scrapper import NewsScrapper
 
 
 load_dotenv()
@@ -36,8 +33,8 @@ class TweetListener(object):
       def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, follow):
           super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
 
-          self.FOLLOW = follow #['121183700', '14436030']
-          self.TFIDF = TfIdfAnalizer()
+          self.FOLLOW = follow
+          self.scrapper = NewsScrapper()
 
 
       def extract_tweet(self, full_tweet, new, reply=None):
@@ -73,21 +70,22 @@ class TweetListener(object):
             tweet = status._json
 
             # Esto seria un tweet del periodico que puede estar compartiendo una noticia
-            if (tweet['user']['id_str'] in self.FOLLOW):
+            if (tweet['user']['id_str'] in self.FOLLOW and
+                tweet['entities'] is not None and
+                len(tweet['entities']['urls']) > 0):
+
               url = tweet['entities']['urls'][0]
               expanded_url = str(url['expanded_url']).split('?')[0]
 
               if "twitter.com" not in expanded_url:
-                new_id = create_unique_id(expanded_url)
+                new_id = self.scrapper.scrap(expanded_url, tweet['user']['screen_name'])
                 
-                if search_new(new_id) is None and scrap_new(expanded_url):
-                  # Si no tenemos la noticia, podemos hacer un wed scraping usando la url y obtener asi el texto
-                  # Recoger con tf/idf los topicos de los que se habla
+                if new_id:
                   self.extract_tweet(tweet, new_id)
 
             ## Save comments on the newspaper tweets
             elif tweet['in_reply_to_status_id'] is not None:
-              original = search_tweet(str(tweet['in_reply_to_status_id']))
+              original = search_tweet(tweet['in_reply_to_status_id_str'])
 
               # Esto seria una contestacion a un tweet que tenemos guardado, podemos copiar el new
               # Ademas haremos un analisis de emociones y sentimientos
