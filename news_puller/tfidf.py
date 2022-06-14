@@ -1,5 +1,4 @@
 import re
-import spacy
 from logging import getLogger, DEBUG
 from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
