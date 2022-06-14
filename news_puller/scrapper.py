@@ -26,12 +26,14 @@ class NewsScrapper(object):
             try:
                 page = requests.get(url)
                 if (page.status_code == 200):
-                    print("heellooo %s", page)
                     soup = BeautifulSoup(page.text, 'html.parser')
 
                     title = soup.find("meta", property="og:title")
-                    description = soup.find("meta", name="description")
+                    print("----->>>>> %s", title)
+                    description = soup.find("meta", property="description")
+                    print("----->>>>> %s", description)
                     topics = self.TFIDF.get_topics([title + ' ' + description])
+
                     media = search_media(paper)
 
                     new = {'id': new_id,
@@ -45,7 +47,7 @@ class NewsScrapper(object):
                            'image': soup.find("meta", property="twitter:image")
                           }
                     
-                    save_topics(topics, theme)
+                    save_topics(topics, media['theme'])
                     save_new(new)
 
                     return new_id
