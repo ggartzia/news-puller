@@ -23,31 +23,34 @@ class NewsScrapper(object):
 
         if search_new(new_id) is None:
 
-            page = requests.get(url)
-            if (page.status_code == 200):
+            try:
+                page = requests.get(url)
+                if (page.status_code == 200):
+                    print("heellooo %s", page)
+                    soup = BeautifulSoup(page.text, 'html.parser')
 
-                soup = BeautifulSoup(page.text, 'html.parser')
+                    title = soup.find("meta", property="og:title")
+                    description = soup.find("meta", name="description")
+                    topics = self.TFIDF.get_topics([title + ' ' + description])
+                    media = search_media(paper)
 
-                title = soup.find("meta", property="og:title")
-                description = soup.find("meta", name="description")
-                topics = self.TFIDF.get_topics([title + ' ' + description])
-                media = search_media(paper)
+                    new = {'id': new_id,
+                           'fullUrl': url,
+                           'title': title,
+                           'description': description,
+                           'paper': media['_id'],
+                           'theme': media['theme'],
+                           'published': utils.parse_date(soup.find("meta", property="article:published_time")),
+                           'topics': topics,
+                           'image': soup.find("meta", property="twitter:image")
+                          }
+                    
+                    save_topics(topics, theme)
+                    save_new(new)
 
-                new = {'id': new_id,
-                       'fullUrl': url,
-                       'title': title,
-                       'description': description,
-                       'paper': media['_id'],
-                       'theme': media['theme'],
-                       'published': utils.parse_date(soup.find("meta", property="article:published_time")),
-                       'topics': topics,
-                       'image': soup.find("meta", property="twitter:image")
-                      }
-                
-                save_topics(topics, theme)
-                save_new(new)
-
-                return new_id
+                    return new_id
+                except Exception as e:
+                    logger.error('There was an error parsing new url: %s. %s', url, e)
         else:
             return new_id
 
