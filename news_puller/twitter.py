@@ -53,7 +53,7 @@ class TweetListener(object):
               # Clean tweet
               processed_text = re.sub(r'<(.|\n)*?>', '', tweet['text'])
               processed_text = re.sub(r'(?:\@|http?\://|https?\://|www)\S+', '', processed_text)
-              processed_text = " ".join(processed_text.split())
+              processed_text = " ".join(processed_text.split()).lower()
 
               tweet.update({'reply_to': reply,
                             ## Analizar emociones del comentario
