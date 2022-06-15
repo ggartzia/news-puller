@@ -20,11 +20,6 @@ class NewsScrapper(object):
 
     def scrap(self, url, paper):
         new_id = utils.create_unique_id(url)
-        title = ''
-        desc = ''
-        date = ''
-        topics = []
-        image = ''
 
         if search_new(new_id) is None:
 
@@ -33,17 +28,12 @@ class NewsScrapper(object):
                 if (page.status_code == 200):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
-                    title = self.get_title(soup)
-                    desc = self.get_description(soup)
-                    date = self.get_date(soup)
-                    image =  self.get_image(soup)
-
                     text = self.get_text(soup)
                     topics = self.TFIDF.get_topics(text)
 
                     media = search_media(paper)
 
-                    new = {'id': new_id,
+                    new = {'_id': new_id,
                            'fullUrl': url,
                            'title': self.get_title(soup),
                            'description': self.get_description(soup),
@@ -60,7 +50,7 @@ class NewsScrapper(object):
                     return new_id
 
             except Exception as e:
-                logger.error('There was an error parsing new url: %s, title: %s, description: %s, date: %s, image: %s, topics: %s. %s', url, title, desc, date, image, topics, e)
+                logger.error('There was an error parsing new url: %s. %s', url, e)
 
         else:
             return new_id
@@ -98,6 +88,8 @@ class NewsScrapper(object):
             article = body.find("article")
         elif body.find("div", {"class": "article-text"}) is not None:
             article = body.find("div", {"class": "article-text"})
+        elif body.find("div", {"class": "card-body-article"}) is not None:
+            article = body.find("div", {"class": "card-body-article"})
         
         text = [e.get_text() for e in article.find_all('p')]
         return text

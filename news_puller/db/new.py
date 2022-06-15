@@ -43,7 +43,7 @@ def search_new(id):
 
 def save_new(new):
     try:
-        news_db.insert_one({'_id': new['id']})
+        news_db.insert_one(new)
 
     except Exception as e:
         logger.error('There was an error while trying to save new: %s, %s', new, e)
@@ -57,14 +57,14 @@ def aggregate_tweet_count(query, sort, page):
            {
               '$lookup': {
                  'from': 'tweets',
-                 'localField': 'id',
+                 'localField': '_id',
                  'foreignField': 'new',
                  'as': 'tweets'
               }
            },
            {
               '$project': {
-                'id': '$id',
+                '_id': '$_id',
                 'title':'$title',
                 'fullUrl':'$fullUrl',
                 'image': '$image',
