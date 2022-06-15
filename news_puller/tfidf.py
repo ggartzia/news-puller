@@ -75,13 +75,14 @@ class TfIdfAnalizer(object):
 
 
     def getRussellValues(self, tweet):
+        valence = 0
+        arousal = 0
+
         try:
             doc = self.NLP.pipe(tweet, disable=["tok2vec", "tagger", "parser", "ner", "lemmatizer", "textcat"])
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
-            b = self.LEXICON.isin(lis)
-            valence = 0
-            arousal = 0
-
+            b = self.LEXICON[self.LEXICON['Spanish-es'].isin(lis)]
+            print("getRussellValues--->> %s, %s", doc, b)
             for i, r in b.iterrows():
                 valence += r['Valence']
                 arousal += r['Arousal']
