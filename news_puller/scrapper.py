@@ -29,7 +29,7 @@ class NewsScrapper(object):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
                     text = self.get_text(soup)
-                    if len(text) > 0 
+                    if len(text) > 0:
                         topics = self.TFIDF.get_topics(text)
 
                         media = search_media(tweet['user']['screen_name'])

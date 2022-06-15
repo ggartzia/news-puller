@@ -83,12 +83,12 @@ class TfIdfAnalizer(object):
             doc = self.NLP.pipe(tweet, disable=["tagger", "parser", "ner", "lemmatizer", "textcat"])
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
             b = self.LEXICON[self.LEXICON['Spanish-es'].isin(lis)]
-            print("getRussellValues--->> %s, %s", lis, b)
+            print("getRussellValues 1--->> %s, %s", lis, b)
 
             doc = self.NLP(tweet)
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
             b = self.LEXICON[self.LEXICON['Spanish-es'].isin(lis)]
-            print("getRussellValues--->> %s, %s", lis, b)
+            print("getRussellValues 2--->> %s, %s", lis, b)
             for i, r in b.iterrows():
                 valence += r['Valence']
                 arousal += r['Arousal']
