@@ -12,20 +12,21 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
-        self.RUSSEL = {
-            270 : 'relax',
-            180 : 'sad',
-            90 : 'angry',
-            0 : 'happy'
-        }
-        self.STOP_WORDS = set(stopwords.words('spanish'))
-        self.LEXICON = pd.read_csv('lexicon.txt', sep='\t', header= 0)
-
         try:
-            self.NLP = spacy.load('es_core_news_sm')
-        except: # If not present, we download
+            self.RUSSEL = {
+                270 : 'relax',
+                180 : 'sad',
+                90 : 'angry',
+                0 : 'happy'
+            }
+            self.STOP_WORDS = set(stopwords.words('spanish'))
+            self.LEXICON = pd.read_csv('lexicon.txt', sep='\t', header= 0)
+
             spacy.cli.download('es_core_news_sm')
             self.NLP = spacy.load('es_core_news_sm')
+
+        except Exception as e:
+            logger.error('Failed downloading spacy client. Error: %s', e)
 
 
     def get_topics(self, corpus, size=6):
