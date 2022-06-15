@@ -26,7 +26,7 @@ def search_tweet(id, original=False):
     query = {'_id': id}
 
     if original:
-      query['reply'] = { '$exists': True }
+      query['reply_to'] = { '$exists': True }
 
     try:
         tweet = tweet_db.find_one(query)
@@ -40,7 +40,7 @@ def search_tweet(id, original=False):
 def select_tweets(id, user, page):
     query = {}
     if id is not None:
-      query = {'new': id, 'reply': { '$exists': True }}
+      query = {'new': id, 'reply_to': { '$exists': True }}
     elif user is not None:
       query = {'user': user}
 
