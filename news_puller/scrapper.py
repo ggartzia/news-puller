@@ -1,6 +1,7 @@
 import requests
 import hashlib
 import logging
+from datetime import datetime
 from bs4 import BeautifulSoup
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
@@ -117,6 +118,10 @@ class NewsScrapper(object):
 
         elif body.find("meta", property="og:updated_time") is not None:
             date = body.find("meta", property="og:updated_time")['content']
+
+        else:
+            date = datetime.now()
+            date = date.strftime("%Y-%m-%dT%H:%M:%S%z")
 
         # Remove html tags from description
         return date

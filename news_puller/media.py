@@ -10,8 +10,8 @@ def get_media(theme):
         media = select_theme_media(theme)
 
         for plist in media:
-            plist['numeroNoticias'] = num_paper_news(plist['paper'])
-            plist['actualizacion'] = last_new(plist['paper'])
+            plist['numeroNoticias'] = num_paper_news(plist['_id'])
+            plist['actualizacion'] = last_new(plist['_id'])
 
             total.append(plist)
 
