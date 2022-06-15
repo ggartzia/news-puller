@@ -29,28 +29,31 @@ class NewsScrapper(object):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
                     text = self.get_text(soup)
-                    topics = self.TFIDF.get_topics(text)
+                    if len(text) > 0 
+                        topics = self.TFIDF.get_topics(text)
 
-                    media = search_media(tweet['user']['screen_name'])
+                        media = search_media(tweet['user']['screen_name'])
 
-                    new = {'_id': new_id,
-                           'fullUrl': url,
-                           'title': self.get_title(soup),
-                           'description': self.get_description(soup),
-                           'paper': media['_id'],
-                           'theme': media['theme'],
-                           'published': self.get_date(soup),
-                           'topics': topics,
-                           'image': self.get_image(soup),
-                           'retweet_count': tweet['retweet_count'],
-                           'favorite_count': tweet['favorite_count'],
-                           'reply_count': tweet['reply_count']
-                          }
-                    
-                    save_topics(topics, media['theme'])
-                    save_new(new)
+                        new = {'_id': new_id,
+                               'fullUrl': url,
+                               'title': self.get_title(soup),
+                               'description': self.get_description(soup),
+                               'paper': media['_id'],
+                               'theme': media['theme'],
+                               'published': self.get_date(soup),
+                               'topics': topics,
+                               'image': self.get_image(soup),
+                               'retweet_count': tweet['retweet_count'],
+                               'favorite_count': tweet['favorite_count'],
+                               'reply_count': tweet['reply_count']
+                              }
+                        
+                        save_topics(topics, media['theme'])
+                        save_new(new)
 
-                    return new_id
+                        return new_id
+                    else:
+                        print("THE CONTENT OF THE URL IS EMPTY!! %s", url)
 
             except Exception as e:
                 logger.error('There was an error parsing new url: %s. %s', url, e)
