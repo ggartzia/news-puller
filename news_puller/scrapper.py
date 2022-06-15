@@ -18,7 +18,7 @@ class NewsScrapper(object):
         self.TFIDF = TfIdfAnalizer()
 
 
-    def scrap(self, url, paper):
+    def scrap(self, tweet, url):
         new_id = self.create_unique_id(url)
 
         if search_new(new_id) is None:
@@ -31,7 +31,7 @@ class NewsScrapper(object):
                     text = self.get_text(soup)
                     topics = self.TFIDF.get_topics(text)
 
-                    media = search_media(paper)
+                    media = search_media(tweet['user']['screen_name'])
 
                     new = {'_id': new_id,
                            'fullUrl': url,
@@ -41,7 +41,10 @@ class NewsScrapper(object):
                            'theme': media['theme'],
                            'published': self.get_date(soup),
                            'topics': topics,
-                           'image': self.get_image(soup)
+                           'image': self.get_image(soup),
+                           'retweet_count': tweet['retweet_count'],
+                           'favorite_count': tweet['favorite_count'],
+                           'reply_count': tweet['reply_count']
                           }
                     
                     save_topics(topics, media['theme'])

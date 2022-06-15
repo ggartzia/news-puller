@@ -49,6 +49,17 @@ def save_new(new):
         logger.error('There was an error while trying to save new: %s, %s', new, e)
 
 
+def retweet(id, tweet):
+    try:
+        news_db.update_one({'_id': id},
+                           {'$set': {'retweet_count': tweet['retweet_count'],
+                                     'favorite_count': tweet['favorite_count'],
+                                     'reply_count': tweet['reply_count']}})
+        
+    except Exception as e:
+        logger.error('There was an error while trying to save retweet of new: %s', e)
+
+
 def aggregate_tweet_count(query, sort, page):
     news = list(news_db.aggregate([
            {

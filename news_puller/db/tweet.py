@@ -26,11 +26,15 @@ def count_user_tweets(user):
     return tweet_db.count_documents({'user': user})
 
 
-def search_tweet(id):
+def search_tweet(id, original=False):
     tweet = None
+    query = {'_id': id}
+
+    if original:
+      query['reply'] = { '$exists': True, '$not': {'$size': 0} }
 
     try:
-        tweet = tweet_db.find_one({'_id': id})
+        tweet = tweet_db.find_one(query)
 
     except Exception as e:
         logger.error('There was an error fetching tweet: %s. %s', id,  e)
