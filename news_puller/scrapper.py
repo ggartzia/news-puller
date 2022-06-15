@@ -115,18 +115,18 @@ class NewsScrapper(object):
 
         elif body.find("meta", property="og:updated_time") is not None:
             date = body.find("meta", property="og:updated_time")['content']
-        
-        print("time!!!!!! %s", date)
+
         # Remove html tags from description
-        return utils.parse_date(date)
+        return date
 
 
     def get_image(self, body):
         image = ''
 
-        tag = body.find("meta", property="twitter:image")
-        if tag is not None:
-            image = tag['content']
+        if body.find("meta", property="twitter:image") is not None:
+            image = body.find("meta", property="twitter:image")['content']
+        elif body.find("meta", property="og:image") is not None:
+            image = body.find("meta", property="og:image")['content']
         
         # Remove html tags from description
         return image

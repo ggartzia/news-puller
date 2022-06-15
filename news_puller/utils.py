@@ -16,4 +16,4 @@ def create_unique_id(url):
 
 
 def parse_date(date):
-	return time.strftime("%Y-%m-%d %H:%M:%S", date)
+    return time.strftime("%Y-%m-%d %H:%M:%S", date)
