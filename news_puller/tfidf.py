@@ -3,7 +3,6 @@ import spacy
 import math
 from logging import getLogger, DEBUG
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sentiment_analysis_spanish import sentiment_analysis
 from nltk.corpus import stopwords
 
 logger = getLogger('werkzeug')
@@ -76,7 +75,7 @@ class TfIdfAnalizer(object):
 
     def getRussellValues(self, tweet):
         try:
-            doc = self.NLP(tweet)
+            doc = self.NLP.pipe(tweet, disable=["tok2vec", "tagger", "parser", "ner", "lemmatizer", "textcat"])
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
             b = self.LEXICON.isin(lis)
             valence = 0
@@ -90,20 +89,3 @@ class TfIdfAnalizer(object):
 
         except Exception as e:
             logger.error('Failed analysing emotions of tweet. Error: %s', e)
-
-
-    def rate_feeling(self, text):
-        rate = 0
-        try:
-            sentiment = sentiment_analysis.SentimentAnalysisSpanish()
-            rate = 10 * sentiment.sentiment(text)
-
-            if rate < 4:
-                return 'negative'
-            elif rate < 7:
-                return 'neutral'
-            else:
-                return 'positive'
-
-        except Exception as e:
-            logger.error('Failed analysing sentiment of tweet. Error: %s', e)

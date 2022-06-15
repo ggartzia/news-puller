@@ -55,9 +55,8 @@ class TweetListener(object):
               processed_text = " ".join(processed_text.split())
 
               tweet.update({'reply_to': reply,
-                            ## Analizar sentimiento del comentario
-                            'rating': self.TFIDF.rate_feeling(processed_text),
-                            'emotion': self.TFIDF.getRussellValues(processed_text)})
+                            ## Analizar emociones del comentario
+                            'rating': self.TFIDF.getRussellValues(processed_text)})
 
           save_tweet(tweet)
 
