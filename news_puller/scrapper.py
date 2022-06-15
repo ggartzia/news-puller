@@ -28,23 +28,22 @@ class NewsScrapper(object):
                 if (page.status_code == 200):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
-                    title = soup.find("meta", property="og:title")
-                    print("----->>>>> %s", title)
-                    description = soup.find("meta", property="description")
-                    print("----->>>>> %s", description)
-                    topics = self.TFIDF.get_topics([title + ' ' + description])
+                    article = soup.find("article")
+                    text = [e.get_text() for e in article.find_all('p')]
+                    print("text ----->>>>> %s", text)
+                    topics = self.TFIDF.get_topics(text)
 
                     media = search_media(paper)
 
                     new = {'id': new_id,
                            'fullUrl': url,
-                           'title': title,
-                           'description': description,
+                           'title': soup.find("meta", property="og:title")['content'],
+                           'description': soup.find("meta", property="og:description")['content'],
                            'paper': media['_id'],
                            'theme': media['theme'],
-                           'published': utils.parse_date(soup.find("meta", property="article:published_time")),
+                           'published': utils.parse_date(soup.find("meta", property="article:published_time")['content']),
                            'topics': topics,
-                           'image': soup.find("meta", property="twitter:image")
+                           'image': soup.find("meta", property="twitter:image")['content']
                           }
                     
                     save_topics(topics, media['theme'])
