@@ -1,4 +1,3 @@
-import re
 import pandas as pd
 import spacy
 import math
@@ -77,7 +76,6 @@ class TfIdfAnalizer(object):
 
     def getRussellValues(self, tweet):
         try:
-            tweet = self.clean_html(tweet)
             doc = self.NLP(tweet)
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
             b = self.LEXICON.isin(lis)
@@ -94,7 +92,7 @@ class TfIdfAnalizer(object):
             logger.error('Failed analysing emotions of tweet. Error: %s', e)
 
 
-    def count_polarity_words(self, text):
+    def rate_feeling(self, text):
         rate = 0
         try:
             sentiment = sentiment_analysis.SentimentAnalysisSpanish()
@@ -109,19 +107,3 @@ class TfIdfAnalizer(object):
 
         except Exception as e:
             logger.error('Failed analysing sentiment of tweet. Error: %s', e)
-
-
-    def rate_feeling(self, text):
-        try:
-            text = self.clean_html(text)
-            return self.count_polarity_words(text)
-            
-        except Exception as e:
-            logger.error('There was an error analysing the text of the tweet: %s', e)
-
-
-    def clean_html(self, text):
-        processed_text = re.sub(r'<(.|\n)*?>', '', text)
-        processed_text = re.sub(r'(?:\@|http?\://|https?\://|www)\S+', '', processed_text)
-        processed_text = " ".join(processed_text.split())
-        return processed_text

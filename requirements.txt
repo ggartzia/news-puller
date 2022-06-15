@@ -9,8 +9,8 @@ python-dotenv
 requests
 bs4
 Werkzeug
-numpy
 DateTime
+pandas
 tweepy
 scikit-learn
 nltk
