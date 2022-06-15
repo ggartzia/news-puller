@@ -21,7 +21,8 @@ class TfIdfAnalizer(object):
             }
             self.STOP_WORDS = set(stopwords.words('spanish'))
             self.LEXICON = pd.read_csv('lexicon.txt', sep='\t', header= 0)
-
+            self.LEXICON['Spanish-es'] = self.LEXICON['Spanish-es'].astype(str)
+            
             spacy.cli.download('es_core_news_sm')
             self.NLP = spacy.load('es_core_news_sm')
 
