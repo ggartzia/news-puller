@@ -14,5 +14,5 @@ DateTime
 tweepy
 scikit-learn
 nltk
-snowballstemmer
+spacy
 sentiment-analysis-spanish

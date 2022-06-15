@@ -1,4 +1,5 @@
 import os
+import re
 import tweepy
 from dotenv import load_dotenv
 from logging import getLogger, DEBUG
@@ -13,6 +14,7 @@ load_dotenv()
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
+
 
 class TweetListener(object):
 
@@ -47,9 +49,15 @@ class TweetListener(object):
                    'new': new}
 
           if reply is not None:
+              # Clean tweet
+              processed_text = re.sub(r'<(.|\n)*?>', '', tweet['text'])
+              processed_text = re.sub(r'(?:\@|http?\://|https?\://|www)\S+', '', processed_text)
+              processed_text = " ".join(processed_text.split())
+
               tweet.update({'reply_to': reply,
                             ## Analizar sentimiento del comentario
-                            'rating':self.TFIDF.rate_feeling(tweet['text'])})
+                            'rating': self.TFIDF.rate_feeling(processed_text),
+                            'emotion': self.TFIDF.getRussellValues(processed_text)})
 
           save_tweet(tweet)
 

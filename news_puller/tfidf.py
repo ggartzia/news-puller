@@ -1,10 +1,11 @@
 import re
+import pandas as pd
+import spacy
+import math
 from logging import getLogger, DEBUG
-from news_puller.utils import clean_html
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sentiment_analysis_spanish import sentiment_analysis
 from nltk.corpus import stopwords
-import snowballstemmer
 
 logger = getLogger('werkzeug')
 logger.setLevel(DEBUG)
@@ -13,15 +14,27 @@ logger.setLevel(DEBUG)
 class TfIdfAnalizer(object):
 
     def __init__(self):
+        self.RUSSEL = {
+            270 : 'relax',
+            180 : 'sad',
+            90 : 'angry',
+            0 : 'happy'
+        }
         self.STOP_WORDS = set(stopwords.words('spanish'))
-        self.spanishStemmer = snowballstemmer.stemmer('spanish')
+        self.LEXICON = pd.read_csv('/lexicon.txt', sep='\t', header= 0)
+
+        try:
+            self.NLP = spacy.load('es_core_news_sm')
+        except: # If not present, we download
+            spacy.cli.download('es_core_news_sm')
+            self.NLP = spacy.load('es_core_news_sm')
 
 
     def get_topics(self, corpus, size=6):
         words = []
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
-                                  tokenizer=self.tokenize_stem,
+                                  tokenizer=self.tokenize_lemmatize,
                                   ngram_range=(1,2)).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
@@ -35,13 +48,50 @@ class TfIdfAnalizer(object):
         return words
 
 
-    def tokenize_stem(self, text):
+    def tokenize_lemmatize(self, text):
         tokens = []
-        for word in text.lower().split():
-            if word not in self.STOP_WORDS:
-                tokens.append(self.spanishStemmer.stemWord(word))
+        doc = self.NLP(text)
+        for token in doc:
+            if token.pos_ in ('ADJ', 'NOUN') and token.text not in self.STOP_WORDS:
+                tokens.append(token.lemma_)
 
         return tokens
+
+
+    def getRusselRegion(self, arousal, valence):
+        result = 'none'
+        a = math.atan2(arousal - 5, valence - 5)
+        mydegrees = math.degrees(a)
+        deg = mydegrees if mydegrees > 0 else mydegrees + 360
+
+        for x in self.RUSSEL.keys():
+            if deg > x:
+                result = self.RUSSEL[x]
+                break
+
+        if valence == 0:
+            result = 'none'
+
+        return result
+
+
+    def getRussellValues(self, tweet):
+        try:
+            tweet = self.clean_html(tweet)
+            doc = self.NLP(tweet)
+            lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
+            b = self.LEXICON.isin(lis)
+            valence = 0
+            arousal = 0
+
+            for i, r in b.iterrows():
+                valence += r['Valence']
+                arousal += r['Arousal']
+        
+            return self.getRusselRegion(arousal, valence)
+
+        except Exception as e:
+            logger.error('Failed analysing emotions of tweet. Error: %s', e)
 
 
     def count_polarity_words(self, text):
@@ -63,8 +113,15 @@ class TfIdfAnalizer(object):
 
     def rate_feeling(self, text):
         try:
-            text = clean_html(text)
+            text = self.clean_html(text)
             return self.count_polarity_words(text)
             
         except Exception as e:
             logger.error('There was an error analysing the text of the tweet: %s', e)
+
+
+    def clean_html(self, text):
+        processed_text = re.sub(r'<(.|\n)*?>', '', text)
+        processed_text = re.sub(r'(?:\@|http?\://|https?\://|www)\S+', '', processed_text)
+        processed_text = " ".join(processed_text.split())
+        return processed_text

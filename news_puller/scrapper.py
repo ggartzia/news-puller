@@ -1,11 +1,11 @@
 import requests
+import hashlib
 from bs4 import BeautifulSoup
 from logging import getLogger, DEBUG
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
-import news_puller.utils as utils
 
 
 logger = getLogger('werkzeug')
@@ -19,7 +19,7 @@ class NewsScrapper(object):
 
 
     def scrap(self, url, paper):
-        new_id = utils.create_unique_id(url)
+        new_id = self.create_unique_id(url)
 
         if search_new(new_id) is None:
 
@@ -58,6 +58,9 @@ class NewsScrapper(object):
         return None
 
 
+    def create_unique_id(self, url): 
+        return hashlib.sha256(url.encode('utf-8')).hexdigest()
+
     def get_description(self, body):
         description = ''
 
@@ -83,6 +86,7 @@ class NewsScrapper(object):
 
     def get_text(self, body):
         article = None
+        text = []
 
         if body.find("article") is not None:
             article = body.find("article")
@@ -90,8 +94,12 @@ class NewsScrapper(object):
             article = body.find("div", {"class": "article-text"})
         elif body.find("div", {"class": "card-body-article"}) is not None:
             article = body.find("div", {"class": "card-body-article"})
+        elif body.find("div", {"class": "content-container"}) is not None:
+            article = body.find("div", {"class": "content-container"})
         
-        text = [e.get_text() for e in article.find_all('p')]
+        if article is not None:
+            text = [e.get_text() for e in article.find_all('p')]
+
         return text
 
 
