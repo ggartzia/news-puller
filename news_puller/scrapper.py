@@ -127,6 +127,10 @@ class NewsScrapper(object):
             image = body.find("meta", property="twitter:image")['content']
         elif body.find("meta", property="og:image") is not None:
             image = body.find("meta", property="og:image")['content']
+        elif body.find("meta", {"data-ue-u": "twitter:image"}) is not None:
+            image = body.find("meta", {"data-ue-u": "twitter:image"})['content']
+        elif body.find("meta", {"data-ue-u": "og:image"}) is not None:
+            image = body.find("meta", {"data-ue-u": "og:image"})['content']
         
         # Remove html tags from description
         return image

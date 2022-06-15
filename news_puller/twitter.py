@@ -80,6 +80,7 @@ class TweetListener(object):
             tweet = status._json
 
             # Esto seria un tweet del periodico que puede estar compartiendo una noticia
+            print("this is a retweettttt %s", tweet['retweeted_status'])
             if (tweet['user']['id_str'] in self.FOLLOW and
                 tweet['entities'] is not None and
                 len(tweet['entities']['urls']) > 0):
