@@ -80,8 +80,8 @@ class TweetListener(object):
             tweet = status._json
 
             # Retweet the algo compartido por los periodicos o comentarios
-            if 'retweeted_status' in tweet and
-               tweet['retweeted_status'] is not None:
+            if ('retweeted_status' in tweet and
+               tweet['retweeted_status'] is not None):
               # Search only original tweets
               original = search_tweet(tweet['retweeted_status']['id_str'], True)
               if original is not None:
