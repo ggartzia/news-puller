@@ -26,7 +26,7 @@ def search_tweet(id, original=False):
     query = {'_id': id}
 
     if original:
-      query['reply'] = { '$exists': True, '$not': {'$size': 0} }
+      query['reply'] = { '$exists': True }
 
     try:
         tweet = tweet_db.find_one(query)
@@ -40,7 +40,7 @@ def search_tweet(id, original=False):
 def select_tweets(id, user, page):
     query = {}
     if id is not None:
-      query = {'new': id}
+      query = {'new': id, 'reply': { '$exists': True }}
     elif user is not None:
       query = {'user': user}
 
@@ -71,3 +71,10 @@ def select_tweets(id, user, page):
     tweetsTo = tweetsFrom + Database.PAGE_SIZE
 
     return tweets[tweetsFrom:tweetsTo]
+
+
+def select_all_tweets(new):
+    tweets = tweet_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
+                            sort=[('created_at', pymongo.DESCENDING)])
+
+    return list(tweets)
