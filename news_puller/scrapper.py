@@ -60,7 +60,7 @@ class NewsScrapper(object):
                     return new_id
 
             except Exception as e:
-                logger.error('There was an error parsing new url: %s, %s, %s, %s, %s, %s. %s', url, title, desc, date, image, topics, e)
+                logger.error('There was an error parsing new url: %s, title: %s, description: %s, date: %s, image: %s, topics: %s. %s', url, title, desc, date, image, topics, e)
 
         else:
             return new_id
@@ -83,8 +83,10 @@ class NewsScrapper(object):
         title = ''
 
         tag = body.find("meta", property="og:title")
-        if tag is not None:
-            title = tag['content']
+        if body.find("meta", property="og:title") is not None:
+            title = body.find("meta", property="og:title")['content']
+        elif body.find("title") is not None:
+            title = body.find("title")
         
         return title
 
@@ -105,9 +107,16 @@ class NewsScrapper(object):
         date = ''
 
         tag = body.find("meta", property="article:published_time")
-        if tag is not None:
-            date = tag['content']
+        if body.find("meta", property="article:published_time") is not None:
+            date = body.find("meta", property="article:published_time")['content']
+
+        elif body.find("meta", property="article:modified_time") is not None:
+            date = body.find("meta", property="article:modified_time")['content']
+
+        elif body.find("meta", property="og:updated_time") is not None:
+            date = body.find("meta", property="og:updated_time")['content']
         
+        print("time!!!!!! %s", date)
         # Remove html tags from description
         return utils.parse_date(date)
 
