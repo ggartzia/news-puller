@@ -101,7 +101,7 @@ def get_all_tweets(id):
     new = db_news.search_new(id)
 
     return jsonify({'new': new,
-                    'total': new['total']
+                    'total': new['total'],
                     'chart': all_tweets})
 
 
