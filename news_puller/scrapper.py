@@ -102,7 +102,7 @@ class NewsScrapper(object):
             article = body.find("div", {"class": "content-container"})
         
         if article is not None:
-            text = [e.get_text() for e in article.find_all('p')]
+            text = [e.get_text().lower() for e in article.find_all('p')]
 
         return text
 

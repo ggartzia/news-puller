@@ -14,7 +14,7 @@ def save_tweet(tweet):
 
 
 def count_new_tweets(new):
-    return tweet_db.count_documents({'new': new})
+    return tweet_db.count_documents({'new': new, 'reply_to': { '$exists': True }})
 
 
 def count_user_tweets(user):
@@ -37,10 +37,10 @@ def search_tweet(id, original=False):
     return tweet
 
 
-def select_tweets(id, user, page):
+def select_tweets(new, user, page):
     query = {}
-    if id is not None:
-      query = {'new': id, 'reply_to': { '$exists': True }}
+    if new is not None:
+      query = {'new': new, 'reply_to': { '$exists': True }}
     elif user is not None:
       query = {'user': user}
 

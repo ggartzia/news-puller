@@ -119,4 +119,5 @@ def fetch_user_tweets(user, page):
     tweets = db_tweets.select_tweets(None, user, page) 
 
     return jsonify({'total': db_tweets.count_user_tweets(user),
+                    'user': db_users.search_user(user),
                     'items': tweets})
