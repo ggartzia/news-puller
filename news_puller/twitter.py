@@ -5,6 +5,7 @@ from logging import getLogger, DEBUG
 from news_puller.db.media import select_all_media
 from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.user import save_user
+from news_puller.tfidf import TfIdfAnalizer
 from news_puller.scrapper import NewsScrapper
 
 
@@ -34,6 +35,7 @@ class TweetListener(object):
           super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
 
           self.FOLLOW = follow
+          self.TFIDF = TfIdfAnalizer()
           self.scrapper = NewsScrapper()
 
 
