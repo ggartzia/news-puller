@@ -1,11 +1,8 @@
-from logging import getLogger, DEBUG
+import logging
 import pymongo
 from news_puller.database import Database
 
 user_db = Database.DATABASE['users']
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
 
 def save_user(user):
     try:
@@ -15,7 +12,7 @@ def save_user(user):
                            upsert=True)
 
     except Exception as e:
-        logger.error('There was an error while trying to save user: %s, %s', user, e)
+        logging.error('There was an error while trying to save user: %s, %s', user, e)
 
 
 def search_user(id):
@@ -25,7 +22,7 @@ def search_user(id):
         user = user_db.find_one({'_id': id})
 
     except Exception as e:
-        logger.error('There was an error fetching user: %s. %s', id,  e)
+        logging.error('There was an error fetching user: %s. %s', id,  e)
 
     return user
 

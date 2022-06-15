@@ -1,4 +1,3 @@
-from logging import getLogger, DEBUG
 import pymongo
 from news_puller.database import Database
 

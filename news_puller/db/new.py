@@ -1,4 +1,4 @@
-from logging import getLogger, DEBUG
+import logging
 import pymongo
 from news_puller.database import Database
 from datetime import datetime, timedelta
@@ -6,10 +6,6 @@ from news_puller.related import calculate_similarity
 from news_puller.db.tweet import count_new_tweets
 
 news_db = Database.DATABASE['news']
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 def num_paper_news(paper):
     return news_db.count_documents({'paper': paper})
@@ -36,7 +32,7 @@ def search_new(id):
         
 
     except Exception as e:
-        logger.error('There was an error fetching new: %s. %s', id, e)
+        logging.error('There was an error fetching new: %s. %s', id, e)
         
     return new
 
@@ -46,7 +42,7 @@ def save_new(new):
         news_db.insert_one(new)
 
     except Exception as e:
-        logger.error('There was an error while trying to save new: %s, %s', new, e)
+        logging.error('There was an error while trying to save new: %s, %s', new, e)
 
 
 def retweet(id, tweet):
@@ -57,7 +53,7 @@ def retweet(id, tweet):
                                      'reply_count': tweet['reply_count']}})
         
     except Exception as e:
-        logger.error('There was an error while trying to save retweet of new: %s', e)
+        logging.error('There was an error while trying to save retweet of new: %s', e)
 
 
 def aggregate_tweet_count(query, sort, page):

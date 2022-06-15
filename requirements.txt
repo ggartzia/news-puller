@@ -8,7 +8,6 @@ pymongo
 python-dotenv
 requests
 bs4
-Werkzeug
 DateTime
 pandas
 tweepy

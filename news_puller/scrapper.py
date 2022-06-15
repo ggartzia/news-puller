@@ -1,15 +1,11 @@
 import requests
 import hashlib
+import logging
 from bs4 import BeautifulSoup
-from logging import getLogger, DEBUG
 from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
-
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
 
 
 class NewsScrapper(object):
@@ -53,10 +49,10 @@ class NewsScrapper(object):
 
                         return new_id
                     else:
-                        print("THE CONTENT OF THE URL IS EMPTY!! %s", url)
+                        logging.info("THE CONTENT OF THE URL IS EMPTY!! %s", url)
 
             except Exception as e:
-                logger.error('There was an error parsing new url: %s. %s', url, e)
+                logging.error('There was an error parsing new url: %s. %s', url, e)
 
         else:
             return new_id

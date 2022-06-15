@@ -1,13 +1,9 @@
 import pandas as pd
 import spacy
 import math
-from logging import getLogger, DEBUG
+import logging
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 class TfIdfAnalizer(object):
 
@@ -27,7 +23,7 @@ class TfIdfAnalizer(object):
             self.NLP = spacy.load('es_core_news_sm')
 
         except Exception as e:
-            logger.error('Failed downloading spacy client. Error: %s', e)
+            logging.error('Failed downloading spacy client. Error: %s', e)
 
 
     def get_topics(self, corpus, size=6):
@@ -43,7 +39,7 @@ class TfIdfAnalizer(object):
             words = [w[0] for w in words_freq[:size]]
 
         except Exception as e:
-            logger.error('Failed counting words in article. Error: %s', e)
+            logging.error('Failed counting words in article. Error: %s', e)
 
         return words
 
@@ -83,7 +79,6 @@ class TfIdfAnalizer(object):
             doc = self.NLP(tweet)
             lis = [str(token) for token in doc if not str(token) in self.STOP_WORDS]
             b = self.LEXICON[self.LEXICON['Spanish-es'].isin(lis)]
-            print("getRussellValues 2--->> %s, %s", lis, b)
             for i, r in b.iterrows():
                 valence += r['Valence']
                 arousal += r['Arousal']
@@ -91,4 +86,4 @@ class TfIdfAnalizer(object):
             return self.getRusselRegion(arousal, valence)
 
         except Exception as e:
-            logger.error('Failed analysing emotions of tweet. Error: %s', e)
+            logging.error('Failed analysing emotions of tweet. Error: %s', e)

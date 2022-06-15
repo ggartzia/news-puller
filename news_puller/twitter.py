@@ -1,8 +1,8 @@
 import os
 import re
 import tweepy
+import logging
 from dotenv import load_dotenv
-from logging import getLogger, DEBUG
 from news_puller.db.media import select_all_media
 from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.new import retweet
@@ -10,12 +10,7 @@ from news_puller.db.user import save_user
 from news_puller.tfidf import TfIdfAnalizer
 from news_puller.scrapper import NewsScrapper
 
-
 load_dotenv()
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 class TweetListener(object):
 
@@ -113,4 +108,4 @@ class TweetListener(object):
                 self.extract_user(tweet['user'])
 
           except Exception as e:
-              logger.error('Something happened fetching tweets: %s', e)
+              logging.error('Something happened fetching tweets: %s', e)

@@ -1,21 +1,16 @@
-from logging import getLogger, DEBUG
+import logging
 import pymongo
 from news_puller.database import Database
 from news_puller.db.user import search_user
 
-
 tweet_db = Database.DATABASE['tweets']
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 def save_tweet(tweet):
     try:
         tweet_db.insert_one(tweet)
         
     except Exception as e:
-        logger.error('There was an error while trying to save tweets: %s', e)
+        logging.error('There was an error while trying to save tweets: %s', e)
 
 
 def count_new_tweets(new):
@@ -37,7 +32,7 @@ def search_tweet(id, original=False):
         tweet = tweet_db.find_one(query)
 
     except Exception as e:
-        logger.error('There was an error fetching tweet: %s. %s', id,  e)
+        logging.error('There was an error fetching tweet: %s. %s', id,  e)
 
     return tweet
 
