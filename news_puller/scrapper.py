@@ -37,8 +37,8 @@ class NewsScrapper(object):
                     desc = self.get_description(soup)
                     date = self.get_date(soup)
                     image =  self.get_image(soup)
-                    article = soup.find("article")
-                    text = [e.get_text() for e in article.find_all('p')]
+
+                    text = self.get_text(soup)
                     topics = self.TFIDF.get_topics(text)
 
                     media = search_media(paper)
@@ -58,7 +58,7 @@ class NewsScrapper(object):
                     save_new(new)
 
                     return new_id
-        
+
             except Exception as e:
                 logger.error('There was an error parsing new url: %s, %s, %s, %s, %s, %s. %s', url, title, desc, date, image, topics, e)
 
@@ -71,7 +71,7 @@ class NewsScrapper(object):
     def get_description(self, body):
         description = ''
 
-        tag = soup.find("meta", property="og:description")
+        tag = body.find("meta", property="og:description")
         if tag is not None:
             description = tag['content']
         
@@ -82,18 +82,29 @@ class NewsScrapper(object):
     def get_title(self, body):
         title = ''
 
-        tag = soup.find("meta", property="og:title")
+        tag = body.find("meta", property="og:title")
         if tag is not None:
             title = tag['content']
         
-        # Remove html tags from description
         return title
+
+
+    def get_text(self, body):
+        article = None
+
+        if body.find("article") is not None:
+            article = body.find("article")
+        elif body.find("div", {"class": "article-text"}) is not None:
+            article = body.find("div", {"class": "article-text"})
+        
+        text = [e.get_text() for e in article.find_all('p')]
+        return text
 
 
     def get_date(self, body):
         date = ''
 
-        tag = soup.find("meta", property="article:published_time")
+        tag = body.find("meta", property="article:published_time")
         if tag is not None:
             date = tag['content']
         
@@ -104,7 +115,7 @@ class NewsScrapper(object):
     def get_image(self, body):
         image = ''
 
-        tag = soup.find("meta", property="twitter:image")
+        tag = body.find("meta", property="twitter:image")
         if tag is not None:
             image = tag['content']
         
