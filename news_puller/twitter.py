@@ -16,7 +16,7 @@ class TweetListener(object):
 
   def __init__(self):
       media = select_all_media()
-      follow = [str(m['twitter_id']) for m in media]
+      follow = ['3439292716'] #[str(m['twitter_id']) for m in media]
 
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
@@ -75,7 +75,7 @@ class TweetListener(object):
       def on_status(self, status):
           try:
             tweet = status._json
-
+            save_tweet(tweet)
             # Retweet the algo compartido por los periodicos o comentarios
             if ('retweeted_status' in tweet and
                tweet['retweeted_status'] is not None):
