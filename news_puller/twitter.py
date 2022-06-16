@@ -89,11 +89,12 @@ class TweetListener(object):
             elif (tweet['user']['id_str'] in self.FOLLOW and
                 tweet['entities'] is not None and
                 len(tweet['entities']['urls']) > 0):
-              save_tweet(tweet)
+              
               url = tweet['entities']['urls'][0]
               expanded_url = str(url['expanded_url']).split('?')[0]
 
               if "twitter.com" not in expanded_url:
+                save_tweet(tweet)
                 new_id = self.scrapper.scrap(tweet, expanded_url)
                 
                 if new_id:
