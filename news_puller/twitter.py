@@ -56,7 +56,7 @@ class TweetListener(object):
                             'rating': self.TFIDF.getRussellValues(processed_text)})
 
 
-          save_tweet(tweet)
+          #save_tweet(tweet)
 
 
       def extract_user(self, twuser):
@@ -75,7 +75,7 @@ class TweetListener(object):
       def on_status(self, status):
           try:
             tweet = status._json
-            save_tweet(tweet)
+
             # Retweet the algo compartido por los periodicos o comentarios
             if ('retweeted_status' in tweet and
                tweet['retweeted_status'] is not None):
@@ -89,7 +89,7 @@ class TweetListener(object):
             elif (tweet['user']['id_str'] in self.FOLLOW and
                 tweet['entities'] is not None and
                 len(tweet['entities']['urls']) > 0):
-
+              save_tweet(tweet)
               url = tweet['entities']['urls'][0]
               expanded_url = str(url['expanded_url']).split('?')[0]
 
