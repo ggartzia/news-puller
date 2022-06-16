@@ -56,7 +56,7 @@ def retweet(id, tweet):
         logging.error('There was an error while trying to save retweet of new: %s', e)
 
 
-def aggregate_tweet_count(query, sort, page):
+def aggregate_tweet_count(query, page, sort='published'):
     news = list(news_db.aggregate([
            {
               '$match': query
@@ -70,7 +70,7 @@ def aggregate_tweet_count(query, sort, page):
               }
            },
            {
-              '$sort': sort
+              '$sort': {sort: pymongo.DESCENDING}
            }
         ]))
 
@@ -84,7 +84,7 @@ def select_last_news(hour, theme, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}, 'theme': theme}
 
-    news = aggregate_tweet_count(query, {'published': pymongo.DESCENDING}, page)
+    news = aggregate_tweet_count(query, page)
 
     return {'total': news_db.count_documents(query),
             'items': news}
@@ -94,7 +94,7 @@ def select_trending_news(hour, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}}
 
-    news = aggregate_tweet_count(query, {'tweetCount': pymongo.DESCENDING}, page)
+    news = aggregate_tweet_count(query, page, 'favorite_count')
 
     return {'total': news_db.count_documents(query),
             'items': news}
@@ -107,7 +107,7 @@ def select_related_news(id, page):
              '_id': {'$ne': main_new['_id']},
              'topics': {'$in': main_new['topics']}}
 
-    news = aggregate_tweet_count(query, {'published': pymongo.DESCENDING}, page)
+    news = aggregate_tweet_count(query, page)
 
     return {'new': main_new,
             'total': news_db.count_documents(query),
@@ -115,7 +115,7 @@ def select_related_news(id, page):
 
 
 def select_media_news(media, page):
-    news = aggregate_tweet_count({'paper': media}, {'published': pymongo.DESCENDING}, page)
+    news = aggregate_tweet_count({'paper': media}, page)
 
     return {'total': num_paper_news(media),
             'items': news}
@@ -123,7 +123,7 @@ def select_media_news(media, page):
 
 def select_topic_news(topic, page):
     query = {'topics': topic}
-    news = aggregate_tweet_count(query, {'published': pymongo.DESCENDING}, page)
+    news = aggregate_tweet_count(query, page)
     
     return {'total': news_db.count_documents(query),
             'items': news}
