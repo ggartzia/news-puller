@@ -20,7 +20,7 @@ class NewsScrapper(object):
         new_id = self.create_unique_id(url)
 
         if search_new(new_id) is None:
-            print('Hello hello this is a new  ' + str(new_id), file=sys.stdout)
+
             try:
                 page = requests.get('https://news-puller.herokuapp.com/')
                 page = requests.get(url)
@@ -28,11 +28,10 @@ class NewsScrapper(object):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
                     text = self.get_text(soup)
-                    print('This is standard output' + str(text), file=sys.stdout)
+                    
                     if len(text) > 0:
                         topics = self.TFIDF.get_topics(text)
 
-                        print('This is the paper name  ' + str(tweet['user']['screen_name']), file=sys.stdout)
                         media = search_media(tweet['user']['screen_name'])
 
                         new = {'_id': new_id,
@@ -54,11 +53,9 @@ class NewsScrapper(object):
 
                         return new_id
                     else:
-                        print('THE CONTENT OF THE URL IS EMPTY!!  ' + str(url), file=sys.stdout)
-                        logging.info("THE CONTENT OF THE URL IS EMPTY!! %s", url)
+                        logging.warning("THE CONTENT OF THE URL IS EMPTY!! %s", url)
 
             except Exception as e:
-                print('Errorrrrr  ' + str(e), file=sys.stdout)
                 logging.error('There was an error parsing new url: %s. %s', url, e)
 
         else:
@@ -103,8 +100,15 @@ class NewsScrapper(object):
             article = body.find("div", {"class": "card-body-article"})
         elif body.find("div", {"class": "content-container"}) is not None:
             article = body.find("div", {"class": "content-container"})
-        elif body.find("div", {"class": "entry-content"}) is not None:
-            article = body.find("div", {"class": "entry-content"})
+        elif body.find("div", {"class": "article-modules"}) is not None:
+            article = body.find("div", {"class": "article-modules"})
+        elif body.find("div", {"class": "article-body-content"}) is not None:
+            article = body.find("div", {"class": "article-body-content"})
+        elif body.find("div", {"data-dtm-region": "articulo_cuerpo"}) is not None:
+            article = body.find("div", {"data-dtm-region": "articulo_cuerpo"})
+        elif body.find("div", {"class": "ue-c-article__body"}) is not None:
+            article = body.find("div", {"class": "ue-c-article__body"})
+
         elif body.find("article") is not None:
             article = body.find("article")
         

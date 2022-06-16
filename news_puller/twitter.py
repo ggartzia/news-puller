@@ -17,7 +17,7 @@ class TweetListener(object):
 
   def __init__(self):
       media = select_all_media()
-      follow = ['3439292716'] #[str(m['twitter_id']) for m in media]
+      follow = [str(m['twitter_id']) for m in media]
 
       stream = self.MediaActivity(os.getenv('TW_CONSUMER_KEY'), 
                                   os.getenv('TW_CONSUMER_SECRET'),
