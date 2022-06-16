@@ -1,4 +1,3 @@
-import pymongo
 from news_puller.database import Database
 
 media_db = Database.DATABASE['media']

@@ -15,14 +15,14 @@ def save_user(user):
         logging.error('There was an error while trying to save user: %s, %s', user, e)
 
 
-def search_user(id):
+def search_user(name):
     user = None
 
     try:
-        user = user_db.find_one({'_id': id})
+        user = user_db.find_one({'name': name})
 
     except Exception as e:
-        logging.error('There was an error fetching user: %s. %s', id,  e)
+        logging.error('There was an error fetching user: %s. %s', name,  e)
 
     return user
 

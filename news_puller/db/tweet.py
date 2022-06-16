@@ -1,7 +1,6 @@
 import logging
 import pymongo
 from news_puller.database import Database
-from news_puller.db.user import search_user
 
 tweet_db = Database.DATABASE['tweets']
 
