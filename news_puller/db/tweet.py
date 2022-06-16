@@ -25,7 +25,7 @@ def search_tweet(id, original=False):
     query = {'_id': id}
 
     if original:
-      query['reply_to'] = { '$exists': True }
+      query['reply_to'] = { '$exists': False }
 
     try:
         tweet = tweet_db.find_one(query)

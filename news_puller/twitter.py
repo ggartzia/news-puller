@@ -7,7 +7,6 @@ from news_puller.db.media import select_all_media
 from news_puller.db.tweet import search_tweet, save_tweet
 from news_puller.db.new import retweet
 from news_puller.db.user import save_user
-from news_puller.db.retweets import save_retweet
 from news_puller.tfidf import TfIdfAnalizer
 from news_puller.scrapper import NewsScrapper
 
@@ -38,12 +37,13 @@ class TweetListener(object):
           self.scrapper = NewsScrapper()
 
 
-      def extract_tweet(self, full_tweet, new, reply=None):
+      def extract_tweet(self, full_tweet, new, retweet=False, reply=None):
           tweet = {'_id': full_tweet['id_str'],
                    'created_at': full_tweet['created_at'],
                    'text': full_tweet['text'],
                    'user': full_tweet['user']['id'],
-                   'new': new}
+                   'new': new,
+                   'retweet': retweet}
 
           if reply is not None:
               # Clean tweet
@@ -54,6 +54,7 @@ class TweetListener(object):
               tweet.update({'reply_to': reply,
                             ## Analizar emociones del comentario
                             'rating': self.TFIDF.getRussellValues(processed_text)})
+
 
           save_tweet(tweet)
 
@@ -78,14 +79,14 @@ class TweetListener(object):
             # Retweet the algo compartido por los periodicos o comentarios
             if ('retweeted_status' in tweet and
                tweet['retweeted_status'] is not None):
-              save_retweet(tweet)
               # Search only original tweets
               original = search_tweet(tweet['retweeted_status']['id_str'], True)
               if original is not None:
                 retweet(original['new'], tweet['retweeted_status'])
+                self.extract_tweet(tweet, original['new'], True)
 
             # Esto seria un tweet del periodico que puede estar compartiendo una noticia
-            if (tweet['user']['id_str'] in self.FOLLOW and
+            elif (tweet['user']['id_str'] in self.FOLLOW and
                 tweet['entities'] is not None and
                 len(tweet['entities']['urls']) > 0):
 
@@ -99,13 +100,13 @@ class TweetListener(object):
                   self.extract_tweet(tweet, new_id)
 
             ## Save comments on the newspaper tweets
-            if tweet['in_reply_to_status_id'] is not None:
+            elif tweet['in_reply_to_status_id'] is not None:
               original = search_tweet(tweet['in_reply_to_status_id_str'])
 
               # Esto seria una contestacion a un tweet que tenemos guardado, podemos copiar el new
               # Ademas haremos un analisis de emociones y sentimientos
               if original is not None:
-                self.extract_tweet(tweet, original['new'], original['_id'])
+                self.extract_tweet(tweet, original['new'], False, original['_id'])
                 self.extract_user(tweet['user'])
 
           except Exception as e:

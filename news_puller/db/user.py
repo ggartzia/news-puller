@@ -19,7 +19,7 @@ def search_user(name):
     user = None
 
     try:
-        user = user_db.find_one({'name': name})
+        user = user_db.find_one({'screen_name': name})
 
     except Exception as e:
         logging.error('There was an error fetching user: %s. %s', name,  e)
