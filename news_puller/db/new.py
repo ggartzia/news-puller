@@ -70,18 +70,6 @@ def aggregate_tweet_count(query, sort, page):
               }
            },
            {
-              '$project': {
-                '_id': '$_id',
-                'title':'$title',
-                'fullUrl':'$fullUrl',
-                'image': '$image',
-                'published': '$published',
-                'paper': '$paper',
-                'topics': '$topics',
-                'tweetCount': {'$size': '$tweets'}
-              }
-           },
-           {
               '$sort': sort
            }
         ]))

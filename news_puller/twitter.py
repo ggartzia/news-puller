@@ -4,7 +4,7 @@ import tweepy
 import logging
 from dotenv import load_dotenv
 from news_puller.db.media import select_all_media
-from news_puller.db.tweet import search_tweet, save_tweet
+from news_puller.db.tweet import search_original_tweet, save_tweet
 from news_puller.db.new import retweet
 from news_puller.db.user import save_user
 from news_puller.tfidf import TfIdfAnalizer
@@ -80,7 +80,7 @@ class TweetListener(object):
             if ('retweeted_status' in tweet and
                tweet['retweeted_status'] is not None):
               # Search only original tweets
-              original = search_tweet(tweet['retweeted_status']['id_str'], True)
+              original = search_original_tweet(tweet['retweeted_status']['id_str'])
               if original is not None:
                 retweet(original['new'], tweet['retweeted_status'])
                 self.extract_tweet(tweet, original['new'], True)
@@ -101,7 +101,7 @@ class TweetListener(object):
 
             ## Save comments on the newspaper tweets
             elif tweet['in_reply_to_status_id'] is not None:
-              original = search_tweet(tweet['in_reply_to_status_id_str'])
+              original = search_original_tweet(tweet['in_reply_to_status_id_str'])
 
               # Esto seria una contestacion a un tweet que tenemos guardado, podemos copiar el new
               # Ademas haremos un analisis de emociones y sentimientos
