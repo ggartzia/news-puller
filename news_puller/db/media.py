@@ -12,9 +12,3 @@ def select_all_media():
     media = media_db.find({})
 
     return list(media)
-
-
-def select_theme_media(theme):
-    media = media_db.find({'theme': theme})
-
-    return list(media)

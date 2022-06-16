@@ -11,16 +11,6 @@ def num_paper_news(paper):
     return news_db.count_documents({'paper': paper})
 
 
-def last_new(paper):
-    new = news_db.find_one({'paper' : paper},
-    	                   sort=[('published', pymongo.DESCENDING)])
-    
-    if new is None:
-        return None
-    else:
-        return new['published']
-
-
 def search_new(id):
     new = None
     
@@ -127,3 +117,29 @@ def select_topic_news(topic, page):
     
     return {'total': news_db.count_documents(query),
             'items': news}
+
+
+def select_media_stats(theme):
+    return list(news_db.aggregate([
+       {
+          '$match': {'theme': theme}
+       },
+       {
+          '$group': {
+            '_id': '$paper',
+            'totalReply': { '$sum': '$reply_count' },
+            'totalRetweet': { '$sum': '$retweet_count' },
+            'totalFav': { '$sum': '$favorite_count' },
+            'published': {'$first': '$published'},
+            'news': { '$sum': 1 }
+          }
+       },
+       {
+          '$lookup': {
+             'from': 'media',
+             'localField': '_id',
+             'foreignField': '_id',
+             'as': 'media'
+          }
+       }
+    ]))

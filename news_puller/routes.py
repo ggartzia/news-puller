@@ -3,9 +3,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
 from news_puller.twitter import TweetListener
-from news_puller.media import get_media
 import news_puller.db.new as db_news
-import news_puller.db.media as db_media
 import news_puller.db.topic as db_topics
 import news_puller.db.user as db_users
 import news_puller.db.tweet as db_tweets
@@ -73,7 +71,7 @@ def get_topics(theme, page):
 @app.route('/get/media/<theme>', methods=['GET'])
 @cross_origin()
 def fetch_media(theme):
-    media = get_media(theme)
+    media = db_news.select_media_stats(theme)
 
     return jsonify(media)
 
