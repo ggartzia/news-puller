@@ -9,6 +9,7 @@ from news_puller.db.new import retweet
 from news_puller.db.user import save_user
 from news_puller.tfidf import TfIdfAnalizer
 from news_puller.scrapper import NewsScrapper
+import sys
 
 load_dotenv()
 
@@ -75,7 +76,7 @@ class TweetListener(object):
       def on_status(self, status):
           try:
             tweet = status._json
-
+            print('Hello tweet ' + str(tweet), file=sys.stdout)
             # Retweet the algo compartido por los periodicos o comentarios
             if ('retweeted_status' in tweet and
                tweet['retweeted_status'] is not None):

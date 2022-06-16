@@ -7,6 +7,7 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
+import sys
 
 
 class NewsScrapper(object):
@@ -27,6 +28,7 @@ class NewsScrapper(object):
                     soup = BeautifulSoup(page.text, 'html.parser')
 
                     text = self.get_text(soup)
+                    print('This is standard output' + str(text), file=sys.stdout)
                     if len(text) > 0:
                         topics = self.TFIDF.get_topics(text)
 
@@ -92,9 +94,7 @@ class NewsScrapper(object):
         article = None
         text = []
 
-        if body.find("article") is not None:
-            article = body.find("article")
-        elif body.find("div", {"class": "article-text"}) is not None:
+        if body.find("div", {"class": "article-text"}) is not None:
             article = body.find("div", {"class": "article-text"})
         elif body.find("div", {"class": "card-body-article"}) is not None:
             article = body.find("div", {"class": "card-body-article"})
@@ -102,6 +102,8 @@ class NewsScrapper(object):
             article = body.find("div", {"class": "content-container"})
         elif body.find("div", {"class": "entry-content"}) is not None:
             article = body.find("div", {"class": "entry-content"})
+        elif body.find("article") is not None:
+            article = body.find("article")
         
         if article is not None:
             text = [e.get_text().lower() for e in article.find_all('p')]
