@@ -94,7 +94,7 @@ def select_all_tweets(new):
                           ]
                       }
                   },
-                'count': { '$sum': 1 }
+                'actividad': { '$sum': 1 }
               }
            },
            {
