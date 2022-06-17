@@ -69,7 +69,37 @@ def select_tweets(new, user, page):
 
 
 def select_all_tweets(new):
-    tweets = tweet_db.find({'new': new}, {'_id': 0, 'new': 0, 'user': 0},
-                            sort=[('created_at', pymongo.DESCENDING)])
+
+    tweets = list(tweet_db.aggregate([
+           {
+              '$match': {'new': new}
+           },
+           {
+              '$addFields': {
+                  'created_at': {
+                      '$convert': {
+                          'input': '$created_at',
+                          'to': 'date'
+                      } 
+                  }
+              }
+           },
+           {
+              '$group': {
+                  '_id': {
+                      '$toDate': {
+                          '$subtract': [
+                              { '$toLong': '$created_at' },
+                              { '$mod': [ { '$toLong': '$created_at' }, 1000 * 60 * 15 ] }
+                          ]
+                      }
+                  },
+                'count': { '$sum': 1 }
+              }
+           },
+           {
+              '$sort': {'_id': pymongo.ASCENDING}
+           }
+        ]))
 
     return list(tweets)
