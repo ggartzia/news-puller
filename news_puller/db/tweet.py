@@ -1,47 +1,41 @@
-from logging import getLogger, DEBUG
+import logging
 import pymongo
 from news_puller.database import Database
-from news_puller.db.user import search_user
-
 
 tweet_db = Database.DATABASE['tweets']
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 def save_tweet(tweet):
     try:
         tweet_db.insert_one(tweet)
         
     except Exception as e:
-        logger.error('There was an error while trying to save tweets: %s', e)
+        logging.error('There was an error while trying to save tweets: %s', e)
 
 
 def count_new_tweets(new):
-    return tweet_db.count_documents({'new': new})
+    return tweet_db.count_documents({'new': new, 'reply_to': { '$exists': True }})
 
 
 def count_user_tweets(user):
     return tweet_db.count_documents({'user': user})
 
 
-def search_tweet(id):
+def search_original_tweet(id):
     tweet = None
 
     try:
-        tweet = tweet_db.find_one({'_id': id})
+        tweet = tweet_db.find_one({'_id': id, 'reply_to': {'$exists': False }})
 
     except Exception as e:
-        logger.error('There was an error fetching tweet: %s. %s', id,  e)
+        logging.error('There was an error fetching tweet: %s. %s', id,  e)
 
     return tweet
 
 
-def select_tweets(id, user, page):
+def select_tweets(new, user, page):
     query = {}
-    if id is not None:
-      query = {'new': id}
+    if new is not None:
+      query = {'new': new, 'reply_to': { '$exists': True }}
     elif user is not None:
       query = {'user': user}
 
@@ -72,3 +66,54 @@ def select_tweets(id, user, page):
     tweetsTo = tweetsFrom + Database.PAGE_SIZE
 
     return tweets[tweetsFrom:tweetsTo]
+
+
+def select_all_tweets(new):
+    tweets = tweet_db.aggregate([
+           {
+              '$match': {'new': new}
+           },
+           {
+              '$addFields': {
+                  'created_at': {
+                      '$convert': {
+                          'input': '$created_at',
+                          'to': 'date'
+                      } 
+                  }
+              }
+           },
+           {
+              '$group': {
+                  '_id': {
+                      '$toDate': {
+                          '$subtract': [
+                              { '$toLong': '$created_at' },
+                              { '$mod': [ { '$toLong': '$created_at' }, 1000 * 60 * 15 ] }
+                          ]
+                      }
+                  },
+                  'actividad': { '$sum': 1 }
+              }
+           },
+           {
+              '$sort': {'_id': pymongo.ASCENDING}
+           }
+        ])
+
+    return list(tweets)
+
+def select_emotions(new):
+    tweets = tweet_db.aggregate([
+           {
+              '$match': {'new': new, 'reply_to': { '$exists': True }}
+           },
+           {
+              '$group': {
+                '_id': '$rating',
+                'value': { '$sum': 1 },
+              }
+           }
+        ])
+
+    return list(tweets)

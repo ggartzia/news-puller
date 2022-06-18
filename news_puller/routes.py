@@ -2,12 +2,8 @@ from time import time
 from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask_gzip import Gzip
-from news_puller.scheduler import Scheduler
 from news_puller.twitter import TweetListener
-from news_puller.fetch import NewsListener
-from news_puller.media import get_media
 import news_puller.db.new as db_news
-import news_puller.db.media as db_media
 import news_puller.db.topic as db_topics
 import news_puller.db.user as db_users
 import news_puller.db.tweet as db_tweets
@@ -19,10 +15,8 @@ cors = CORS(app)
 Gzip(app)
 
 # Start background jobs
-Scheduler()
 TweetListener()
 
-fetcher = NewsListener()
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -32,13 +26,6 @@ def health_check():
         'startTime': start_time
     }
     return jsonify(response)
-
-
-@app.route('/fetch/<media>', methods=['GET'])
-def fetch_news(media):
-    fetcher.get_news(media)
-
-    return 'OK'
 
 
 @app.route('/get/<theme>/<int:since>/page/<int:page>', methods=['GET'])
@@ -84,7 +71,7 @@ def get_topics(theme, page):
 @app.route('/get/media/<theme>', methods=['GET'])
 @cross_origin()
 def fetch_media(theme):
-    media = get_media(theme)
+    media = db_news.select_media_stats(theme)
 
     return jsonify(media)
 
@@ -105,21 +92,33 @@ def fetch_users(page):
     return jsonify(users)
 
 
-@app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])
+@app.route('/get/tweets/<id>', methods=['GET'])
 @cross_origin()
-def get_tweets(id, page):
-    tweets = db_tweets.select_tweets(id, None, page)
+def get_all_tweets(id):
+    all_tweets = db_tweets.select_all_tweets(id)
+    emotions = db_tweets.select_emotions(id)
     new = db_news.search_new(id)
 
     return jsonify({'new': new,
                     'total': new['total'],
-                    'items': tweets})
+                    'emotions': emotions,
+                    'chart': all_tweets})
 
 
-@app.route('/get/tweets/user/<int:user>/page/<int:page>', methods=['GET'])
+@app.route('/get/tweets/<id>/page/<int:page>', methods=['GET'])
 @cross_origin()
-def fetch_user_tweets(user, page):
-    tweets = db_tweets.select_tweets(None, user, page) 
+def get_tweets(id, page):
+    tweets = db_tweets.select_tweets(id, None, page)
 
-    return jsonify({'total': db_tweets.count_user_tweets(user),
+    return jsonify(tweets)
+
+
+@app.route('/get/tweets/user/<userName>/page/<int:page>', methods=['GET'])
+@cross_origin()
+def fetch_user_tweets(userName, page):
+    user = db_users.search_user(userName)
+    tweets = db_tweets.select_tweets(None, user['id'], page) 
+
+    return jsonify({'total': db_tweets.count_user_tweets(user['id']),
+                    'user': user,
                     'items': tweets})

@@ -6,14 +6,11 @@ Flask-PyMongo
 gunicorn
 pymongo
 python-dotenv
-feedparser
 requests
-Werkzeug
-numpy
+bs4
 DateTime
+pandas
 tweepy
-APScheduler
 scikit-learn
 nltk
 spacy
-sentiment-analysis-spanish

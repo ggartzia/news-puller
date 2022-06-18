@@ -1,12 +1,7 @@
-from logging import getLogger, DEBUG
 import pymongo
 from news_puller.database import Database
 
 topic_db = Database.DATABASE['topics']
-
-logger = getLogger('werkzeug')
-logger.setLevel(DEBUG)
-
 
 def save_topics(topics, theme):
     for topic in topics:
