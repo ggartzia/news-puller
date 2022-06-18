@@ -7,7 +7,6 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
-import sys
 
 
 class NewsScrapper(object):
@@ -25,14 +24,14 @@ class NewsScrapper(object):
                 page = requests.get('https://news-puller.herokuapp.com/')
                 page = requests.get(url)
                 if (page.status_code == 200):
-                    soup = BeautifulSoup(page.text, 'html.parser')
 
-                    text = self.get_text(soup)
+                    media = search_media(tweet['user']['screen_name'])
+
+                    soup = BeautifulSoup(page.text, 'html.parser')
+                    text = self.get_text(media['text_container'], soup)
                     
                     if len(text) > 0:
                         topics = self.TFIDF.get_topics(text)
-
-                        media = search_media(tweet['user']['screen_name'])
 
                         new = {'_id': new_id,
                                'fullUrl': url,
@@ -73,41 +72,28 @@ class NewsScrapper(object):
         tag = body.find("meta", property="og:description")
         if tag is not None:
             description = tag['content']
-        
-        # Remove html tags from description
+
         return description
 
 
     def get_title(self, body):
         title = ''
 
-        tag = body.find("meta", property="og:title")
         if body.find("meta", property="og:title") is not None:
             title = body.find("meta", property="og:title")['content']
+
         elif body.find("title") is not None:
             title = body.find("title")
         
         return title
 
 
-    def get_text(self, body):
+    def get_text(self, container_class, body):
         article = None
         text = []
 
-        if body.find("div", {"class": "article-text"}) is not None:
-            article = body.find("div", {"class": "article-text"})
-        elif body.find("div", {"class": "card-body-article"}) is not None:
-            article = body.find("div", {"class": "card-body-article"})
-        elif body.find("div", {"class": "content-container"}) is not None:
-            article = body.find("div", {"class": "content-container"})
-        elif body.find("div", {"class": "article-modules"}) is not None:
-            article = body.find("div", {"class": "article-modules"})
-        elif body.find("div", {"class": "article-body-content"}) is not None:
-            article = body.find("div", {"class": "article-body-content"})
-        elif body.find("div", {"data-dtm-region": "articulo_cuerpo"}) is not None:
-            article = body.find("div", {"data-dtm-region": "articulo_cuerpo"})
-        elif body.find("div", {"class": "ue-c-article__body"}) is not None:
-            article = body.find("div", {"class": "ue-c-article__body"})
+        if body.find("div", {"class": container_class}) is not None:
+            article = body.find("div", {"class": container_class})
 
         elif body.find("article") is not None:
             article = body.find("article")
@@ -121,7 +107,6 @@ class NewsScrapper(object):
     def get_date(self, body):
         date = ''
 
-        tag = body.find("meta", property="article:published_time")
         if body.find("meta", property="article:published_time") is not None:
             date = body.find("meta", property="article:published_time")['content']
 
@@ -135,7 +120,6 @@ class NewsScrapper(object):
             date = datetime.now()
             date = date.strftime("%Y-%m-%dT%H:%M:%S%z")
 
-        # Remove html tags from description
         return date
 
 
@@ -143,13 +127,16 @@ class NewsScrapper(object):
         image = ''
 
         if body.find("meta", property="twitter:image") is not None:
-            image = body.find("meta", property="twitter:image")['content']
+            image = body.find("meta", property="twitter:image")
+
         elif body.find("meta", property="og:image") is not None:
-            image = body.find("meta", property="og:image")['content']
+            image = body.find("meta", property="og:image")
+
         elif body.find("meta", {"data-ue-u": "twitter:image"}) is not None:
-            image = body.find("meta", {"data-ue-u": "twitter:image"})['content']
+            image = body.find("meta", {"data-ue-u": "twitter:image"})
+
         elif body.find("meta", {"data-ue-u": "og:image"}) is not None:
-            image = body.find("meta", {"data-ue-u": "og:image"})['content']
-        
-        # Remove html tags from description
-        return image
+            image = body.find("meta", {"data-ue-u": "og:image"})
+
+        if image is not None:
+            return image['content']
