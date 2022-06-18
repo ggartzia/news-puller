@@ -96,10 +96,12 @@ def fetch_users(page):
 @cross_origin()
 def get_all_tweets(id):
     all_tweets = db_tweets.select_all_tweets(id)
+    emotions = db_tweets.select_emotions(id)
     new = db_news.search_new(id)
 
     return jsonify({'new': new,
                     'total': new['total'],
+                    'emotions': emotions,
                     'chart': all_tweets})
 
 

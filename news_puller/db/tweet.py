@@ -69,8 +69,7 @@ def select_tweets(new, user, page):
 
 
 def select_all_tweets(new):
-
-    tweets = list(tweet_db.aggregate([
+    tweets = tweet_db.aggregate([
            {
               '$match': {'new': new}
            },
@@ -94,12 +93,27 @@ def select_all_tweets(new):
                           ]
                       }
                   },
-                'actividad': { '$sum': 1 }
+                  'actividad': { '$sum': 1 }
               }
            },
            {
               '$sort': {'_id': pymongo.ASCENDING}
            }
-        ]))
+        ])
+
+    return list(tweets)
+
+def select_emotions(new):
+    tweets = tweet_db.aggregate([
+           {
+              '$match': {'new': new, 'reply_to': { '$exists': True }}
+           },
+           {
+              '$group': {
+                '_id': '$rating',
+                'value': { '$sum': 1 },
+              }
+           }
+        ])
 
     return list(tweets)
