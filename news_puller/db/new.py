@@ -46,48 +46,26 @@ def retweet(id, tweet):
         logging.error('There was an error while trying to save retweet of new: %s', e)
 
 
-def aggregate_tweet_count(query, page, sort='published'):
-    news = list(news_db.aggregate([
-           {
-              '$match': query
-           },
-           {
-              '$lookup': {
-                 'from': 'tweets',
-                 'localField': '_id',
-                 'foreignField': 'new',
-                 'as': 'tweets'
-              }
-           },
-           {
-              '$sort': {sort: pymongo.DESCENDING}
-           }
-        ]))
-
-    newsFrom = page * Database.PAGE_SIZE
-    newsTo = newsFrom + Database.PAGE_SIZE
-
-    return news[newsFrom:newsTo]
-
-
 def select_last_news(hour, theme, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}, 'theme': theme}
 
-    news = aggregate_tweet_count(query, page)
+    news = news_db.find(query,
+                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': news_db.count_documents(query),
-            'items': news}
+            'items': list(news)}
 
 
 def select_trending_news(hour, page):
     last_hour_date_time = datetime.now() - timedelta(hours = hour)
     query = {'published': {'$gte': str(last_hour_date_time)}}
 
-    news = aggregate_tweet_count(query, page, 'favorite_count')
+    news = news_db.find(query,
+                        {'$sort': {'favorite_count': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': news_db.count_documents(query),
-            'items': news}
+            'items': list(news)}
 
 
 def select_related_news(id, page):
@@ -97,30 +75,65 @@ def select_related_news(id, page):
              '_id': {'$ne': main_new['_id']},
              'topics': {'$in': main_new['topics']}}
 
-    news = aggregate_tweet_count(query, page)
+    news = list(news_db.aggregate([
+           {
+              '$match': query
+           },
+           {
+              '$unwind': {'path': '$topics'}
+           },
+           {
+              '$match': query
+           },
+           {
+              '$group': {
+                  '_id': '$_id',
+                  'matches': {'$sum': 1}
+              }
+           },
+           {
+              '$lookup': {
+                 'from': 'news',
+                 'localField': '_id',
+                 'foreignField': '_id',
+                 'as': 'new'
+              }
+           },
+           {
+              '$set': {'new': {'$first': '$new'}}
+           },
+           {
+              '$sort': {'matches': pymongo.DESCENDING}
+           }
+        ]))
+
+    newsFrom = page * Database.PAGE_SIZE
+    newsTo = newsFrom + Database.PAGE_SIZE
 
     return {'new': main_new,
-            'total': news_db.count_documents(query),
-            'items': calculate_similarity(main_new, news)}
+            'total': len(news),
+            'items': news[newsFrom:newsTo]}
 
 
 def select_media_news(media, page):
-    news = aggregate_tweet_count({'paper': media}, page)
+    news = news_db.find({'paper': media},
+                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': num_paper_news(media),
-            'items': news}
+            'items': list(news)}
 
 
 def select_topic_news(topic, page):
     query = {'topics': topic}
-    news = aggregate_tweet_count(query, page)
-    
+    news = news_db.find(query,
+                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+
     return {'total': news_db.count_documents(query),
-            'items': news}
+            'items': list(news)}
 
 
 def select_media_stats(theme):
-    return list(news_db.aggregate([
+    news = news_db.aggregate([
        {
           '$match': {'theme': theme}
        },
@@ -142,4 +155,6 @@ def select_media_stats(theme):
              'as': 'media'
           }
        }
-    ]))
+    ])
+
+    return list(news)
