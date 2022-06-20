@@ -51,7 +51,7 @@ def select_last_news(hour, theme, page):
     query = {'published': {'$gte': str(last_hour_date_time)}, 'theme': theme}
 
     news = news_db.find(query,
-                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+                        sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': news_db.count_documents(query),
             'items': list(news)}
@@ -62,7 +62,7 @@ def select_trending_news(hour, page):
     query = {'published': {'$gte': str(last_hour_date_time)}}
 
     news = news_db.find(query,
-                        {'$sort': {'favorite_count': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+                        sort=[('favorite_count', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': news_db.count_documents(query),
             'items': list(news)}
@@ -117,7 +117,7 @@ def select_related_news(id, page):
 
 def select_media_news(media, page):
     news = news_db.find({'paper': media},
-                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+                        sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': num_paper_news(media),
             'items': list(news)}
@@ -126,7 +126,7 @@ def select_media_news(media, page):
 def select_topic_news(topic, page):
     query = {'topics': topic}
     news = news_db.find(query,
-                        {'$sort': {'published': pymongo.DESCENDING}}).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
+                        sort=[('published', pymongo.DESCENDING)]).skip(page * Database.PAGE_SIZE).limit(Database.PAGE_SIZE)
 
     return {'total': news_db.count_documents(query),
             'items': list(news)}
