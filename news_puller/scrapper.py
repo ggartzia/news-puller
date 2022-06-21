@@ -21,40 +21,37 @@ class NewsScrapper(object):
         if search_new(new_id) is None:
 
             try:
-                page = requests.get('https://news-puller.herokuapp.com/')
+                page = requests.get('https://news-puller.herokuapp.com/?url=' + url)
                 page = requests.get(url)
-                if (page.status_code == 200):
 
+                if (page.status_code == 200):
                     media = search_media(tweet['user']['screen_name'])
 
                     soup = BeautifulSoup(page.text, 'html.parser')
-                    text = self.get_text(media['text_container'], soup)
+                    text = self.extract_text(media['text_container'], soup)
+                    title = self.extract_title(soup)
+                    description = self.extract_description(soup)
+
+                    topics = self.TFIDF.get_topics(title, description, text)
+
+                    new = {'_id': new_id,
+                           'fullUrl': url,
+                           'title': title,
+                           'description': description,
+                           'paper': media['_id'],
+                           'theme': media['theme'],
+                           'published': self.extract_date(soup),
+                           'topics': topics,
+                           'image': self.extract_image(soup),
+                           'retweet_count': tweet['retweet_count'],
+                           'favorite_count': tweet['favorite_count'],
+                           'reply_count': tweet['reply_count']
+                          }
                     
-                    if len(text) > 0:
-                        title = self.get_title(soup)
-                        description = self.get_description(soup)
-                        topics = self.TFIDF.get_topics(title, description, text)
+                    save_topics(topics, media['theme'])
+                    save_new(new)
 
-                        new = {'_id': new_id,
-                               'fullUrl': url,
-                               'title': title,
-                               'description': description,
-                               'paper': media['_id'],
-                               'theme': media['theme'],
-                               'published': self.get_date(soup),
-                               'topics': topics,
-                               'image': self.get_image(soup),
-                               'retweet_count': tweet['retweet_count'],
-                               'favorite_count': tweet['favorite_count'],
-                               'reply_count': tweet['reply_count']
-                              }
-                        
-                        save_topics(topics, media['theme'])
-                        save_new(new)
-
-                        return new_id
-                    else:
-                        logging.warning("THE CONTENT OF THE URL IS EMPTY!! %s", url)
+                    return new_id
 
             except Exception as e:
                 logging.error('There was an error parsing new url: %s. %s', url, e)
@@ -68,7 +65,8 @@ class NewsScrapper(object):
     def create_unique_id(self, url): 
         return hashlib.sha256(url.encode('utf-8')).hexdigest()
 
-    def get_description(self, body):
+
+    def extract_description(self, body):
         description = ''
 
         tag = body.find("meta", property="og:description")
@@ -78,7 +76,7 @@ class NewsScrapper(object):
         return description
 
 
-    def get_title(self, body):
+    def extract_title(self, body):
         title = ''
 
         if body.find("meta", property="og:title") is not None:
@@ -90,22 +88,27 @@ class NewsScrapper(object):
         return title
 
 
-    def get_text(self, container_class, body):
+    def extract_text(self, container_class, body):
         article = None
         text = []
 
-        if container_class is not None and body.find("div", {"class": container_class}) is not None:
-            article = body.find("div", {"class": container_class})
+        try:
+            if container_class is not None and body.find("div", {"class": container_class}) is not None:
+                article = body.find("div", {"class": container_class})
 
-        if article is not None and body.find("article") is not None:
-            article = body.find("article")
+            if article is None and body.find("article") is not None:
+                article = body.find("article")
 
-        text = [e.get_text().lower() for e in article.find_all('p')]
+            if article is not None:
+                text = [e.get_text().lower() for e in article.find_all('p')]
+
+        except Exception as e:
+            logging.error('There is no text on article: %s. %s', body.find("title"), e)
 
         return text
 
 
-    def get_date(self, body):
+    def extract_date(self, body):
         date = ''
 
         if body.find("meta", property="article:published_time") is not None:
@@ -124,7 +127,7 @@ class NewsScrapper(object):
         return date
 
 
-    def get_image(self, body):
+    def extract_image(self, body):
         image = ''
 
         if body.find("meta", property="twitter:image") is not None:
