@@ -8,15 +8,12 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
-from transformers import pipeline
 
 
 class NewsScrapper(object):
 
     def __init__(self):
         self.TFIDF = TfIdfAnalizer()
-        self.CLASSIFIER = pipeline('text-classification',
-                                   model='Narrativaai/fake-news-detection-spanish')
 
 
     def scrap(self, tweet, url):
@@ -152,11 +149,12 @@ class NewsScrapper(object):
 
     def fake_new(self, title, text):
         try:
-            text = ' '.join(article)
-            results = self.CLASSIFIER(title + " [SEP] " + article)
-            return results[0]["label"], results[0]["score"]
+            url = "https://hf.space/embed/Narrativa/fake-news-detection-spanish/api/predict/"
+            payload = {'data': [title, ' '.join(article)],
+                       'session_hash': "mzfa57tl2ls"}
+            page = requests.post(url, json = payload)
+
+            return page
 
         except Exception as e:
             logging.error('There was an error verifying article: %s. %s', title, e)
-
-        return 'REAL'
