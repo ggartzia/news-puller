@@ -94,8 +94,7 @@ class NewsScrapper(object):
         article = None
         text = []
 
-        if container_class is not None and 
-           body.find("div", {"class": container_class}) is not None:
+        if container_class is not None and body.find("div", {"class": container_class}) is not None:
             article = body.find("div", {"class": container_class})
 
         if article is not None and body.find("article") is not None:
