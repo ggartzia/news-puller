@@ -26,17 +26,18 @@ class TfIdfAnalizer(object):
             logging.error('Failed downloading spacy client. Error: %s', e)
 
 
-    def get_topics(self, corpus, size=6):
+    def get_topics(self, corpus):
         words = []
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   tokenizer=self.tokenize_lemmatize,
-                                  ngram_range=(1,2)).fit(corpus)
+                                  ngram_range=(1,2),
+                                  use_idf=False).fit(corpus)
             bag_of_words = vec.transform(corpus)
             sum_words = bag_of_words.sum(axis=0)
             words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
             words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
-            words = [w[0] for w in words_freq[:size]]
+            words = [w[0] for w in words_freq[:10]]
 
         except Exception as e:
             logging.error('Failed counting words in article. Error: %s', e)

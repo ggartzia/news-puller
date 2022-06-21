@@ -2,7 +2,6 @@ import logging
 import pymongo
 from news_puller.database import Database
 from datetime import datetime, timedelta
-from news_puller.related import calculate_similarity
 from news_puller.db.tweet import count_new_tweets
 
 news_db = Database.DATABASE['news']

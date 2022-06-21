@@ -1,6 +1,7 @@
 import requests
 import hashlib
 import logging
+import numpy as np
 from datetime import datetime
 from bs4 import BeautifulSoup
 from news_puller.db.new import search_new, save_new
@@ -31,12 +32,15 @@ class NewsScrapper(object):
                     text = self.get_text(media['text_container'], soup)
                     
                     if len(text) > 0:
-                        topics = self.TFIDF.get_topics(text)
+                        title = self.get_title(soup)
+                        description = self.get_description(soup)
+                        all_text = np.concatenate((np.array([title, description]), text))
+                        topics = self.TFIDF.get_topics(all_text)
 
                         new = {'_id': new_id,
                                'fullUrl': url,
-                               'title': self.get_title(soup),
-                               'description': self.get_description(soup),
+                               'title': title,
+                               'description': description,
                                'paper': media['_id'],
                                'theme': media['theme'],
                                'published': self.get_date(soup),
@@ -101,7 +105,7 @@ class NewsScrapper(object):
         if article is not None:
             text = [e.get_text().lower() for e in article.find_all('p')]
 
-        return text
+        return np.asarray(text)
 
 
     def get_date(self, body):
