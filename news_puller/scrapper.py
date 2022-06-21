@@ -21,7 +21,7 @@ class NewsScrapper(object):
         if search_new(new_id) is None:
 
             try:
-                page = requests.get('https://news-puller.herokuapp.com/?url=' + url)
+                page = requests.get('https://news-puller.herokuapp.com/')
                 page = requests.get(url)
 
                 if (page.status_code == 200):
