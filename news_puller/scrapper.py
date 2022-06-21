@@ -8,12 +8,15 @@ from news_puller.db.new import search_new, save_new
 from news_puller.db.media import search_media
 from news_puller.db.topic import save_topics
 from news_puller.tfidf import TfIdfAnalizer
+from transformers import pipeline
 
 
 class NewsScrapper(object):
 
     def __init__(self):
         self.TFIDF = TfIdfAnalizer()
+        self.CLASSIFIER = pipeline('text-classification',
+                                   model='Narrativaai/fake-news-detection-spanish')
 
 
     def scrap(self, tweet, url):
@@ -29,12 +32,12 @@ class NewsScrapper(object):
                     media = search_media(tweet['user']['screen_name'])
 
                     soup = BeautifulSoup(page.text, 'html.parser')
-                    text = self.get_text(media['text_container'], soup)
+                    article = self.get_text(media['text_container'], soup)
                     
-                    if len(text) > 0:
+                    if len(article) > 0:
                         title = self.get_title(soup)
                         description = self.get_description(soup)
-                        all_text = np.concatenate((np.array([title, description]), text))
+                        all_text = np.concatenate((np.array([title, description]), article))
                         topics = self.TFIDF.get_topics(all_text)
 
                         new = {'_id': new_id,
@@ -48,7 +51,8 @@ class NewsScrapper(object):
                                'image': self.get_image(soup),
                                'retweet_count': tweet['retweet_count'],
                                'favorite_count': tweet['favorite_count'],
-                               'reply_count': tweet['reply_count']
+                               'reply_count': tweet['reply_count'],
+                               'fake': self.fake_new(title, article)
                               }
                         
                         save_topics(topics, media['theme'])
@@ -144,3 +148,15 @@ class NewsScrapper(object):
 
         if image is not None:
             return image['content']
+
+
+    def fake_new(self, title, text):
+        try:
+            text = ' '.join(article)
+            results = self.CLASSIFIER(title + " [SEP] " + article)
+            return results[0]["label"], results[0]["score"]
+
+        except Exception as e:
+            logging.error('There was an error verifying article: %s. %s', title, e)
+
+        return 'REAL'

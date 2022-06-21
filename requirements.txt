@@ -11,6 +11,7 @@ bs4
 DateTime
 pandas
 tweepy
+numpy
 scikit-learn
 nltk
 spacy
