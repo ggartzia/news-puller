@@ -49,7 +49,7 @@ class NewsScrapper(object):
                                'retweet_count': tweet['retweet_count'],
                                'favorite_count': tweet['favorite_count'],
                                'reply_count': tweet['reply_count'],
-                               'fake': self.fake_new(title, article)
+                               'verified': self.fake_new(title, article)
                               }
                         
                         save_topics(topics, media['theme'])
@@ -97,14 +97,14 @@ class NewsScrapper(object):
         article = None
         text = []
 
-        if body.find("div", {"class": container_class}) is not None:
+        if container_class is not None and 
+           body.find("div", {"class": container_class}) is not None:
             article = body.find("div", {"class": container_class})
 
-        elif body.find("article") is not None:
+        if article is not None and body.find("article") is not None:
             article = body.find("article")
-        
-        if article is not None:
-            text = [e.get_text().lower() for e in article.find_all('p')]
+
+        text = [e.get_text().lower() for e in article.find_all('p')]
 
         return np.asarray(text)
 
@@ -154,11 +154,8 @@ class NewsScrapper(object):
             r = requests.post(url='https://hf.space/gradioiframe/Narrativa/fake-news-detection-spanish/+/api/predict/',
                               json={'data': [title, ' '.join(text)]})
             result = r.json()
-            logging.error('There was an error verifying article: %s', result)
-            logging.error('There was an error verifying article: %s', result['data'])
-            logging.error('There was an error verifying article: %s', result['data'][0])
-            return result['data'][0]
 
+            return result['data'][0]
         except Exception as e:
             logging.error('There was an error verifying article: %s. %s', title, e)
 
