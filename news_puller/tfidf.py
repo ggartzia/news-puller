@@ -29,7 +29,7 @@ class TfIdfAnalizer(object):
 
     def get_topics(self, title, description, text):
         words = []
-        corpus = numpy.concatenate((numpy.array([title, description]), text))
+        corpus = numpy.concatenate((numpy.asarray([title, description]), numpy.asarray(text)))
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   tokenizer=self.tokenize_lemmatize,

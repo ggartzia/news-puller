@@ -102,7 +102,7 @@ class NewsScrapper(object):
 
         text = [e.get_text().lower() for e in article.find_all('p')]
 
-        return np.asarray(text)
+        return text
 
 
     def get_date(self, body):
