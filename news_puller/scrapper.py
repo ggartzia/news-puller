@@ -150,7 +150,7 @@ class NewsScrapper(object):
     def fake_new(self, title, text):
         try:
             r = requests.post(url='https://hf.space/gradioiframe/Narrativa/fake-news-detection-spanish/+/api/predict/',
-                              json={"data": [title, ' '.join(article)]})
+                              json={"data": [title, ' '.join(text)]})
             result = r.json()
 
             return result["data"][0]
