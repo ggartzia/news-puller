@@ -2,6 +2,7 @@ import pandas as pd
 import spacy
 import math
 import logging
+import numpy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 
@@ -26,8 +27,9 @@ class TfIdfAnalizer(object):
             logging.error('Failed downloading spacy client. Error: %s', e)
 
 
-    def get_topics(self, corpus):
+    def get_topics(self, title, description, text):
         words = []
+        corpus = numpy.concatenate((numpy.array([title, description]), text))
         try:
             vec = TfidfVectorizer(stop_words=self.STOP_WORDS,
                                   tokenizer=self.tokenize_lemmatize,
