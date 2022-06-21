@@ -11,6 +11,7 @@ bs4
 DateTime
 pandas
 tweepy
+transformers
 numpy
 scikit-learn
 nltk
