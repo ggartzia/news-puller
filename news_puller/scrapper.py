@@ -148,12 +148,18 @@ class NewsScrapper(object):
 
 
     def fake_new(self, title, text):
+        result = None
+
         try:
             r = requests.post(url='https://hf.space/gradioiframe/Narrativa/fake-news-detection-spanish/+/api/predict/',
-                              json={"data": [title, ' '.join(text)]})
+                              json={'data': [title, ' '.join(text)]})
             result = r.json()
-
-            return result["data"][0]
+            logging.error('There was an error verifying article: %s', result)
+            logging.error('There was an error verifying article: %s', result['data'])
+            logging.error('There was an error verifying article: %s', result['data'][0])
+            return result['data'][0]
 
         except Exception as e:
             logging.error('There was an error verifying article: %s. %s', title, e)
+
+        return result
